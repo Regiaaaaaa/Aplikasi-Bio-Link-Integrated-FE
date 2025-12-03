@@ -40,5 +40,12 @@ export default function GoogleCallback() {
       });
   }, [navigate, setUser]); 
 
-  return <div>Loading Google login…</div>;
+  return (
+    <div className="h-screen w-screen flex items-center justify-center bg-white">
+      <div className="text-center">
+        <span className="loading loading-spinner text-indigo-600 mb-4"></span>
+        <p className="text-gray-700 font-medium">Loading Google login...</p>
+      </div>
+    </div>
+  );
 }

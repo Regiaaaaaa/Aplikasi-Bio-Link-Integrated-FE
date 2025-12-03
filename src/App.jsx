@@ -7,16 +7,16 @@ import GoogleCallback from "./pages/GoogleCallback";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
+import LandingPage from "./pages/LandingPage";
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-
           {/* Login routes */}
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<LandingPage />} />
 
           {/* Register */}
           <Route path="/register" element={<Register />} />
@@ -33,7 +33,6 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
         </Routes>
       </BrowserRouter>
     </AuthProvider>

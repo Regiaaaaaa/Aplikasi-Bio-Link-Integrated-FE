@@ -8,6 +8,7 @@ import GoogleCallback from "./pages/GoogleCallback";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import LandingPage from "./pages/LandingPage";
+import ForgotPassword from "./pages/ForgotPassword";
 
 export default function App() {
   return (
@@ -17,6 +18,8 @@ export default function App() {
           {/* Login routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<LandingPage />} />
+
+          <Route path="/forgot-password" element={<ForgotPassword/>} />
 
           {/* Register */}
           <Route path="/register" element={<Register />} />

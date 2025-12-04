@@ -42,15 +42,17 @@ export default function Login() {
     window.location.href = "http://localhost:8000/api/auth/google/redirect";
   };
 
-  // Function to go back to landing page
   const goToLandingPage = () => {
     navigate("/");
   };
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center">
-        <span className="loading loading-spinner text-indigo-600"></span>
+      <div className="h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <span className="loading loading-spinner loading-lg text-indigo-600"></span>
+          <p className="mt-4 text-gray-600 animate-pulse">Loading...</p>
+        </div>
       </div>
     );
   }
@@ -61,177 +63,391 @@ export default function Login() {
   }
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex flex-col md:flex-row">
-      {/* LEFT: LOGIN FORM — FULL WHITE & LIGHT */}
-      <div className="w-full md:w-1/2 bg-white flex flex-col justify-center p-6 md:p-10 lg:p-16">
-        {/* Header with back button */}
-        <div className="mb-4">
-          {/* Brand */}
-          <div className="flex items-center gap-2">
-            <img src={icon2} alt="Synapse Logo" className="w-8 h-8" />
-            <span className="text-xl font-bold text-gray-900">Synapse</span>
+    <>
+      <style>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes slideRight {
+          from {
+            opacity: 0;
+            transform: translateX(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          50% {
+            transform: translateY(-20px) rotate(5deg);
+          }
+        }
+
+        @keyframes pulse {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(1.1);
+            opacity: 0.8;
+          }
+        }
+
+        .animate-fadeIn {
+          animation: fadeIn 0.8s ease-out;
+        }
+
+        .animate-slideDown {
+          animation: slideDown 0.7s ease-out;
+        }
+
+        .animate-slideUp {
+          animation: slideUp 0.7s ease-out;
+        }
+
+        .animate-slideRight {
+          animation: slideRight 0.9s ease-out;
+        }
+
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-pulse-custom {
+          animation: pulse 3s ease-in-out infinite;
+        }
+
+        .delay-100 {
+          animation-delay: 0.1s;
+        }
+
+        .delay-200 {
+          animation-delay: 0.2s;
+        }
+
+        .delay-300 {
+          animation-delay: 0.3s;
+        }
+
+        .delay-400 {
+          animation-delay: 0.4s;
+        }
+
+        .glass-card {
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .input-focus-effect {
+          transition: all 0.3s ease;
+        }
+
+        .input-focus-effect:focus {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-gradient-animated {
+          background-size: 200% auto;
+          transition: all 0.3s ease;
+        }
+
+        .btn-gradient-animated:hover {
+          background-position: right center;
+        }
+      `}</style>
+
+      <div className="h-screen w-screen overflow-hidden flex flex-col md:flex-row bg-white">
+        {/* Decorative Elements */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+          <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-indigo-200 to-purple-200 rounded-full opacity-30 blur-3xl animate-float"></div>
+          <div
+            className="absolute -bottom-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full opacity-30 blur-3xl animate-float"
+            style={{ animationDelay: "2s" }}
+          ></div>
+        </div>
+
+        {/* LEFT: LOGIN FORM */}
+        <div className="w-full md:w-1/2 flex flex-col justify-center px-8 md:px-16 lg:px-24 py-12 relative z-10 animate-fadeIn overflow-y-auto">
+          <div className="max-w-md w-full mx-auto my-auto">
+            {/* Brand Logo */}
+            <div className="mb-6 animate-slideDown">
+              <div className="flex items-center gap-2">
+                <img src={icon2} alt="Synapse Logo" className="w-8 h-8" />
+                <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                  Synapse
+                </span>
+              </div>
+            </div>
+
+            {/* Welcome Text */}
+            <div className="mb-6 animate-slideUp">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">
+                Holla,
+                <br />
+                <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                  Welcome Back
+                </span>
+              </h1>
+              <p className="text-gray-600">
+                Hey, welcome back to your special place
+              </p>
+            </div>
+
+            {/* Form */}
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-4 animate-slideUp delay-100"
+            >
+              {/* Email Input */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Email
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                    <svg
+                      className="w-5 h-5 text-gray-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="email"
+                    placeholder="yourname@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="input w-full pl-11 pr-4 py-2.5 h-12 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200 relative z-0"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Password Input */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                    <svg
+                      className="w-5 h-5 text-gray-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="input w-full pl-11 pr-4 py-2.5 h-12 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200 relative z-0"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Remember & Forgot */}
+              <div className="flex items-center justify-between pt-1">
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-sm border-2 border-gray-300 checked:border-indigo-600 [--chkbg:theme(colors.indigo.600)] [--chkfg:white]"
+                  />
+                  <span className="text-sm text-gray-700 group-hover:text-gray-900 font-medium">
+                    Remember me
+                  </span>
+                </label>
+                <a
+                  href="#"
+                  className="text-sm font-semibold text-indigo-600 hover:text-purple-600 transition-colors"
+                >
+                  Forgot Password?
+                </a>
+              </div>
+
+              {/* Sign In Button */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="btn w-full h-12 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.01]"
+              >
+                {isLoading ? (
+                  <span className="loading loading-spinner loading-sm"></span>
+                ) : (
+                  "Sign In"
+                )}
+              </button>
+            </form>
+
+            {/* Divider */}
+            <div className="flex items-center my-5 animate-slideUp delay-200">
+              <div className="flex-1 border-t border-gray-300"></div>
+              <span className="px-3 text-xs text-gray-500 font-medium">or</span>
+              <div className="flex-1 border-t border-gray-300"></div>
+            </div>
+
+            {/* Google Button */}
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="btn w-full h-12 bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 rounded-lg font-medium text-gray-700 shadow-sm hover:shadow-md transition-all duration-200 animate-slideUp delay-200"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                />
+              </svg>
+              Sign in with Google
+            </button>
+
+            {/* Sign Up Link */}
+            <p className="text-center mt-4 text-sm text-gray-600">
+              Don't have an account?{" "}
+              <Link
+                to="/register"
+                className="font-semibold text-indigo-600 hover:text-purple-600 transition-colors"
+              >
+                Sign Up
+              </Link>
+            </p>
+
+            {/* Back to Home */}
+            <div className="mt-5 pt-5 border-t border-gray-200">
+              <button
+                onClick={goToLandingPage}
+                className="w-full flex items-center justify-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors py-1 group"
+              >
+                <svg
+                  className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
+                </svg>
+                <span className="text-sm font-medium">Back to Home</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Welcome */}
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
-          Holla,
-          <br />
-          Welcome Back
-        </h1>
-        <p className="text-gray-500 mb-8">
-          Hey, welcome back to your special place
-        </p>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="input w-full bg-white text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-100 rounded-lg pl-3"
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="input w-full bg-white text-gray-900 placeholder-gray-400 border border-gray-200 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-100 rounded-lg pl-3"
-            required
-          />
-
-          {/* Remember me + Forgot Password */}
-          <div className="flex items-center justify-between text-sm">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                className="checkbox checkbox-sm checkbox-primary"
-              />
-              <span className="text-gray-600">Remember me</span>
-            </label>
-            <a href="#" className="text-indigo-600 font-medium hover:underline">
-              Forgot Password?
-            </a>
+        {/* RIGHT: IMAGE SECTION */}
+        <div className="hidden md:flex md:w-1/2 relative bg-gradient-to-br from-indigo-50 to-purple-50 items-center justify-center animate-slideRight">
+          {/* Home Button */}
+          <div className="absolute top-8 right-8 z-20 animate-slideDown">
+            <button
+              onClick={goToLandingPage}
+              className="glass-card px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group flex items-center gap-2"
+            >
+              <svg
+                className="w-4 h-4 text-gray-700 transform group-hover:-translate-x-1 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+              <span className="font-semibold text-gray-700 group-hover:text-indigo-600 transition-colors">
+                Home
+              </span>
+            </button>
           </div>
 
-          {/* Sign In Button */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="btn bg-indigo-600 hover:bg-indigo-700 text-white border-0 w-full shadow-md hover:shadow-lg transition-shadow duration-200"
-          >
-            {isLoading ? (
-              <span className="loading loading-spinner loading-sm"></span>
-            ) : (
-              "Sign In"
-            )}
-          </button>
-        </form>
-
-        {/* Divider */}
-        <div className="my-6 flex items-center">
-          <div className="flex-1 border-t border-gray-200"></div>
-          <span className="px-4 text-gray-400 text-sm">or</span>
-          <div className="flex-1 border-t border-gray-200"></div>
-        </div>
-
-        {/* Google Login Button */}
-        <button
-          type="button"
-          onClick={handleGoogleLogin}
-          className="btn btn-outline w-full flex items-center justify-center gap-2 border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-        >
-          <svg className="w-5 h-5" viewBox="0 0 24 24">
-            <path
-              fill="#4285F4"
-              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+          {/* Image Container */}
+          <div className="relative w-4/5 h-4/5 rounded-3xl overflow-hidden shadow-2xl animate-float">
+            <img
+              src={loginImage}
+              alt="Login visual"
+              className="w-full h-full object-cover"
             />
-            <path
-              fill="#34A853"
-              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-            />
-            <path
-              fill="#FBBC05"
-              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-            />
-            <path
-              fill="#EA4335"
-              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-            />
-          </svg>
-          <span>Sign in with Google</span>
-        </button>
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-purple-600/10"></div>
+          </div>
 
-        {/* Sign Up Link */}
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
-            Don't have an account?{" "}
-            <Link
-              to="/register"
-              className="text-indigo-600 font-medium hover:underline"
-            >
-              Sign Up
-            </Link>
-          </p>
-        </div>
-
-        {/* Alternative back button at the bottom */}
-        <div className="mt-8 pt-6 border-t border-gray-100">
-          <button
-            onClick={goToLandingPage}
-            className="w-full flex items-center justify-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors duration-200 group"
-          >
-            <svg
-              className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform duration-200"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
-            </svg>
-            <span className="text-sm">Return to Landing Page</span>
-          </button>
+          {/* Quote Card */}
+          <div className="absolute bottom-12 left-12 right-12 glass-card p-6 rounded-2xl shadow-xl animate-slideUp delay-300">
+            <p className="text-gray-800 text-lg font-semibold mb-2">
+              "Your journey to productivity starts here"
+            </p>
+            <p className="text-gray-600 text-sm font-medium">— Synapse Team</p>
+          </div>
         </div>
       </div>
-
-      {/* RIGHT: IMAGE */}
-      <div className="hidden md:block w-1/2 relative">
-        <img
-          src={loginImage}
-          alt="Login background"
-          className="w-full h-full object-cover"
-        />
-        {/* Overlay with back button for image side */}
-        <div className="absolute top-6 left-6">
-          <button
-            onClick={goToLandingPage}
-            className="flex items-center gap-2 bg-white/90 backdrop-blur-sm text-gray-700 hover:text-indigo-600 px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group"
-          >
-            <svg
-              className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform duration-200"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
-            </svg>
-            <span className="text-sm font-medium">Home</span>
-          </button>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }

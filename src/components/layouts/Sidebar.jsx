@@ -48,7 +48,7 @@ export default function Sidebar() {
 
         {/* Menu */}
         <nav className="flex flex-col gap-1 text-gray-700">
-          <SidebarItem icon={<Home size={18} />} label="Dashboard" to="/" />
+          <SidebarItem icon={<Home size={18} />} label="Dashboard" to="/dashboard" />
           <SidebarItem icon={<Search size={18} />} label="Search" to="/search" />
 
           <div className="mt-4">
@@ -102,12 +102,12 @@ export default function Sidebar() {
             
             {/* LOGOUT */}
             <button
-              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-100"
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm font-semibold text-red-700 rounded-lg hover:bg-gray-100"
               onClick={logout}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4 text-gray-700"
+                className="w-4 h-4 font-semibold text-red-700"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

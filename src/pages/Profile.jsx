@@ -2,6 +2,7 @@ import { useEffect, useState, useContext, useCallback, useRef } from "react";
 import axiosClient from "../utils/axiosClient";
 import { Camera, User, Phone, MessageCircle, ArrowLeft, X, Check, ZoomIn, ZoomOut, CheckCircle, XCircle, Eye, EyeOff, Lock, KeyRound, ShieldCheck } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
+import Layout from "../components/layouts/Layout";
 
 export default function Profile() {
   const { refreshUser } = useContext(AuthContext);
@@ -186,15 +187,18 @@ export default function Profile() {
 
   if (loading)
     return (
+      <Layout>
       <div className="flex items-center justify-center h-screen bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
+      </Layout>
     );
 
   return (
+    <Layout>
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       {/* Toast Notification */}
       {toast && (
@@ -278,11 +282,13 @@ export default function Profile() {
                   </div>
                   <span>{form.phone_number || "No phone number"}</span>
                 </div>
-                <div className="flex items-start gap-3 text-gray-600 text-sm">
+                <div className="flex items-center gap-3 text-gray-600 text-sm">
                   <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
                     <MessageCircle size={16} className="text-purple-600" />
                   </div>
-                  <span className="flex-1 leading-relaxed">{form.bio || "No bio yet"}</span>
+                  <span className="flex-1 leading-relaxed line-clamp-3 max-w-[240px]">
+                    {form.bio || "No bio yet"}
+                  </span>
                 </div>
               </div>
             </div>
@@ -463,6 +469,7 @@ export default function Profile() {
         }
       `}</style>
     </div>
+    </Layout>
   );
 }
 
@@ -529,6 +536,10 @@ function PasswordSettings({ hasPassword, showToast }) {
       showToast('error', 'New password must be at least 8 characters!');
       return;
     }
+
+    if (!window.confirm("Are you sure you want to change your password?")) {
+    return;
+  }
 
     setLoading(true);
     try {
@@ -780,19 +791,34 @@ function SimpleCropper({ image, crop, zoom, onCropChange, onZoomChange, onCropCo
     e.currentTarget.setPointerCapture(e.pointerId);
   };
 
-  const handlePointerMove = (e) => {
-    if (!isDraggingRef.current) return;
-    
-    const deltaX = e.clientX - lastPosRef.current.x;
-    const deltaY = e.clientY - lastPosRef.current.y;
-    
-    lastPosRef.current = { x: e.clientX, y: e.clientY };
-    
-    onCropChange({
-      x: crop.x + deltaX,
-      y: crop.y + deltaY
-    });
-  };
+const handlePointerMove = (e) => {
+  if (!isDraggingRef.current || !imageSize.width) return;
+
+  const deltaX = e.clientX - lastPosRef.current.x;
+  const deltaY = e.clientY - lastPosRef.current.y;
+  lastPosRef.current = { x: e.clientX, y: e.clientY };
+
+  const cropSize = 400;
+  const maxMoveX = (imageSize.width * zoom - cropSize) / 2;
+  const maxMoveY = (imageSize.height * zoom - cropSize) / 2;
+
+  let newX = crop.x + deltaX;
+  let newY = crop.y + deltaY;
+
+  if (newX > maxMoveX) {
+    newX = maxMoveX;
+  } else if (newX < -maxMoveX) {
+    newX = -maxMoveX;
+  }
+
+  if (newY > maxMoveY) {
+    newY = maxMoveY;
+  } else if (newY < -maxMoveY) {
+    newY = -maxMoveY;
+  }
+
+  onCropChange({ x: newX, y: newY });
+};
 
   const handlePointerUp = (e) => {
     isDraggingRef.current = false;

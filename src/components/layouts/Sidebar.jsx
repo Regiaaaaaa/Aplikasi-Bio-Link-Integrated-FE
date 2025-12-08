@@ -1,12 +1,14 @@
 import {
   Home, Search, Bell, Mail, Inbox,
-  ClipboardList, Settings, HelpCircle, FileText
+  ClipboardList, Settings, HelpCircle, FileText, Users,
+  UserCircle
 } from "lucide-react";
 import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { Link } from "react-router-dom";
 
 import icon2 from "../../assets/icon2.png";
+import Profile from "../../pages/Profile";
 
 export default function Sidebar() {
   const { user, logout } = useContext(AuthContext);
@@ -66,6 +68,7 @@ export default function Sidebar() {
             <SidebarItem icon={<FileText size={18} />} label="Documentation" to="/docs" />
             <SidebarItem icon={<HelpCircle size={18} />} label="Support" to="/support" />
             <SidebarItem icon={<Settings size={18} />} label="Settings" to="/settings" />
+            <SidebarItem icon={<UserCircle size={18} />} label="Profile" to="/profile" />
           </div>
         </nav>
       </div>
@@ -96,28 +99,7 @@ export default function Sidebar() {
         {open && (
           <div className="absolute bottom-16 left-4 w-44 bg-white border shadow-lg rounded-xl p-2 z-50">
 
-            {/* PROFILE LINK */}
-            <Link
-              to="/profile"
-              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-100"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5.121 17.804A4 4 0 018 16h8a4 4 0 012.879 1.804M12 12a4 4 0 100-8 4 4 0 000 8z"
-                />
-              </svg>
-              Profile
-            </Link>
-
+            
             {/* LOGOUT */}
             <button
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-100"

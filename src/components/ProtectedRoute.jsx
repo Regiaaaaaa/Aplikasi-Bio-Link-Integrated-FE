@@ -15,5 +15,14 @@ export default function ProtectedRoute({ children }) {
 
   if (!user) return <Navigate to="/login" replace />;
 
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Redirect admin ke /admin (admin tidak bisa akses dashboard user)
+  if (user.role === "admin") {
+    return <Navigate to="/admin" replace />;
+  }
+
   return children;
 }

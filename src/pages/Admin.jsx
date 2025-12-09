@@ -13,6 +13,7 @@ import {
   User,
   Hash,
   Calendar,
+  Clock,
 } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import Layout from "../components/layouts/Layout";
@@ -146,6 +147,33 @@ export default function AdminDashboard() {
     });
   };
 
+  const formatDateShort = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const getRelativeTime = (dateString) => {
+    if (!dateString) return "Never";
+    const date = new Date(dateString);
+    const now = new Date();
+    const diff = now - date;
+
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    if (minutes < 1) return "Just now";
+    if (minutes < 60) return `${minutes}m ago`;
+    if (hours < 24) return `${hours}h ago`;
+    if (days < 7) return `${days}d ago`;
+    return formatDateShort(dateString);
+  };
+
   // Filter users based on search
   const filteredUsers = users.filter(
     (u) =>
@@ -267,9 +295,19 @@ export default function AdminDashboard() {
                 <div className="flex items-center gap-3">
                   <Calendar className="w-5 h-5 text-gray-400" />
                   <div>
-                    <p className="text-xs text-gray-500">Created At</p>
+                    <p className="text-xs text-gray-500">Joined</p>
                     <p className="text-sm font-medium text-gray-900">
                       {formatDate(selectedUser.created_at)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Clock className="w-5 h-5 text-gray-400" />
+                  <div>
+                    <p className="text-xs text-gray-500">Last Active</p>
+                    <p className="text-sm font-medium text-gray-900">
+                      {formatDate(selectedUser.last_active)}
                     </p>
                   </div>
                 </div>
@@ -323,7 +361,7 @@ export default function AdminDashboard() {
       )}
 
       {/* CONTENT */}
-      <div className="max-w-5xl mx-auto mt-6 px-6">
+      <div className="max-w-7xl mx-auto mt-6 px-6">
         {/* Welcome Section */}
         <div className="bg-white shadow-lg rounded-2xl p-8 mb-6">
           <div className="flex items-center justify-between">
@@ -430,6 +468,12 @@ export default function AdminDashboard() {
                       Email
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Joined
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Last Active
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Role
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -474,6 +518,20 @@ export default function AdminDashboard() {
                       {/* Email */}
                       <td className="px-6 py-4 whitespace-nowrap">
                         <p className="text-sm text-gray-900">{u.email}</p>
+                      </td>
+
+                      {/* Joined */}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <p className="text-sm text-gray-900">
+                          {formatDateShort(u.created_at)}
+                        </p>
+                      </td>
+
+                      {/* Last Active */}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <p className="text-sm text-gray-600">
+                          {getRelativeTime(u.last_active)}
+                        </p>
                       </td>
 
                       {/* Role */}

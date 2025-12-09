@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
-export default function AdminRoute({ children }) {
+export default function UserRoute({ children }) {
   const { user, loading } = useContext(AuthContext);
 
   if (loading) {
@@ -16,8 +16,9 @@ export default function AdminRoute({ children }) {
 
   if (!user) return <Navigate to="/login" replace />;
 
-  if (user.role !== "admin") {
-    return <Navigate to="/dashboard" replace />;
+  // hanya user biasa
+  if (user.role !== "user") {
+    return <Navigate to="/admin" replace />;
   }
 
   return children;

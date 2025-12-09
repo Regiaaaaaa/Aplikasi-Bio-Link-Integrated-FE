@@ -7,22 +7,14 @@ export default function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-white">
-        <span className="loading loading-spinner text-indigo-600"></span>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+        <div className="animate-spin rounded-full h-14 w-14 border-t-4 border-indigo-600"></div>
+        <p className="mt-4 text-gray-600 font-medium">Loading...</p>
       </div>
     );
   }
 
   if (!user) return <Navigate to="/login" replace />;
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  // Redirect admin ke /admin (admin tidak bisa akses dashboard user)
-  if (user.role === "admin") {
-    return <Navigate to="/admin" replace />;
-  }
 
   return children;
 }

@@ -7,6 +7,7 @@ import GoogleCallback from "./pages/GoogleCallback";
 import AdminDashboard from "./pages/Admin";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import UserRoute from "./components/UserRoute";
 import AdminRoute from "./components/AdminRoute";
 import { AuthProvider } from "./context/AuthContext";
 import LandingPage from "./pages/LandingPage";
@@ -18,26 +19,24 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public routes */}
+          {/* Public */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-
-          {/* Google OAuth */}
           <Route path="/google/callback" element={<GoogleCallback />} />
 
-          {/* Dashboard (protected) */}
+          {/* User-only */}
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute>
+              <UserRoute>
                 <Dashboard />
-              </ProtectedRoute>
+              </UserRoute>
             }
           />
 
-          {/* Profile (protected) */}
+          {/* Shared (user & admin) */}
           <Route
             path="/profile"
             element={
@@ -47,7 +46,7 @@ export default function App() {
             }
           />
 
-          {/* Admin Dashboard (admin only) */}
+          {/* Admin-only */}
           <Route
             path="/admin"
             element={

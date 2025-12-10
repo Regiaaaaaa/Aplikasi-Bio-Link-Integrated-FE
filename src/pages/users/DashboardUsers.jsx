@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext";
-import Layout from "../components/layouts/Layout";
+import { AuthContext } from "../../context/AuthContext";
+import Layout from "../../components/layouts/Layout";
 
 export default function Dashboard() {
   const { user } = useContext(AuthContext);

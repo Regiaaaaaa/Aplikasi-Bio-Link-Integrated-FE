@@ -1,7 +1,7 @@
 import { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
-import axiosClient from "../utils/axiosClient";
+import { AuthContext } from "../../context/AuthContext";
+import axiosClient from "../../utils/axiosClient";
 
 export default function GoogleCallback() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export default function GoogleCallback() {
     }
 
     console.log("Token found:", token);
-    
+
     localStorage.setItem("token", token);
 
     // Set axios header
@@ -30,7 +30,7 @@ export default function GoogleCallback() {
       .then(({ data }) => {
         console.log("User data:", data);
         setUser(data.user);
-      
+
         navigate("/dashboard", { replace: true });
       })
       .catch((err) => {
@@ -38,7 +38,7 @@ export default function GoogleCallback() {
         localStorage.removeItem("token");
         navigate("/login", { replace: true });
       });
-  }, [navigate, setUser]); 
+  }, [navigate, setUser]);
 
   return (
     <div className="h-screen w-screen flex items-center justify-center bg-white">

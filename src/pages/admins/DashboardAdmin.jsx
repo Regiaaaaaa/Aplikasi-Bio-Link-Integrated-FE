@@ -15,8 +15,8 @@ import {
   Calendar,
   Clock,
 } from "lucide-react";
-import { AuthContext } from "../context/AuthContext";
-import Layout from "../components/layouts/Layout";
+import { AuthContext } from "../../context/AuthContext";
+import Layout from "../../components/layouts/Layout";
 
 export default function AdminDashboard() {
   const { user } = useContext(AuthContext);

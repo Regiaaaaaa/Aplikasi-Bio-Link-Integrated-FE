@@ -1,59 +1,49 @@
 import { useState, useContext, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext";
-import axiosClient from "../utils/axiosClient";
+import { AuthContext } from "../../context/AuthContext";
+import axiosClient from "../../utils/axiosClient";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import loginImage from "../assets/img4.jpg";
-import icon2 from "../assets/icon2.png";
+import registerImage from "../../assets/img5.png";
+import icon2 from "../../assets/icon2.png";
 
-export default function Login() {
+export default function Register() {
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+
   const { user, setUser, loading } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (!loading && user && location.pathname !== "/google/callback") {
+    if (!loading && user && location.pathname === "/register") {
       navigate("/dashboard", { replace: true });
     }
-  }, [loading, user, navigate, location]);
+  }, [loading, user, navigate, location.pathname]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
     try {
-      const { data } = await axiosClient.post("/login", { email, password });
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("justLoggedIn", "true");
-      setUser(data.user);
-      axiosClient.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${data.token}`;
-
-      // Show success modal first
+      await axiosClient.post("/register", {
+        name,
+        username,
+        email,
+        password,
+      });
       setShowSuccessModal(true);
-
-      // Redirect after 2 seconds
-      setTimeout(() => {
-        navigate("/dashboard", { replace: true });
-      }, 2000);
     } catch (err) {
       console.error(err);
-      setErrorMessage(
-        err.response?.data?.message ||
-          "Login failed. Please check your email and password!"
-      );
-      setShowErrorModal(true);
+      alert("Register gagal. " + (err.response?.data?.message || "Coba lagi!"));
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleSignup = () => {
     window.location.href = "http://localhost:8000/api/auth/google/redirect";
   };
 
@@ -72,159 +62,40 @@ export default function Login() {
     );
   }
 
-  if (user) {
-    navigate("/dashboard", { replace: true });
-    return null;
-  }
-
   return (
     <>
       <style>{`
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
-
         @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-
-        @keyframes slideRight {
-          from {
-            opacity: 0;
-            transform: translateX(50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
+        @keyframes slideLeft {
+          from { opacity: 0; transform: translateX(-30px); }
+          to { opacity: 1; transform: translateX(0); }
         }
-
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-20px) rotate(5deg);
-          }
-        }
-
-        @keyframes pulse {
-          0%, 100% {
-            transform: scale(1);
-            opacity: 1;
-          }
-          50% {
-            transform: scale(1.1);
-            opacity: 0.8;
-          }
-        }
-
         @keyframes scaleIn {
           from { opacity: 0; transform: scale(0.9); }
           to { opacity: 1; transform: scale(1); }
         }
-
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-10px); }
-          75% { transform: translateX(10px); }
+        @keyframes checkmark {
+          0% { stroke-dashoffset: 100; }
+          100% { stroke-dashoffset: 0; }
         }
-
-        .animate-fadeIn {
-          animation: fadeIn 0.8s ease-out;
-        }
-
-        .animate-slideDown {
-          animation: slideDown 0.7s ease-out;
-        }
-
-        .animate-slideUp {
-          animation: slideUp 0.7s ease-out;
-        }
-
-        .animate-slideRight {
-          animation: slideRight 0.9s ease-out;
-        }
-
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-
-        .animate-pulse-custom {
-          animation: pulse 3s ease-in-out infinite;
-        }
-
-        .animate-scaleIn {
-          animation: scaleIn 0.4s ease-out;
-        }
-
-        .animate-shake {
-          animation: shake 0.5s ease-out;
-        }
-
-        .delay-100 {
-          animation-delay: 0.1s;
-        }
-
-        .delay-200 {
-          animation-delay: 0.2s;
-        }
-
-        .delay-300 {
-          animation-delay: 0.3s;
-        }
-
-        .delay-400 {
-          animation-delay: 0.4s;
-        }
-
-        .glass-card {
-          background: rgba(255, 255, 255, 0.95);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .input-focus-effect {
-          transition: all 0.3s ease;
-        }
-
-        .input-focus-effect:focus {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.2);
-        }
-
-        .btn-gradient-animated {
-          background-size: 200% auto;
-          transition: all 0.3s ease;
-        }
-
-        .btn-gradient-animated:hover {
-          background-position: right center;
-        }
+        .animate-fadeIn { animation: fadeIn 0.6s ease-out; }
+        .animate-slideDown { animation: slideDown 0.6s ease-out; }
+        .animate-slideUp { animation: slideUp 0.6s ease-out; }
+        .animate-slideLeft { animation: slideLeft 0.8s ease-out; }
+        .animate-scaleIn { animation: scaleIn 0.4s ease-out; }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
       `}</style>
 
       {/* Success Modal */}
@@ -245,93 +116,39 @@ export default function Login() {
                     strokeLinejoin="round"
                     strokeWidth={3}
                     d="M5 13l4 4L19 7"
+                    style={{
+                      strokeDasharray: 100,
+                      animation: "checkmark 0.6s ease-out forwards",
+                    }}
                   />
                 </svg>
               </div>
 
               {/* Success Message */}
               <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                Login Successful!
+                Registration Successful!
               </h3>
               <p className="text-gray-600 mb-6">
-                Welcome back! Redirecting to dashboard...
+                Your account has been created successfully. You can now login to
+                your account.
               </p>
-
-              {/* Loading Indicator */}
-              <div className="flex items-center gap-2 text-indigo-600">
-                <span className="loading loading-spinner loading-sm"></span>
-                <span className="text-sm font-medium">Redirecting...</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showErrorModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-2xl p-8 max-w-sm mx-4 shadow-2xl animate-scaleIn">
-            <div className="flex flex-col items-center text-center">
-              {/* Error Icon */}
-              <div className="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mb-4 animate-shake">
-                <svg
-                  className="w-8 h-8 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={3}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </div>
-
-              {/* Error Message */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                Login Failed
-              </h3>
-              <p className="text-gray-600 mb-4">{errorMessage}</p>
-
-              {/* Kontak Admin jika akun non-aktif */}
-              {errorMessage.includes("Pelanggaran") && (
-                <p className="text-sm text-gray-500 mb-4">
-                  Silahkan hubungi admin:{" "}
-                  <a
-                    href="mailto:synapsebioapp@gmail.com"
-                    className="text-red-600 underline"
-                  >
-                    synapsebioapp@gmail.com
-                  </a>
-                </p>
-              )}
 
               {/* Button */}
               <button
-                onClick={() => setShowErrorModal(false)}
-                className="btn w-full h-12 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200"
+                onClick={() => navigate("/login", { replace: true })}
+                className="btn w-full h-12 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200"
               >
-                Try Again
+                Go to Login
               </button>
             </div>
           </div>
         </div>
       )}
 
-      <div className="h-screen w-screen overflow-hidden flex flex-col md:flex-row bg-white">
-        {/* Decorative Elements */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-          <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-indigo-200 to-purple-200 rounded-full opacity-30 blur-3xl animate-float"></div>
-          <div
-            className="absolute -bottom-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full opacity-30 blur-3xl animate-float"
-            style={{ animationDelay: "2s" }}
-          ></div>
-        </div>
-
-        {/* LEFT: LOGIN FORM */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center px-8 md:px-16 lg:px-24 py-12 relative z-10 animate-fadeIn overflow-y-auto">
-          <div className="max-w-md w-full mx-auto my-auto">
+      <div className="h-screen w-screen overflow-hidden flex flex-row-reverse bg-white">
+        {/* LEFT: FORM */}
+        <div className="w-full lg:w-1/2 flex items-center justify-center px-6 md:px-12 lg:px-20 py-6 relative z-10 animate-fadeIn overflow-y-auto">
+          <div className="max-w-md w-full">
             {/* Brand Logo */}
             <div className="mb-6 animate-slideDown">
               <div className="flex items-center gap-2">
@@ -344,16 +161,10 @@ export default function Login() {
 
             {/* Welcome Text */}
             <div className="mb-6 animate-slideUp">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">
-                Holla,
-                <br />
-                <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  Welcome Back
-                </span>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                Create Account
               </h1>
-              <p className="text-gray-600">
-                Hey, welcome back to your special place
-              </p>
+              <p className="text-gray-600">Sign up to get started</p>
             </div>
 
             {/* Form */}
@@ -361,7 +172,75 @@ export default function Login() {
               onSubmit={handleSubmit}
               className="space-y-4 animate-slideUp delay-100"
             >
-              {/* Email Input */}
+              {/* Full Name */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                    <svg
+                      className="w-5 h-5 text-gray-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    name="name"
+                    autoComplete="name"
+                    placeholder="John Doe"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="input w-full pl-11 pr-4 py-2.5 h-12 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Username */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Username
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                    <svg
+                      className="w-5 h-5 text-gray-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    name="username"
+                    autoComplete="username"
+                    placeholder="johndoe"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="input w-full pl-11 pr-4 py-2.5 h-12 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Email */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                   Email
@@ -389,13 +268,13 @@ export default function Login() {
                     placeholder="yourname@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="input w-full pl-11 pr-4 py-2.5 h-12 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200 relative z-0"
+                    className="input w-full pl-11 pr-4 py-2.5 h-12 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
                     required
                   />
                 </div>
               </div>
 
-              {/* Password Input */}
+              {/* Password */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                   Password
@@ -418,35 +297,16 @@ export default function Login() {
                   </div>
                   <input
                     type="password"
-                    placeholder="Enter your password"
+                    placeholder="Create a strong password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="input w-full pl-11 pr-4 py-2.5 h-12 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200 relative z-0"
+                    className="input w-full pl-11 pr-4 py-2.5 h-12 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
                     required
                   />
                 </div>
               </div>
 
-              {/* Remember & Forgot */}
-              <div className="flex items-center justify-between pt-1">
-                <label className="flex items-center gap-2 cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    className="checkbox checkbox-sm border-2 border-gray-300 checked:border-indigo-600 [--chkbg:theme(colors.indigo.600)] [--chkfg:white]"
-                  />
-                  <span className="text-sm text-gray-700 group-hover:text-gray-900 font-medium">
-                    Remember me
-                  </span>
-                </label>
-                <Link
-                  to="/forgot-password"
-                  className="text-sm font-semibold text-indigo-600 hover:text-purple-600 transition-colors"
-                >
-                  Forgot Password?
-                </Link>
-              </div>
-
-              {/* Sign In Button */}
+              {/* Sign Up Button */}
               <button
                 type="submit"
                 disabled={isLoading}
@@ -455,7 +315,7 @@ export default function Login() {
                 {isLoading ? (
                   <span className="loading loading-spinner loading-sm"></span>
                 ) : (
-                  "Sign In"
+                  "Sign Up"
                 )}
               </button>
             </form>
@@ -470,7 +330,7 @@ export default function Login() {
             {/* Google Button */}
             <button
               type="button"
-              onClick={handleGoogleLogin}
+              onClick={handleGoogleSignup}
               className="btn w-full h-12 bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 rounded-lg font-medium text-gray-700 shadow-sm hover:shadow-md transition-all duration-200 animate-slideUp delay-200"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -491,17 +351,35 @@ export default function Login() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              Sign in with Google
+              Sign up with Google
             </button>
 
-            {/* Sign Up Link */}
+            {/* Terms */}
+            <p className="mt-4 text-xs text-center text-gray-500">
+              By signing up, you agree to our{" "}
+              <a
+                href="#"
+                className="text-indigo-600 hover:text-purple-600 font-medium"
+              >
+                Terms
+              </a>{" "}
+              and{" "}
+              <a
+                href="#"
+                className="text-indigo-600 hover:text-purple-600 font-medium"
+              >
+                Privacy Policy
+              </a>
+            </p>
+
+            {/* Login Link */}
             <p className="text-center mt-4 text-sm text-gray-600">
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <Link
-                to="/register"
+                to="/login"
                 className="font-semibold text-indigo-600 hover:text-purple-600 transition-colors"
               >
-                Sign Up
+                Log in
               </Link>
             </p>
 
@@ -530,13 +408,13 @@ export default function Login() {
           </div>
         </div>
 
-        {/* RIGHT: IMAGE SECTION */}
-        <div className="hidden md:flex md:w-1/2 relative bg-gradient-to-br from-indigo-50 to-purple-50 items-center justify-center animate-slideRight">
+        {/* RIGHT: IMAGE */}
+        <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-indigo-50 to-purple-50 items-center justify-center animate-slideLeft">
           {/* Home Button */}
-          <div className="absolute top-8 right-8 z-20 animate-slideDown">
+          <div className="absolute top-8 left-8 z-20 animate-slideDown">
             <button
               onClick={goToLandingPage}
-              className="glass-card px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group flex items-center gap-2"
+              className="bg-white/95 backdrop-blur-sm px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group flex items-center gap-2 border border-white/20"
             >
               <svg
                 className="w-4 h-4 text-gray-700 transform group-hover:-translate-x-1 transition-transform"
@@ -558,19 +436,19 @@ export default function Login() {
           </div>
 
           {/* Image Container */}
-          <div className="relative w-4/5 h-4/5 rounded-3xl overflow-hidden shadow-2xl animate-float">
+          <div className="relative w-4/5 h-4/5 rounded-3xl overflow-hidden shadow-2xl">
             <img
-              src={loginImage}
-              alt="Login visual"
+              src={registerImage}
+              alt="Register visual"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-purple-600/10"></div>
           </div>
 
           {/* Quote Card */}
-          <div className="absolute bottom-12 left-12 right-12 glass-card p-6 rounded-2xl shadow-xl animate-slideUp delay-300">
+          <div className="absolute bottom-12 left-12 right-12 bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-xl border border-white/20 animate-slideUp delay-200">
             <p className="text-gray-800 text-lg font-semibold mb-2">
-              "Your journey to productivity starts here"
+              "Join thousands of users already boosting their productivity"
             </p>
             <p className="text-gray-600 text-sm font-medium">— Synapse Team</p>
           </div>

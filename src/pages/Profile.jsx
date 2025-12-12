@@ -17,6 +17,19 @@ import {
   Lock,
   KeyRound,
   ShieldCheck,
+  Mail,
+  Globe,
+  Calendar,
+  Edit3,
+  Save,
+  Upload,
+  Trash2,
+  AlertCircle,
+  Info,
+  Shield,
+  AlertTriangle,
+  LogOut,
+  Bell,
 } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import Layout from "../components/layouts/Layout";
@@ -29,6 +42,7 @@ export default function Profile() {
     username: "",
     phone_number: "",
     bio: "",
+    email: "",
   });
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
@@ -41,6 +55,8 @@ export default function Profile() {
   const [toast, setToast] = useState(null);
   const [hasPassword, setHasPassword] = useState(false);
   const [isBioExpanded, setIsBioExpanded] = useState(false);
+  const [activeTab, setActiveTab] = useState("profile");
+  const [showSureModal, setShowSureModal] = useState(false);
 
   useEffect(() => {
     loadProfile();
@@ -61,6 +77,7 @@ export default function Profile() {
         username: user.username || "",
         phone_number: user.phone_number || "",
         bio: user.bio || "",
+        email: user.email || "",
       });
 
       setAvatarPreview(user.avatar_url || "https://i.pravatar.cc/150");
@@ -68,6 +85,34 @@ export default function Profile() {
       setLoading(false);
     } catch (err) {
       console.error(err);
+      showToast("error", "Failed to load profile");
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch("http://127.0.0.1:8000/api/user/profile/delete", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (!res.ok) throw new Error("Failed");
+
+      setShowSureModal(false);
+
+      // opsional: kasih popup success
+      alert("Account deleted successfully");
+
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    } catch (err) {
+      setShowSureModal(false);
+      alert("Failed to delete account");
     }
   };
 
@@ -210,10 +255,13 @@ export default function Profile() {
   if (loading)
     return (
       <Layout>
-        <div className="flex items-center justify-center h-screen bg-gray-50">
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50/30">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading...</p>
+            <div className="relative">
+              <div className="w-16 h-16 border-4 border-indigo-100 rounded-full"></div>
+              <div className="absolute top-0 left-0 w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <p className="mt-4 text-gray-600 font-medium">Loading profile...</p>
           </div>
         </div>
       </Layout>
@@ -221,35 +269,35 @@ export default function Profile() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50/30 p-4 md:p-6">
         {/* Toast Notification */}
         {toast && (
           <div className="fixed top-6 right-6 z-50 animate-slideIn">
             <div
-              className={`flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl border ${
+              className={`flex items-center gap-3 px-5 py-4 rounded-xl shadow-xl backdrop-blur-sm ${
                 toast.type === "success"
-                  ? "bg-white border-green-200"
-                  : "bg-white border-red-200"
+                  ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white"
+                  : "bg-gradient-to-r from-red-500 to-pink-500 text-white"
               }`}
             >
               {toast.type === "success" ? (
-                <div className="flex-shrink-0 w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="text-green-600" size={20} />
+                <div className="flex-shrink-0 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <CheckCircle size={18} />
                 </div>
               ) : (
-                <div className="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                  <XCircle className="text-red-600" size={20} />
+                <div className="flex-shrink-0 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <XCircle size={18} />
                 </div>
               )}
               <div>
-                <p className="font-semibold text-gray-900">
+                <p className="font-semibold">
                   {toast.type === "success" ? "Success!" : "Error!"}
                 </p>
-                <p className="text-sm text-gray-600">{toast.message}</p>
+                <p className="text-sm opacity-90">{toast.message}</p>
               </div>
               <button
                 onClick={() => setToast(null)}
-                className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors ml-2"
+                className="flex-shrink-0 opacity-80 hover:opacity-100 transition-opacity ml-2"
               >
                 <X size={18} />
               </button>
@@ -257,208 +305,437 @@ export default function Profile() {
           </div>
         )}
 
-        <div className="max-w-7xl mx-auto space-y-6">
-          <button
-            onClick={goToDashboard}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
-          >
-            <ArrowLeft size={20} />
-            <span className="font-medium">Back to Dashboard</span>
-          </button>
-
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Profile Settings
-            </h1>
-            <p className="text-gray-600">Manage your account information</p>
+            <button
+              onClick={goToDashboard}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors group mb-6"
+            >
+              <ArrowLeft
+                size={20}
+                className="group-hover:-translate-x-1 transition-transform"
+              />
+              <span className="font-medium">Back to Dashboard</span>
+            </button>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                Profile Settings
+              </h1>
+              <p className="text-gray-600">
+                Manage your personal information and account security
+              </p>
+            </div>
           </div>
 
-           <div className="grid lg:grid-cols-3 gap-6">
+          {/* Main Content Grid */}
+          <div className="grid lg:grid-cols-3 gap-6">
             {/* Left Column - Profile Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 p-8 text-center">
-                <div className="relative inline-block">
-                  <img
-                    src={avatarPreview}
-                    alt="Profile"
-                    className="w-32 h-32 rounded-full object-cover ring-4 ring-white shadow-md mx-auto"
-                  />
-                  <label className="absolute bottom-0 right-0 bg-indigo-600 p-2.5 rounded-full shadow-lg cursor-pointer hover:bg-indigo-700 transition-colors">
-                    <Camera size={18} className="text-white" />
-                    <input
-                      type="file"
-                      className="hidden"
-                      accept="image/*"
-                      onChange={handleFileSelect}
-                    />
-                  </label>
-                </div>
-              </div>
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden sticky top-6">
+                <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-32"></div>
 
-              <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-1 text-center">
-                  {form.name || "Your Name"}
-                </h2>
-                <p className="text-indigo-600 text-center mb-6">
-                  @{form.username || "username"}
-                </p>
-
-              <div className="space-y-4">
-                {/* Phone Number — tetap seperti semula */}
-                <div className="flex items-center gap-3 text-gray-600 text-sm">
-                  <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Phone size={16} className="text-indigo-600" />
-                  </div>
-                  <span>{form.phone_number || "No phone number"}</span>
-                </div>
-                    
-
-                {/* Bio — dengan View All (versi scrollable saat expanded) */}
-                <div
-                  className={`text-gray-600 text-sm ${
-                    isBioExpanded 
-                      ? 'flex flex-col gap-2' 
-                      : 'flex flex-row gap-3'
-                  }`}
-                >
-                  <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <MessageCircle size={16} className="text-purple-600" />
-                  </div>
-                
-                  <div className={isBioExpanded ? "w-full" : "max-w-[240px] flex-1"}>
-                    {/* Container scrollable untuk bio */}
-                    <div
-                      className={`leading-relaxed overflow-hidden ${
-                        !isBioExpanded 
-                          ? 'line-clamp-3' 
-                          : 'max-h-32 overflow-y-auto pr-1' // scrollable vertikal saat expanded
-                      }`}
-                      style={{ 
-                        whiteSpace: isBioExpanded ? 'normal' : 'pre-line' 
-                      }}
-                    >
-                      {form.bio || "No bio yet"}
+                <div className="relative px-6 pb-8">
+                  <div className="absolute -top-16 left-1/2 transform -translate-x-1/2">
+                    <div className="relative group">
+                      <img
+                        src={avatarPreview}
+                        alt="Profile"
+                        className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl"
+                      />
+                      <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <label className="cursor-pointer p-3 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors">
+                          <Camera size={20} className="text-white" />
+                          <input
+                            type="file"
+                            className="hidden"
+                            accept="image/*"
+                            onChange={handleFileSelect}
+                          />
+                        </label>
+                      </div>
                     </div>
-                    
-                    {/* Tombol View all / Show less */}
-                    {form.bio && form.bio.length > 120 && (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setIsBioExpanded(!isBioExpanded);
-                        }}
-                        className="mt-1 text-indigo-600 hover:text-indigo-800 text-xs font-medium"
+                  </div>
+
+                  <div className="pt-20 text-center">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-1">
+                      {form.name || "Your Name"}
+                    </h2>
+                    <p className="text-gray-600 mb-2">
+                      @{form.username || "username"}
+                    </p>
+
+                    {/* Bio Section */}
+                    <div className="mt-4 mb-6">
+                      <div className="flex items-center justify-center gap-2 text-gray-700 mb-2">
+                        <MessageCircle size={16} className="text-purple-500" />
+                        <span className="text-sm font-medium">Bio</span>
+                      </div>
+                      <div
+                        className={`text-gray-600 text-sm leading-relaxed px-4 ${
+                          !isBioExpanded ? "line-clamp-3" : ""
+                        }`}
                       >
-                        {isBioExpanded ? 'Show less' : 'View all'}
-                      </button>
-                    )}
+                        {form.bio || "No bio yet. Tell us about yourself..."}
+                      </div>
+                      {form.bio && form.bio.length > 120 && (
+                        <button
+                          onClick={() => setIsBioExpanded(!isBioExpanded)}
+                          className="mt-2 text-indigo-600 hover:text-indigo-800 text-xs font-medium transition-colors"
+                        >
+                          {isBioExpanded ? "Show less" : "Read more"}
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Contact Info */}
+                    <div className="space-y-3 bg-gray-50 rounded-xl p-4">
+                      <div className="flex items-center gap-3 text-gray-700">
+                        <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Mail size={18} className="text-indigo-600" />
+                        </div>
+                        <div className="text-left">
+                          <div className="text-xs text-gray-500">Email</div>
+                          <div className="text-sm font-medium truncate">
+                            {form.email || "No email"}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 text-gray-700">
+                        <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Phone size={18} className="text-purple-600" />
+                        </div>
+                        <div className="text-left">
+                          <div className="text-xs text-gray-500">Phone</div>
+                          <div className="text-sm font-medium">
+                            {form.phone_number || "Not set"}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-            {/* Right Column - Edit Profile Form */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="px-6 py-5 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Edit Profile
-                </h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  Update your personal information
-                </p>
-              </div>
-
-              <div className="p-6">
-                <div className="space-y-5">
-                  <div>
-                    <label className="flex items-center gap-2 text-gray-700 font-medium mb-2 text-sm">
-                      <User size={16} className="text-gray-400" />
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                      value={form.name}
-                      onChange={(e) =>
-                        setForm({ ...form, name: e.target.value })
-                      }
-                      placeholder="Enter your full name"
-                    />
+            {/* Right Column - Edit Profile & Settings */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Tabs */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <div className="border-b border-gray-200">
+                  <div className="flex overflow-x-auto">
+                    <button
+                      onClick={() => setActiveTab("profile")}
+                      className={`px-8 py-4 font-medium text-sm transition-all flex items-center gap-3 flex-shrink-0 relative ${
+                        activeTab === "profile"
+                          ? "text-indigo-600"
+                          : "text-gray-600 hover:text-gray-900"
+                      }`}
+                    >
+                      <div
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                          activeTab === "profile"
+                            ? "bg-indigo-100 text-indigo-600"
+                            : "bg-gray-100 text-gray-400"
+                        }`}
+                      >
+                        <User size={18} />
+                      </div>
+                      <span>Profile</span>
+                      {activeTab === "profile" && (
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600"></div>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => setActiveTab("security")}
+                      className={`px-8 py-4 font-medium text-sm transition-all flex items-center gap-3 flex-shrink-0 relative ${
+                        activeTab === "security"
+                          ? "text-indigo-600"
+                          : "text-gray-600 hover:text-gray-900"
+                      }`}
+                    >
+                      <div
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                          activeTab === "security"
+                            ? "bg-indigo-100 text-indigo-600"
+                            : "bg-gray-100 text-gray-400"
+                        }`}
+                      >
+                        <Lock size={18} />
+                      </div>
+                      <span>Security</span>
+                      {activeTab === "security" && (
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600"></div>
+                      )}
+                    </button>
                   </div>
+                </div>
 
-                  <div>
-                    <label className="flex items-center gap-2 text-gray-700 font-medium mb-2 text-sm">
-                      <User size={16} className="text-gray-400" />
-                      Username
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                      value={form.username}
-                      onChange={(e) =>
-                        setForm({ ...form, username: e.target.value })
-                      }
-                      placeholder="@username"
-                    />
-                  </div>
+                <div className="p-6">
+                  {activeTab === "profile" && (
+                    <div className="space-y-6">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                          Personal Information
+                        </h3>
+                        <p className="text-sm text-gray-500 mb-6">
+                          Update your personal details and contact information
+                        </p>
+                      </div>
 
-                  <div>
-                    <label className="flex items-center gap-2 text-gray-700 font-medium mb-2 text-sm">
-                      <Phone size={16} className="text-gray-400" />
-                      Phone Number
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                      value={form.phone_number}
-                      onChange={(e) =>
-                        setForm({ ...form, phone_number: e.target.value })
-                      }
-                      placeholder="+62 xxx xxxx xxxx"
-                    />
-                  </div>
+                      <div className="grid md:grid-cols-2 gap-5">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <span className="flex items-center gap-2">
+                              <User size={16} className="text-gray-400" />
+                              Full Name
+                            </span>
+                          </label>
+                          <input
+                            type="text"
+                            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
+                            value={form.name}
+                            onChange={(e) =>
+                              setForm({ ...form, name: e.target.value })
+                            }
+                            placeholder="Enter your full name"
+                          />
+                        </div>
 
-                  <div>
-                    <label className="flex items-center gap-2 text-gray-700 font-medium mb-2 text-sm">
-                      <MessageCircle size={16} className="text-gray-400" />
-                      Bio
-                    </label>
-                    <textarea
-                      className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition min-h-[100px] text-gray-900 placeholder-gray-400 resize-none"
-                      value={form.bio}
-                      onChange={(e) =>
-                        setForm({ ...form, bio: e.target.value })
-                      }
-                      placeholder="Tell us about yourself..."
-                    />
-                  </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <span className="flex items-center gap-2">
+                              @ Username
+                            </span>
+                          </label>
+                          <input
+                            type="text"
+                            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
+                            value={form.username}
+                            onChange={(e) =>
+                              setForm({ ...form, username: e.target.value })
+                            }
+                            placeholder="username"
+                          />
+                        </div>
 
-                  <button
-                    onClick={handleSubmit}
-                    className="w-full py-2.5 px-6 bg-indigo-600 text-white font-medium rounded-lg shadow-sm hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >
-                    Save Changes
-                  </button>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <span className="flex items-center gap-2">
+                              <Mail size={16} className="text-gray-400" />
+                              Email Address
+                            </span>
+                          </label>
+                          <input
+                            type="email"
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
+                            value={form.email}
+                            readOnly
+                          />
+                          <p className="text-xs text-gray-500 mt-2">
+                            Contact admin to change email
+                          </p>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <span className="flex items-center gap-2">
+                              <Phone size={16} className="text-gray-400" />
+                              Phone Number
+                            </span>
+                          </label>
+                          <input
+                            type="text"
+                            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
+                            value={form.phone_number}
+                            onChange={(e) =>
+                              setForm({ ...form, phone_number: e.target.value })
+                            }
+                            placeholder="+1 234 567 8900"
+                          />
+                        </div>
+
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <span className="flex items-center gap-2">
+                              <Edit3 size={16} className="text-gray-400" />
+                              Bio
+                            </span>
+                          </label>
+                          <textarea
+                            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition min-h-[120px] text-gray-900 placeholder-gray-400 resize-none"
+                            value={form.bio}
+                            onChange={(e) =>
+                              setForm({ ...form, bio: e.target.value })
+                            }
+                            placeholder="Tell your story..."
+                          />
+                          <div className="flex items-center justify-between mt-2">
+                            <p className="text-xs text-gray-500">
+                              Brief description for your profile
+                            </p>
+                            <span className="text-xs text-gray-500">
+                              {form.bio.length}/500
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-4 border-t border-gray-200">
+                        <button
+                          onClick={handleSubmit}
+                          className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
+                        >
+                          <Save size={18} />
+                          Save Changes
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === "security" && (
+                    <div className="space-y-8">
+                      {/* Password Settings */}
+                      <div>
+                        <div className="flex items-center gap-3 mb-6">
+                          <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                            <ShieldCheck
+                              size={24}
+                              className="text-indigo-600"
+                            />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900">
+                              Password & Security
+                            </h3>
+                            <p className="text-sm text-gray-500">
+                              Manage your password and account protection
+                            </p>
+                          </div>
+                        </div>
+                        <PasswordSettings
+                          hasPassword={hasPassword}
+                          showToast={showToast}
+                        />
+                      </div>
+
+                      {/* Danger Zone */}
+                      <div className="border-t border-gray-200 pt-8">
+                        <div className="flex items-center gap-3 mb-6">
+                          <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                            <AlertTriangle size={24} className="text-red-600" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900">
+                              Danger Zone
+                            </h3>
+                            <p className="text-sm text-gray-500">
+                              Irreversible actions that affect your account
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-4">
+                          {/* Logout All Devices */}
+                          <div className="bg-red-50 border border-red-100 rounded-xl p-5">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                                  <LogOut size={20} className="text-red-600" />
+                                </div>
+                                <div>
+                                  <h4 className="font-semibold text-gray-900">
+                                    Logout from All Devices
+                                  </h4>
+                                  <p className="text-sm text-gray-600 mt-1">
+                                    Sign out from all other devices except this
+                                    one
+                                  </p>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() =>
+                                  showToast(
+                                    "info",
+                                    "This feature will be implemented soon"
+                                  )
+                                }
+                                className="px-6 py-2.5 border border-red-300 text-red-600 font-medium rounded-lg hover:bg-white transition-colors"
+                              >
+                                Logout All
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Delete Account */}
+                          <div className="bg-red-50 border border-red-100 rounded-xl p-5">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                                  <Trash2 size={20} className="text-red-600" />
+                                </div>
+                                <div>
+                                  <h4 className="font-semibold text-gray-900">
+                                    Delete Account
+                                  </h4>
+                                  <p className="text-sm text-gray-600 mt-1">
+                                    Permanently delete your account and all
+                                    associated data
+                                  </p>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => setShowSureModal(true)}
+                                className="px-6 py-2.5 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
+                              >
+                                Delete Account
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Important Notice */}
+                          <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-4">
+                            <div className="flex items-start gap-3">
+                              <Info
+                                size={20}
+                                className="text-yellow-600 flex-shrink-0 mt-0.5"
+                              />
+                              <div>
+                                <p className="text-sm text-yellow-800 font-medium mb-1">
+                                  Important Notice
+                                </p>
+                                <p className="text-xs text-yellow-700">
+                                  Deleting your account is irreversible. All
+                                  your data, posts, and connections will be
+                                  permanently removed.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-                 {/* Password Settings - Moved Here */}
-              <div className="border-t border-gray-200">
-                <PasswordSettings hasPassword={hasPassword} showToast={showToast}/>
-              </div>
           </div>
         </div>
 
         {/* Image Crop Modal */}
         {showAvatarModal && imageSrc && (
-          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Crop Your Photo
-                </h3>
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full overflow-hidden animate-scaleIn">
+              <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Edit Profile Picture
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Crop and adjust your photo
+                  </p>
+                </div>
                 <button
                   onClick={handleCancelUpload}
                   className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -469,7 +746,7 @@ export default function Profile() {
               </div>
 
               <div className="p-6">
-                <div className="relative w-full h-96 bg-gray-900 rounded-lg overflow-hidden mb-6">
+                <div className="relative w-full h-[400px] bg-gradient-to-br from-gray-900 to-black rounded-xl overflow-hidden mb-6">
                   <SimpleCropper
                     image={imageSrc}
                     crop={crop}
@@ -481,7 +758,7 @@ export default function Profile() {
                 </div>
 
                 <div className="mb-6">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4 mb-3">
                     <ZoomOut size={20} className="text-gray-400" />
                     <input
                       type="range"
@@ -490,19 +767,26 @@ export default function Profile() {
                       step="0.05"
                       value={zoom}
                       onChange={(e) => setZoom(parseFloat(e.target.value))}
-                      className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600"
                     />
                     <ZoomIn size={20} className="text-gray-400" />
                   </div>
-                  <p className="text-sm text-gray-500 text-center mt-2">
-                    Drag to reposition • Slide to zoom
-                  </p>
+                  <div className="flex items-center justify-center gap-6 text-sm text-gray-500">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 border border-white rounded-sm"></div>
+                      <span>Drag to reposition</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-dashed border-white rounded-full"></div>
+                      <span>Slide to zoom</span>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex gap-3">
                   <button
                     onClick={handleCancelUpload}
-                    className="flex-1 py-2.5 px-4 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
+                    className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-all flex items-center justify-center gap-2"
                     disabled={uploading}
                   >
                     <X size={18} />
@@ -510,18 +794,18 @@ export default function Profile() {
                   </button>
                   <button
                     onClick={handleAvatarUpload}
-                    className="flex-1 py-2.5 px-4 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={uploading}
                   >
                     {uploading ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
                         Uploading...
                       </>
                     ) : (
                       <>
-                        <Check size={18} />
-                        Upload
+                        <Upload size={18} />
+                        Update Profile Picture
                       </>
                     )}
                   </button>
@@ -531,31 +815,148 @@ export default function Profile() {
           </div>
         )}
 
+        {/* Delete Account Confirmation Modal */}
+        {showSureModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-scaleIn">
+              <div className="p-6">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <AlertTriangle size={28} className="text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      Delete Your Account?
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                      This action cannot be undone
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-red-50 border border-red-100 rounded-xl p-4 mb-6">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle
+                      size={20}
+                      className="text-red-600 flex-shrink-0 mt-0.5"
+                    />
+                    <div>
+                      <p className="text-sm text-red-800 font-medium mb-1">
+                        Warning: This will permanently delete:
+                      </p>
+                      <ul className="text-xs text-red-700 space-y-1">
+                        <li className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                          Your profile and personal information
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                          All your posts and content
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                          Your connections and followers
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
+                          Account history and activity
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                      <AlertTriangle size={20} className="text-gray-600" />
+                    </div>
+                    <p className="text-sm text-gray-700">
+                      Are you absolutely sure you want to proceed?
+                    </p>
+                  </div>
+
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      onClick={() => setShowSureModal(false)}
+                      className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-all duration-200 border border-gray-300"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleConfirmDelete}
+                      className="flex-1 py-3 px-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
+                    >
+                      <Trash2 size={18} />
+                      Delete Account
+                    </button>
+                  </div>
+
+                  <p className="text-xs text-center text-gray-500 pt-2">
+                    By clicking "Delete Account", you agree to permanently
+                    remove all your data.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <style>{`
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateX(100%);
+          @keyframes slideIn {
+            from {
+              opacity: 0;
+              transform: translateX(100%) translateY(-20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0) translateY(0);
+            }
           }
-          to {
-            opacity: 1;
-            transform: translateX(0);
+          
+          @keyframes scaleIn {
+            from {
+              opacity: 0;
+              transform: scale(0.95);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1);
+            }
           }
-        }
-        .animate-slideIn {
-          animation: slideIn 0.3s ease-out;
-        }
-      `}</style>
+          
+          .animate-slideIn {
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          }
+          
+          .animate-scaleIn {
+            animation: scaleIn 0.2s ease-out;
+          }
+          
+          /* Custom range slider */
+          input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+          }
+        `}</style>
       </div>
     </Layout>
   );
 }
 
-// Password Settings Component (Compact Version)
+// Password Settings Component (Enhanced)
 function PasswordSettings({ hasPassword, showToast }) {
   const [showPasswords, setShowPasswords] = useState({});
   const [loading, setLoading] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false); // 🔹 State untuk modal
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
 
   const [setPasswordForm, setSetPasswordForm] = useState({
     password: "",
@@ -568,6 +969,23 @@ function PasswordSettings({ hasPassword, showToast }) {
     password_confirmation: "",
   });
 
+  const checkPasswordStrength = (password) => {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    return strength;
+  };
+
+  const getStrengthColor = (strength) => {
+    if (strength === 0) return "bg-gray-200";
+    if (strength === 1) return "bg-red-500";
+    if (strength === 2) return "bg-yellow-500";
+    if (strength === 3) return "bg-blue-500";
+    return "bg-green-500";
+  };
+
   const togglePasswordVisibility = (field) => {
     setShowPasswords((prev) => ({
       ...prev,
@@ -575,12 +993,14 @@ function PasswordSettings({ hasPassword, showToast }) {
     }));
   };
 
-  // 🔹 Hanya tampilkan modal
   const handleChangePassword = () => {
+    if (!changePasswordForm.current_password) {
+      showToast("error", "Please enter your current password");
+      return;
+    }
     setShowConfirmModal(true);
   };
 
-  // 🔹 Fungsi sebenarnya untuk mengganti password
   const confirmChangePassword = async () => {
     if (
       changePasswordForm.password !== changePasswordForm.password_confirmation
@@ -651,218 +1071,322 @@ function PasswordSettings({ hasPassword, showToast }) {
   };
 
   return (
-    <div className="p-6 relative">
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-          <Lock size={20} className="text-indigo-600" />
-        </div>
-        <div>
-          <h3 className="text-base font-semibold text-gray-900">
-            {hasPassword ? "Change Password" : "Set Password"}
-          </h3>
-          <p className="text-xs text-gray-500">
-            {hasPassword ? "Update your password" : "Create a password"}
-          </p>
-        </div>
-      </div>
-
+    <div className="space-y-6">
       {!hasPassword ? (
-        <div className="space-y-4">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-            <div className="flex gap-2">
-              <ShieldCheck size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-blue-700">
-                Set a password to enable email login
-              </p>
+        <div className="space-y-5">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-5">
+            <div className="flex items-start gap-3">
+              <AlertCircle
+                size={20}
+                className="text-blue-600 flex-shrink-0 mt-0.5"
+              />
+              <div>
+                <p className="text-sm text-blue-800 font-medium mb-1">
+                  Set a password to enable email login
+                </p>
+                <p className="text-xs text-blue-600">
+                  This will allow you to log in using your email and password
+                </p>
+              </div>
             </div>
           </div>
 
-          <div>
-            <label className="flex items-center gap-2 text-gray-700 font-medium mb-1.5 text-xs">
-              <KeyRound size={14} className="text-gray-400" />
-              New Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPasswords.newPassword ? "text" : "password"}
-                className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                value={setPasswordForm.password}
-                onChange={(e) =>
-                  setSetPasswordForm({ ...setPasswordForm, password: e.target.value })
-                }
-                placeholder="Min. 8 characters"
-              />
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <span className="flex items-center gap-2">
+                  <KeyRound size={16} className="text-gray-400" />
+                  New Password
+                </span>
+              </label>
+              <div className="relative">
+                <input
+                  type={showPasswords.newPassword ? "text" : "password"}
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-11"
+                  value={setPasswordForm.password}
+                  onChange={(e) => {
+                    setSetPasswordForm({
+                      ...setPasswordForm,
+                      password: e.target.value,
+                    });
+                    setPasswordStrength(checkPasswordStrength(e.target.value));
+                  }}
+                  placeholder="Enter a strong password"
+                />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility("newPassword")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
+                >
+                  {showPasswords.newPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
+                </button>
+              </div>
+
+              {/* Password Strength Indicator */}
+              {setPasswordForm.password && (
+                <div className="mt-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs text-gray-500">
+                      Password strength
+                    </span>
+                    <span className="text-xs font-medium text-gray-700">
+                      {passwordStrength === 0 && "Very weak"}
+                      {passwordStrength === 1 && "Weak"}
+                      {passwordStrength === 2 && "Fair"}
+                      {passwordStrength === 3 && "Good"}
+                      {passwordStrength === 4 && "Strong"}
+                    </span>
+                  </div>
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4].map((level) => (
+                      <div
+                        key={level}
+                        className={`h-1 flex-1 rounded-full transition-all ${
+                          level <= passwordStrength
+                            ? getStrengthColor(passwordStrength)
+                            : "bg-gray-200"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <span className="flex items-center gap-2">
+                  <KeyRound size={16} className="text-gray-400" />
+                  Confirm Password
+                </span>
+              </label>
+              <div className="relative">
+                <input
+                  type={showPasswords.confirmPassword ? "text" : "password"}
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-11"
+                  value={setPasswordForm.password_confirmation}
+                  onChange={(e) =>
+                    setSetPasswordForm({
+                      ...setPasswordForm,
+                      password_confirmation: e.target.value,
+                    })
+                  }
+                  placeholder="Re-enter password"
+                />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility("confirmPassword")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
+                >
+                  {showPasswords.confirmPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div className="pt-4">
               <button
-                type="button"
-                onClick={() => togglePasswordVisibility("newPassword")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                onClick={handleSetPassword}
+                disabled={
+                  loading ||
+                  !setPasswordForm.password ||
+                  !setPasswordForm.password_confirmation
+                }
+                className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {showPasswords.newPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                    <span>Setting Password...</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock size={18} />
+                    <span>Set Password</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
-
-          <div>
-            <label className="flex items-center gap-2 text-gray-700 font-medium mb-1.5 text-xs">
-              <KeyRound size={14} className="text-gray-400" />
-              Confirm Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPasswords.confirmPassword ? "text" : "password"}
-                className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                value={setPasswordForm.password_confirmation}
-                onChange={(e) =>
-                  setSetPasswordForm({ ...setPasswordForm, password_confirmation: e.target.value })
-                }
-                placeholder="Re-enter password"
-              />
-              <button
-                type="button"
-                onClick={() => togglePasswordVisibility("confirmPassword")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                {showPasswords.confirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
-
-          <button
-            onClick={handleSetPassword}
-            disabled={loading}
-            className="w-full py-2 px-4 text-sm bg-indigo-600 text-white font-medium rounded-lg shadow-sm hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {loading ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                <span>Setting...</span>
-              </>
-            ) : (
-              <>
-                <Lock size={16} />
-                <span>Set Password</span>
-              </>
-            )}
-          </button>
         </div>
       ) : (
-        <div className="space-y-4">
-          <div>
-            <label className="flex items-center gap-2 text-gray-700 font-medium mb-1.5 text-xs">
-              <Lock size={14} className="text-gray-400" />
-              Current Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPasswords.currentPassword ? "text" : "password"}
-                className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                value={changePasswordForm.current_password}
-                onChange={(e) =>
-                  setChangePasswordForm({ ...changePasswordForm, current_password: e.target.value })
-                }
-                placeholder="Current password"
-              />
+        <div className="space-y-5">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <span className="flex items-center gap-2">
+                  <Lock size={16} className="text-gray-400" />
+                  Current Password
+                </span>
+              </label>
+              <div className="relative">
+                <input
+                  type={showPasswords.currentPassword ? "text" : "password"}
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-11"
+                  value={changePasswordForm.current_password}
+                  onChange={(e) =>
+                    setChangePasswordForm({
+                      ...changePasswordForm,
+                      current_password: e.target.value,
+                    })
+                  }
+                  placeholder="Enter your current password"
+                />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility("currentPassword")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
+                >
+                  {showPasswords.currentPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <span className="flex items-center gap-2">
+                  <KeyRound size={16} className="text-gray-400" />
+                  New Password
+                </span>
+              </label>
+              <div className="relative">
+                <input
+                  type={showPasswords.newPassword ? "text" : "password"}
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-11"
+                  value={changePasswordForm.password}
+                  onChange={(e) =>
+                    setChangePasswordForm({
+                      ...changePasswordForm,
+                      password: e.target.value,
+                    })
+                  }
+                  placeholder="Enter new password"
+                />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility("newPassword")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
+                >
+                  {showPasswords.newPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <span className="flex items-center gap-2">
+                  <KeyRound size={16} className="text-gray-400" />
+                  Confirm New Password
+                </span>
+              </label>
+              <div className="relative">
+                <input
+                  type={showPasswords.confirmNewPassword ? "text" : "password"}
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-11"
+                  value={changePasswordForm.password_confirmation}
+                  onChange={(e) =>
+                    setChangePasswordForm({
+                      ...changePasswordForm,
+                      password_confirmation: e.target.value,
+                    })
+                  }
+                  placeholder="Re-enter new password"
+                />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility("confirmNewPassword")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
+                >
+                  {showPasswords.confirmNewPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div className="pt-2">
               <button
-                type="button"
-                onClick={() => togglePasswordVisibility("currentPassword")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                onClick={handleChangePassword}
+                disabled={loading || !changePasswordForm.current_password}
+                className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {showPasswords.currentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                    <span>Changing Password...</span>
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck size={18} />
+                    <span>Change Password</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
-
-          <div>
-            <label className="flex items-center gap-2 text-gray-700 font-medium mb-1.5 text-xs">
-              <KeyRound size={14} className="text-gray-400" />
-              New Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPasswords.newPassword ? "text" : "password"}
-                className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                value={changePasswordForm.password}
-                onChange={(e) =>
-                  setChangePasswordForm({ ...changePasswordForm, password: e.target.value })
-                }
-                placeholder="Min. 8 characters"
-              />
-              <button
-                type="button"
-                onClick={() => togglePasswordVisibility("newPassword")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                {showPasswords.newPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <label className="flex items-center gap-2 text-gray-700 font-medium mb-1.5 text-xs">
-              <KeyRound size={14} className="text-gray-400" />
-              Confirm New Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPasswords.confirmNewPassword ? "text" : "password"}
-                className="w-full px-3 py-2 pr-10 text-sm bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                value={changePasswordForm.password_confirmation}
-                onChange={(e) =>
-                  setChangePasswordForm({ ...changePasswordForm, password_confirmation: e.target.value })
-                }
-                placeholder="Re-enter new password"
-              />
-              <button
-                type="button"
-                onClick={() => togglePasswordVisibility("confirmNewPassword")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                {showPasswords.confirmNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
-
-          <button
-            onClick={handleChangePassword} // 🔹 Panggil fungsi yang hanya tampilkan modal
-            disabled={loading}
-            className="w-full py-2 px-4 text-sm bg-indigo-600 text-white font-medium rounded-lg shadow-sm hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            {loading ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                <span>Changing...</span>
-              </>
-            ) : (
-              <>
-                <ShieldCheck size={16} />
-                <span>Change Password</span>
-              </>
-            )}
-          </button>
         </div>
       )}
 
-      {/* 🔹 MODAL KONFIRMASI - DITEMPATKAN DI AKHIR, DI DALAM return() */}
+      {/* Confirmation Modal */}
       {showConfirmModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg max-w-sm w-full">
-            <p className="text-gray-800 mb-3">
-              Are you sure you want to change your password?
-            </p>
-            <div className="flex gap-2">
-              <button
-                onClick={confirmChangePassword} // 🔹 Panggil fungsi proses sebenarnya
-                className="flex-1 text-sm bg-indigo-600 text-white px-3 py-1.5 rounded"
-              >
-                Yes
-              </button>
-              <button
-                onClick={() => setShowConfirmModal(false)}
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[99] p-4 animate-scaleIn">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                  <AlertCircle size={24} className="text-indigo-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Change Password
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    Are you sure you want to change your password?
+                  </p>
+                </div>
+              </div>
 
-                className="flex-1 text-sm bg-gray-200 text-gray-800 px-3 py-1.5 rounded"
-              >
-                No
-              </button>
+              <div className="space-y-3">
+                <div className="bg-yellow-50 border border-yellow-100 rounded-lg p-3">
+                  <p className="text-sm text-yellow-800">
+                    You will be logged out from all other devices after changing
+                    your password.
+                  </p>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    onClick={() => setShowConfirmModal(false)}
+                    className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmChangePassword}
+                    className="flex-1 py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-lg hover:shadow-md transition-all flex items-center justify-center gap-2"
+                  >
+                    <Check size={18} />
+                    Confirm Change
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -871,8 +1395,7 @@ function PasswordSettings({ hasPassword, showToast }) {
   );
 }
 
-
-// Simple Cropper Component
+// Simple Cropper Component (Enhanced)
 function SimpleCropper({
   image,
   crop,
@@ -889,11 +1412,13 @@ function SimpleCropper({
   });
   const isDraggingRef = useRef(false);
   const lastPosRef = useRef({ x: 0, y: 0 });
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const img = new Image();
     img.onload = () => {
-      const container = { width: 600, height: 384 };
+      if (!containerRef.current) return;
+      const container = containerRef.current.getBoundingClientRect();
       const scale = Math.min(
         container.width / img.width,
         container.height / img.height
@@ -977,10 +1502,11 @@ function SimpleCropper({
     e.currentTarget.releasePointerCapture(e.pointerId);
   };
 
-  const cropSize = Math.min(384, 600) / zoom;
+  const cropSize = Math.min(400, 600) / zoom;
 
   return (
     <div
+      ref={containerRef}
       className="absolute inset-0 flex items-center justify-center cursor-move select-none touch-none"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -1029,7 +1555,21 @@ function SimpleCropper({
             strokeWidth="2"
             strokeDasharray="5,5"
           />
+          <circle
+            cx="50%"
+            cy="50%"
+            r={cropSize / 2 - 1}
+            fill="none"
+            stroke="rgba(255,255,255,0.3)"
+            strokeWidth="1"
+          />
         </svg>
+
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className="text-white text-xs text-center bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
+            {Math.round(cropSize)}px
+          </div>
+        </div>
       </div>
     </div>
   );

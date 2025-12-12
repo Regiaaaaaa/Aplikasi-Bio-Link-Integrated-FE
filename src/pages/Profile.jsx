@@ -305,7 +305,7 @@ export default function Profile() {
                 </p>
 
               <div className="space-y-4">
-                {/* Phone Number */}
+                {/* Phone Number — tetap seperti semula */}
                 <div className="flex items-center gap-3 text-gray-600 text-sm">
                   <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0">
                     <Phone size={16} className="text-indigo-600" />
@@ -314,7 +314,7 @@ export default function Profile() {
                 </div>
                     
 
-                {/* Bio */}
+                {/* Bio — dengan View All (versi scrollable saat expanded) */}
                 <div
                   className={`text-gray-600 text-sm ${
                     isBioExpanded 
@@ -327,12 +327,12 @@ export default function Profile() {
                   </div>
                 
                   <div className={isBioExpanded ? "w-full" : "max-w-[240px] flex-1"}>
-                    {/* Container scrollable */}
+                    {/* Container scrollable untuk bio */}
                     <div
                       className={`leading-relaxed overflow-hidden ${
                         !isBioExpanded 
                           ? 'line-clamp-3' 
-                          : 'max-h-32 overflow-y-auto pr-1' 
+                          : 'max-h-32 overflow-y-auto pr-1' // scrollable vertikal saat expanded
                       }`}
                       style={{ 
                         whiteSpace: isBioExpanded ? 'normal' : 'pre-line' 
@@ -341,7 +341,7 @@ export default function Profile() {
                       {form.bio || "No bio yet"}
                     </div>
                     
-                    {/* button View all / Show less */}
+                    {/* Tombol View all / Show less */}
                     {form.bio && form.bio.length > 120 && (
                       <button
                         type="button"
@@ -445,7 +445,7 @@ export default function Profile() {
                 </div>
               </div>
             </div>
-                 {/* Password Settings */}
+                 {/* Password Settings - Moved Here */}
               <div className="border-t border-gray-200">
                 <PasswordSettings hasPassword={hasPassword} showToast={showToast}/>
               </div>

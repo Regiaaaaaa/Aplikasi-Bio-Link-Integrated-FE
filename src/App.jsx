@@ -14,6 +14,7 @@ import LandingPage from "./pages/LandingPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Profile from "./pages/Profile";
 
+// Route 
 export default function App() {
   return (
     <AuthProvider>

@@ -5,7 +5,7 @@ import logo from "../assets/icon2.png";
 const LandingPage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
-  const [theme, setTheme] = useState("dark");
+  const [theme, setTheme] = useState("light");
   const [hoveredFeature, setHoveredFeature] = useState(null);
   const navigate = useNavigate();
 

@@ -169,24 +169,24 @@ export default function Sidebar({
           {/* Reporting Section */}
           <div className="mt-6 mb-2">
             <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
-              Reporting
+              Your Area
             </p>
           </div>
           <SidebarItem
             icon={<ClipboardList size={20} />}
-            label="Check-ins"
+            label="My Page"
             to="/checkins"
             onClick={() => handleMenuItemClick("/checkins")}
           />
           <SidebarItem
             icon={<ClipboardList size={20} />}
-            label="Objectives"
+            label="Premium Fitur"
             to="/objectives"
             onClick={() => handleMenuItemClick("/objectives")}
           />
           <SidebarItem
             icon={<ClipboardList size={20} />}
-            label="Career Hub"
+            label="Analystic Hystori"
             to="/career"
             onClick={() => handleMenuItemClick("/career")}
           />

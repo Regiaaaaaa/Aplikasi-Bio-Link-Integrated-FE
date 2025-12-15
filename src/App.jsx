@@ -13,6 +13,7 @@ import { AuthProvider } from "./context/AuthContext";
 import LandingPage from "./pages/LandingPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Profile from "./pages/Profile";
+import SupportPage from "./pages/users/SupportPage";
 
 // Route 
 export default function App() {
@@ -35,6 +36,14 @@ export default function App() {
                 <Dashboard />
               </UserRoute>
             }
+          />
+          <Route
+          path="/support"
+          element={
+          <UserRoute>
+          <SupportPage />
+          </UserRoute>
+          }
           />
 
           {/* Shared (user & admin) */}

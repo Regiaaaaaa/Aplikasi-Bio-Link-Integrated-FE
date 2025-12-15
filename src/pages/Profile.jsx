@@ -256,11 +256,14 @@ export default function Profile() {
     return (
       <Layout>
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50/30">
-          <div className="text-center">
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-indigo-100 rounded-full"></div>
-              <div className="absolute top-0 left-0 w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+          <div className="flex flex-col items-center justify-center text-center">
+            {/* Spinner */}
+            <div className="relative flex items-center justify-center w-16 h-16">
+              <div className="absolute inset-0 border-4 border-indigo-100 rounded-full"></div>
+              <div className="absolute inset-0 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
             </div>
+
+            {/* Text */}
             <p className="mt-4 text-gray-600 font-medium">Loading profile...</p>
           </div>
         </div>

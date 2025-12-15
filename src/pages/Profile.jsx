@@ -30,6 +30,8 @@ import {
   AlertTriangle,
   LogOut,
   Bell,
+  Menu,
+  ChevronDown,
 } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 import Layout from "../components/layouts/Layout";
@@ -57,6 +59,7 @@ export default function Profile() {
   const [isBioExpanded, setIsBioExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
   const [showSureModal, setShowSureModal] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     loadProfile();
@@ -271,7 +274,7 @@ export default function Profile() {
   if (loading)
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50/30">
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50/30 p-4">
           <div className="flex flex-col items-center justify-center text-center">
             {/* Spinner */}
             <div className="relative flex items-center justify-center w-16 h-16">
@@ -288,45 +291,100 @@ export default function Profile() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50/30 p-4 md:p-6">
-        {/* Toast Notification */}
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50/30 p-3 sm:p-4 md:p-6">
+        {/* Toast Notification - Responsive positioning */}
         {toast && (
-          <div className="fixed top-6 right-6 z-50 animate-slideIn">
+          <div className="fixed top-4 right-4 left-4 sm:left-auto sm:right-6 z-50 animate-slideIn max-w-sm mx-auto sm:mx-0">
             <div
-              className={`flex items-center gap-3 px-5 py-4 rounded-xl shadow-xl backdrop-blur-sm ${
+              className={`flex items-center gap-3 px-4 py-3 sm:px-5 sm:py-4 rounded-xl shadow-xl backdrop-blur-sm ${
                 toast.type === "success"
                   ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white"
                   : "bg-gradient-to-r from-red-500 to-pink-500 text-white"
               }`}
             >
               {toast.type === "success" ? (
-                <div className="flex-shrink-0 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                  <CheckCircle size={18} />
+                <div className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <CheckCircle size={14} className="sm:size-[18px]" />
                 </div>
               ) : (
-                <div className="flex-shrink-0 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                  <XCircle size={18} />
+                <div className="flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <XCircle size={14} className="sm:size-[18px]" />
                 </div>
               )}
-              <div>
-                <p className="font-semibold">
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm sm:text-base">
                   {toast.type === "success" ? "Success!" : "Error!"}
                 </p>
-                <p className="text-sm opacity-90">{toast.message}</p>
+                <p className="text-xs sm:text-sm opacity-90 truncate">
+                  {toast.message}
+                </p>
               </div>
               <button
                 onClick={() => setToast(null)}
-                className="flex-shrink-0 opacity-80 hover:opacity-100 transition-opacity ml-2"
+                className="flex-shrink-0 opacity-80 hover:opacity-100 transition-opacity"
               >
-                <X size={18} />
+                <X size={16} className="sm:size-[18px]" />
               </button>
             </div>
           </div>
         )}
 
+        {/* Mobile Header with Back Button */}
+        <div className="lg:hidden mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={() => window.history.back()}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              <ArrowLeft size={20} />
+              <span className="text-sm font-medium">Back</span>
+            </button>
+            <h1 className="text-xl font-bold text-gray-900">Profile</h1>
+            <div className="w-10"></div> {/* Spacer for alignment */}
+          </div>
+
+          {/* Mobile Tab Navigation */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-4">
+            <div className="flex">
+              <button
+                onClick={() => setActiveTab("profile")}
+                className={`flex-1 py-3 text-center font-medium text-sm transition-all relative ${
+                  activeTab === "profile"
+                    ? "text-indigo-600 bg-indigo-50"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <User size={16} />
+                  <span className="hidden xs:inline">Profile</span>
+                </div>
+                {activeTab === "profile" && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600"></div>
+                )}
+              </button>
+              <button
+                onClick={() => setActiveTab("security")}
+                className={`flex-1 py-3 text-center font-medium text-sm transition-all relative ${
+                  activeTab === "security"
+                    ? "text-indigo-600 bg-indigo-50"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <Lock size={16} />
+                  <span className="hidden xs:inline">Security</span>
+                </div>
+                {activeTab === "security" && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600"></div>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
+          {/* Desktop Header */}
+          <div className="hidden lg:block mb-8">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 Profile Settings
@@ -338,87 +396,103 @@ export default function Profile() {
           </div>
 
           {/* Main Content Grid */}
-          <div className="grid lg:grid-cols-3 gap-6">
+          <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
             {/* Left Column - Profile Card */}
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden sticky top-6">
-                <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-32"></div>
+            {(activeTab === "profile" || window.innerWidth >= 1024) && (
+              <div className="lg:col-span-1">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden lg:sticky lg:top-6">
+                  <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-24 sm:h-32"></div>
 
-                <div className="relative px-6 pb-8">
-                  <div className="absolute -top-16 left-1/2 transform -translate-x-1/2">
-                    <div className="relative group">
-                      <img
-                        src={avatarPreview}
-                        alt="Profile"
-                        className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl"
-                      />
-                      <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <label className="cursor-pointer p-3 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors">
-                          <Camera size={20} className="text-white" />
-                          <input
-                            type="file"
-                            className="hidden"
-                            accept="image/*"
-                            onChange={handleFileSelect}
-                          />
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-20 text-center">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-1">
-                      {form.name || "Your Name"}
-                    </h2>
-                    <p className="text-gray-600 mb-2">
-                      @{form.username || "username"}
-                    </p>
-
-                    {/* Bio Section */}
-                    <div className="mt-4 mb-6">
-                      <div className="flex items-center justify-center gap-2 text-gray-700 mb-2">
-                        <MessageCircle size={16} className="text-purple-500" />
-                        <span className="text-sm font-medium">Bio</span>
-                      </div>
-                      <div
-                        className={`text-gray-600 text-sm leading-relaxed px-4 ${
-                          !isBioExpanded ? "line-clamp-3" : ""
-                        }`}
-                      >
-                        {form.bio || "No bio yet. Tell us about yourself..."}
-                      </div>
-                      {form.bio && form.bio.length > 120 && (
-                        <button
-                          onClick={() => setIsBioExpanded(!isBioExpanded)}
-                          className="mt-2 text-indigo-600 hover:text-indigo-800 text-xs font-medium transition-colors"
-                        >
-                          {isBioExpanded ? "Show less" : "Read more"}
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Contact Info */}
-                    <div className="space-y-3 bg-gray-50 rounded-xl p-4">
-                      <div className="flex items-center gap-3 text-gray-700">
-                        <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <Mail size={18} className="text-indigo-600" />
+                  <div className="relative px-4 sm:px-6 pb-6 sm:pb-8">
+                    <div className="absolute -top-10 sm:-top-16 left-1/2 transform -translate-x-1/2">
+                      <div className="relative group">
+                        <img
+                          src={avatarPreview}
+                          alt="Profile"
+                          className="w-20 h-20 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-white shadow-xl"
+                        />
+                        <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <label className="cursor-pointer p-2 sm:p-3 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors">
+                            <Camera
+                              size={16}
+                              className="sm:size-[20px] text-white"
+                            />
+                            <input
+                              type="file"
+                              className="hidden"
+                              accept="image/*"
+                              onChange={handleFileSelect}
+                            />
+                          </label>
                         </div>
-                        <div className="text-left">
-                          <div className="text-xs text-gray-500">Email</div>
-                          <div className="text-sm font-medium truncate">
-                            {form.email || "No email"}
+                      </div>
+                    </div>
+
+                    <div className="pt-16 sm:pt-20 text-center">
+                      <h2 className="text-lg sm:text-2xl font-bold text-gray-900 mb-1 truncate px-2">
+                        {form.name || "Your Name"}
+                      </h2>
+                      <p className="text-sm sm:text-base text-gray-600 mb-2 truncate px-2">
+                        @{form.username || "username"}
+                      </p>
+
+                      {/* Bio Section */}
+                      <div className="mt-3 sm:mt-4 mb-4 sm:mb-6">
+                        <div className="flex items-center justify-center gap-2 text-gray-700 mb-2">
+                          <MessageCircle
+                            size={14}
+                            className="sm:size-[16px] text-purple-500"
+                          />
+                          <span className="text-xs sm:text-sm font-medium">
+                            Bio
+                          </span>
+                        </div>
+                        <div
+                          className={`text-gray-600 text-xs sm:text-sm leading-relaxed px-2 sm:px-4 ${
+                            !isBioExpanded ? "line-clamp-3" : ""
+                          }`}
+                        >
+                          {form.bio || "No bio yet. Tell us about yourself..."}
+                        </div>
+                        {form.bio && form.bio.length > 120 && (
+                          <button
+                            onClick={() => setIsBioExpanded(!isBioExpanded)}
+                            className="mt-1 sm:mt-2 text-indigo-600 hover:text-indigo-800 text-xs font-medium transition-colors"
+                          >
+                            {isBioExpanded ? "Show less" : "Read more"}
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Contact Info */}
+                      <div className="space-y-2 sm:space-y-3 bg-gray-50 rounded-xl p-3 sm:p-4">
+                        <div className="flex items-center gap-2 sm:gap-3 text-gray-700">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <Mail
+                              size={14}
+                              className="sm:size-[18px] text-indigo-600"
+                            />
+                          </div>
+                          <div className="text-left flex-1 min-w-0">
+                            <div className="text-xs text-gray-500">Email</div>
+                            <div className="text-xs sm:text-sm font-medium truncate">
+                              {form.email || "No email"}
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="flex items-center gap-3 text-gray-700">
-                        <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <Phone size={18} className="text-purple-600" />
-                        </div>
-                        <div className="text-left">
-                          <div className="text-xs text-gray-500">Phone</div>
-                          <div className="text-sm font-medium">
-                            {form.phone_number || "Not set"}
+                        <div className="flex items-center gap-2 sm:gap-3 text-gray-700">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <Phone
+                              size={14}
+                              className="sm:size-[18px] text-purple-600"
+                            />
+                          </div>
+                          <div className="text-left flex-1 min-w-0">
+                            <div className="text-xs text-gray-500">Phone</div>
+                            <div className="text-xs sm:text-sm font-medium truncate">
+                              {form.phone_number || "Not set"}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -426,17 +500,23 @@ export default function Profile() {
                   </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Right Column - Edit Profile & Settings */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Tabs */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div
+              className={`${
+                activeTab === "profile" || window.innerWidth >= 1024
+                  ? "lg:col-span-2"
+                  : "col-span-full"
+              } space-y-4 sm:space-y-6`}
+            >
+              {/* Desktop Tabs */}
+              <div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="border-b border-gray-200">
                   <div className="flex overflow-x-auto">
                     <button
                       onClick={() => setActiveTab("profile")}
-                      className={`px-8 py-4 font-medium text-sm transition-all flex items-center gap-3 flex-shrink-0 relative ${
+                      className={`px-6 py-4 font-medium text-sm transition-all flex items-center gap-3 flex-shrink-0 relative ${
                         activeTab === "profile"
                           ? "text-indigo-600"
                           : "text-gray-600 hover:text-gray-900"
@@ -458,7 +538,7 @@ export default function Profile() {
                     </button>
                     <button
                       onClick={() => setActiveTab("security")}
-                      className={`px-8 py-4 font-medium text-sm transition-all flex items-center gap-3 flex-shrink-0 relative ${
+                      className={`px-6 py-4 font-medium text-sm transition-all flex items-center gap-3 flex-shrink-0 relative ${
                         activeTab === "security"
                           ? "text-indigo-600"
                           : "text-gray-600 hover:text-gray-900"
@@ -481,144 +561,208 @@ export default function Profile() {
                   </div>
                 </div>
 
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                   {activeTab === "profile" && (
-                    <div className="space-y-6">
+                    <div className="space-y-4 sm:space-y-6">
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
                           Personal Information
                         </h3>
-                        <p className="text-sm text-gray-500 mb-6">
+                        <p className="text-sm text-gray-500 mb-4 sm:mb-6">
                           Update your personal details and contact information
                         </p>
                       </div>
 
-                      <div className="grid md:grid-cols-2 gap-5">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            <span className="flex items-center gap-2">
-                              <User size={16} className="text-gray-400" />
-                              Full Name
-                            </span>
-                          </label>
-                          <input
-                            type="text"
-                            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                            value={form.name}
-                            onChange={(e) =>
-                              setForm({ ...form, name: e.target.value })
-                            }
-                            placeholder="Enter your full name"
-                          />
-                        </div>
+                      <form
+                        onSubmit={handleSubmit}
+                        className="space-y-4 sm:space-y-5"
+                      >
+                        <div className="grid sm:grid-cols-2 gap-3 sm:gap-5">
+                          {/* Full Name */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                              <span className="flex items-center gap-2">
+                                Full Name
+                              </span>
+                            </label>
 
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            <span className="flex items-center gap-2">
-                              @ Username
-                            </span>
-                          </label>
-                          <input
-                            type="text"
-                            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                            value={form.username}
-                            onChange={(e) =>
-                              setForm({ ...form, username: e.target.value })
-                            }
-                            placeholder="username"
-                          />
-                        </div>
+                            <div className="relative group">
+                              <User
+                                size={14}
+                                className="sm:size-[16px] absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400
+                   group-focus-within:text-indigo-500 transition"
+                              />
 
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            <span className="flex items-center gap-2">
-                              <Mail size={16} className="text-gray-400" />
-                              Email Address
-                            </span>
-                          </label>
-                          <input
-                            type="email"
-                            className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                            value={form.email}
-                            readOnly
-                          />
-                          <p className="text-xs text-gray-500 mt-2">
-                            Contact admin to change email
-                          </p>
-                        </div>
+                              <input
+                                type="text"
+                                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500
+                   focus:border-transparent transition text-gray-900 placeholder-gray-400 text-sm sm:text-base"
+                                value={form.name}
+                                onChange={(e) =>
+                                  setForm({ ...form, name: e.target.value })
+                                }
+                                placeholder="Enter your full name"
+                              />
+                            </div>
+                          </div>
 
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            <span className="flex items-center gap-2">
-                              <Phone size={16} className="text-gray-400" />
-                              Phone Number
-                            </span>
-                          </label>
-                          <input
-                            type="text"
-                            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400"
-                            value={form.phone_number}
-                            onChange={(e) =>
-                              setForm({ ...form, phone_number: e.target.value })
-                            }
-                            placeholder="+62 8"
-                          />
-                        </div>
+                          {/* Username */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                              <span className="flex items-center gap-2">
+                                Username
+                              </span>
+                            </label>
 
-                        <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            <span className="flex items-center gap-2">
-                              <Edit3 size={16} className="text-gray-400" />
-                              Bio
-                            </span>
-                          </label>
-                          <textarea
-                            className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition min-h-[120px] text-gray-900 placeholder-gray-400 resize-none"
-                            value={form.bio}
-                            onChange={(e) =>
-                              setForm({ ...form, bio: e.target.value })
-                            }
-                            placeholder="Tell about yourself..."
-                          />
-                          <div className="flex items-center justify-between mt-2">
-                            <p className="text-xs text-gray-500">
-                              Brief description for your profile
+                            <div className="relative group">
+                              <span
+                                className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2
+                   text-gray-400 font-medium select-none text-sm sm:text-base
+                   group-focus-within:text-indigo-500 transition"
+                              >
+                                @
+                              </span>
+
+                              <input
+                                type="text"
+                                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500
+                   focus:border-transparent transition text-gray-900 placeholder-gray-400 text-sm sm:text-base"
+                                value={form.username}
+                                onChange={(e) =>
+                                  setForm({
+                                    ...form,
+                                    username: e.target.value.toLowerCase(),
+                                  })
+                                }
+                                placeholder="username"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Email */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                              <span className="flex items-center gap-2">
+                                Email Address
+                              </span>
+                            </label>
+
+                            <div className="relative">
+                              <Mail
+                                size={14}
+                                className="sm:size-[16px] absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                              />
+
+                              <input
+                                type="email"
+                                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 bg-gray-50 border border-gray-300 rounded-xl
+                   focus:outline-none text-gray-900 placeholder-gray-400 cursor-not-allowed text-sm sm:text-base"
+                                value={form.email}
+                                readOnly
+                              />
+                            </div>
+
+                            <p className="text-xs text-gray-500 mt-1 sm:mt-2">
+                              Contact admin to change email
                             </p>
-                            <span className="text-xs text-gray-500">
-                              {form.bio.length}/500
-                            </span>
+                          </div>
+
+                          {/* Phone Number */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                              <span className="flex items-center gap-2">
+                                Phone Number
+                              </span>
+                            </label>
+
+                            <div className="relative group">
+                              <Phone
+                                size={14}
+                                className="sm:size-[16px] absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400
+                   group-focus-within:text-indigo-500 transition"
+                              />
+
+                              <input
+                                type="text"
+                                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500
+                   focus:border-transparent transition text-gray-900 placeholder-gray-400 text-sm sm:text-base"
+                                value={form.phone_number}
+                                onChange={(e) =>
+                                  setForm({
+                                    ...form,
+                                    phone_number: e.target.value.replace(
+                                      /[^0-9+]/g,
+                                      ""
+                                    ),
+                                  })
+                                }
+                                placeholder="+62"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="sm:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                              <span className="flex items-center gap-2">
+                                <Edit3
+                                  size={14}
+                                  className="sm:size-[16px] text-gray-400"
+                                />
+                                Bio
+                              </span>
+                            </label>
+                            <textarea
+                              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition min-h-[100px] sm:min-h-[120px] text-gray-900 placeholder-gray-400 resize-none text-sm sm:text-base"
+                              value={form.bio}
+                              onChange={(e) =>
+                                setForm({ ...form, bio: e.target.value })
+                              }
+                              placeholder="Tell about yourself..."
+                              maxLength={500}
+                            />
+                            <div className="flex items-center justify-between mt-1 sm:mt-2">
+                              <p className="text-xs text-gray-500">
+                                Brief description for your profile
+                              </p>
+                              <span className="text-xs text-gray-500">
+                                {form.bio.length}/500
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="pt-4 border-t border-gray-200">
-                        <button
-                          onClick={handleSubmit}
-                          className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
-                        >
-                          <Save size={18} />
-                          Save Changes
-                        </button>
-                      </div>
+                        <div className="pt-3 sm:pt-4 border-t border-gray-200">
+                          <button
+                            type="submit"
+                            className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 text-sm sm:text-base"
+                          >
+                            <Save size={16} className="sm:size-[18px]" />
+                            Save Changes
+                          </button>
+                        </div>
+                      </form>
                     </div>
                   )}
 
                   {activeTab === "security" && (
-                    <div className="space-y-8">
+                    <div className="space-y-6 sm:space-y-8">
                       {/* Password Settings */}
                       <div>
-                        <div className="flex items-center gap-3 mb-6">
-                          <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                        <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
                             <ShieldCheck
-                              size={24}
-                              className="text-indigo-600"
+                              size={20}
+                              className="sm:size-[24px] text-indigo-600"
                             />
                           </div>
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-900">
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                               Password & Security
                             </h3>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-xs sm:text-sm text-gray-500">
                               Manage your password and account protection
                             </p>
                           </div>
@@ -630,16 +774,19 @@ export default function Profile() {
                       </div>
 
                       {/* Danger Zone */}
-                      <div className="border-t border-gray-200 pt-8">
-                        <div className="flex items-center gap-3 mb-6">
-                          <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-                            <AlertTriangle size={24} className="text-red-600" />
+                      <div className="border-t border-gray-200 pt-6 sm:pt-8">
+                        <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                            <AlertTriangle
+                              size={20}
+                              className="sm:size-[24px] text-red-600"
+                            />
                           </div>
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-900">
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                               Danger Zone
                             </h3>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-xs sm:text-sm text-gray-500">
                               Irreversible actions that affect your account
                             </p>
                           </div>
@@ -647,17 +794,20 @@ export default function Profile() {
 
                         <div className="space-y-4">
                           {/* Delete Account */}
-                          <div className="bg-red-50 border border-red-100 rounded-xl p-5">
-                            <div className="flex items-center justify-between">
+                          <div className="bg-red-50 border border-red-100 rounded-xl p-4 sm:p-5">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                               <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-                                  <Trash2 size={20} className="text-red-600" />
+                                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-lg flex items-center justify-center">
+                                  <Trash2
+                                    size={16}
+                                    className="sm:size-[20px] text-red-600"
+                                  />
                                 </div>
                                 <div>
-                                  <h4 className="font-semibold text-gray-900">
+                                  <h4 className="font-semibold text-gray-900 text-sm sm:text-base">
                                     Delete Account
                                   </h4>
-                                  <p className="text-sm text-gray-600 mt-1">
+                                  <p className="text-xs sm:text-sm text-gray-600 mt-1">
                                     Permanently delete your account and all
                                     associated data
                                   </p>
@@ -665,7 +815,7 @@ export default function Profile() {
                               </div>
                               <button
                                 onClick={() => setShowSureModal(true)}
-                                className="px-6 py-2.5 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
+                                className="px-4 sm:px-6 py-2 sm:py-2.5 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base"
                               >
                                 Delete Account
                               </button>
@@ -673,14 +823,303 @@ export default function Profile() {
                           </div>
 
                           {/* Important Notice */}
-                          <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-4">
-                            <div className="flex items-start gap-3">
+                          <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-3 sm:p-4">
+                            <div className="flex items-start gap-2 sm:gap-3">
                               <Info
-                                size={20}
-                                className="text-yellow-600 flex-shrink-0 mt-0.5"
+                                size={16}
+                                className="sm:size-[20px] text-yellow-600 flex-shrink-0 mt-0.5"
                               />
                               <div>
-                                <p className="text-sm text-yellow-800 font-medium mb-1">
+                                <p className="text-xs sm:text-sm text-yellow-800 font-medium mb-1">
+                                  Important Notice
+                                </p>
+                                <p className="text-xs text-yellow-700">
+                                  Deleting your account is irreversible. All
+                                  your data, posts, and connections will be
+                                  permanently removed.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Mobile Content (without tab wrapper) */}
+              <div className="lg:hidden bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <div className="p-4 sm:p-6">
+                  {activeTab === "profile" && (
+                    <div className="space-y-4 sm:space-y-6">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
+                          Personal Information
+                        </h3>
+                        <p className="text-sm text-gray-500 mb-4 sm:mb-6">
+                          Update your personal details and contact information
+                        </p>
+                      </div>
+
+                      <form
+                        onSubmit={handleSubmit}
+                        className="space-y-4 sm:space-y-5"
+                      >
+                        <div className="grid sm:grid-cols-2 gap-3 sm:gap-5">
+                          {/* Full Name */}
+                          <div className="sm:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                              <span className="flex items-center gap-2">
+                                Full Name
+                              </span>
+                            </label>
+
+                            <div className="relative group">
+                              <User
+                                size={14}
+                                className="sm:size-[16px] absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400
+                   group-focus-within:text-indigo-500 transition"
+                              />
+
+                              <input
+                                type="text"
+                                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500
+                   focus:border-transparent transition text-gray-900 placeholder-gray-400 text-sm sm:text-base"
+                                value={form.name}
+                                onChange={(e) =>
+                                  setForm({ ...form, name: e.target.value })
+                                }
+                                placeholder="Enter your full name"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Username */}
+                          <div className="sm:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                              <span className="flex items-center gap-2">
+                                Username
+                              </span>
+                            </label>
+
+                            <div className="relative group">
+                              <span
+                                className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2
+                   text-gray-400 font-medium select-none text-sm sm:text-base
+                   group-focus-within:text-indigo-500 transition"
+                              >
+                                @
+                              </span>
+
+                              <input
+                                type="text"
+                                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500
+                   focus:border-transparent transition text-gray-900 placeholder-gray-400 text-sm sm:text-base"
+                                value={form.username}
+                                onChange={(e) =>
+                                  setForm({
+                                    ...form,
+                                    username: e.target.value.toLowerCase(),
+                                  })
+                                }
+                                placeholder="username"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Email */}
+                          <div className="sm:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                              <span className="flex items-center gap-2">
+                                Email Address
+                              </span>
+                            </label>
+
+                            <div className="relative">
+                              <Mail
+                                size={14}
+                                className="sm:size-[16px] absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                              />
+
+                              <input
+                                type="email"
+                                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 bg-gray-50 border border-gray-300 rounded-xl
+                   focus:outline-none text-gray-900 placeholder-gray-400 cursor-not-allowed text-sm sm:text-base"
+                                value={form.email}
+                                readOnly
+                              />
+                            </div>
+
+                            <p className="text-xs text-gray-500 mt-1 sm:mt-2">
+                              Contact admin to change email
+                            </p>
+                          </div>
+
+                          {/* Phone Number */}
+                          <div className="sm:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                              <span className="flex items-center gap-2">
+                                Phone Number
+                              </span>
+                            </label>
+
+                            <div className="relative group">
+                              <Phone
+                                size={14}
+                                className="sm:size-[16px] absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400
+                   group-focus-within:text-indigo-500 transition"
+                              />
+
+                              <input
+                                type="text"
+                                className="w-full pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500
+                   focus:border-transparent transition text-gray-900 placeholder-gray-400 text-sm sm:text-base"
+                                value={form.phone_number}
+                                onChange={(e) =>
+                                  setForm({
+                                    ...form,
+                                    phone_number: e.target.value.replace(
+                                      /[^0-9+]/g,
+                                      ""
+                                    ),
+                                  })
+                                }
+                                placeholder="+62"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="sm:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                              <span className="flex items-center gap-2">
+                                <Edit3
+                                  size={14}
+                                  className="sm:size-[16px] text-gray-400"
+                                />
+                                Bio
+                              </span>
+                            </label>
+                            <textarea
+                              className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition min-h-[100px] sm:min-h-[120px] text-gray-900 placeholder-gray-400 resize-none text-sm sm:text-base"
+                              value={form.bio}
+                              onChange={(e) =>
+                                setForm({ ...form, bio: e.target.value })
+                              }
+                              placeholder="Tell about yourself..."
+                              maxLength={500}
+                            />
+                            <div className="flex items-center justify-between mt-1 sm:mt-2">
+                              <p className="text-xs text-gray-500">
+                                Brief description for your profile
+                              </p>
+                              <span className="text-xs text-gray-500">
+                                {form.bio.length}/500
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="pt-3 sm:pt-4 border-t border-gray-200">
+                          <button
+                            type="submit"
+                            className="w-full px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 text-sm sm:text-base"
+                          >
+                            <Save size={16} className="sm:size-[18px]" />
+                            Save Changes
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  )}
+
+                  {activeTab === "security" && (
+                    <div className="space-y-6 sm:space-y-8">
+                      {/* Password Settings */}
+                      <div>
+                        <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                            <ShieldCheck
+                              size={20}
+                              className="sm:size-[24px] text-indigo-600"
+                            />
+                          </div>
+                          <div>
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+                              Password & Security
+                            </h3>
+                            <p className="text-xs sm:text-sm text-gray-500">
+                              Manage your password and account protection
+                            </p>
+                          </div>
+                        </div>
+                        <PasswordSettings
+                          hasPassword={hasPassword}
+                          showToast={showToast}
+                        />
+                      </div>
+
+                      {/* Danger Zone */}
+                      <div className="border-t border-gray-200 pt-6 sm:pt-8">
+                        <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                            <AlertTriangle
+                              size={20}
+                              className="sm:size-[24px] text-red-600"
+                            />
+                          </div>
+                          <div>
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+                              Danger Zone
+                            </h3>
+                            <p className="text-xs sm:text-sm text-gray-500">
+                              Irreversible actions that affect your account
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-4">
+                          {/* Delete Account */}
+                          <div className="bg-red-50 border border-red-100 rounded-xl p-4 sm:p-5">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-lg flex items-center justify-center">
+                                  <Trash2
+                                    size={16}
+                                    className="sm:size-[20px] text-red-600"
+                                  />
+                                </div>
+                                <div>
+                                  <h4 className="font-semibold text-gray-900 text-sm sm:text-base">
+                                    Delete Account
+                                  </h4>
+                                  <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                                    Permanently delete your account and all
+                                    associated data
+                                  </p>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => setShowSureModal(true)}
+                                className="px-4 sm:px-6 py-2 sm:py-2.5 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base"
+                              >
+                                Delete Account
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Important Notice */}
+                          <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-3 sm:p-4">
+                            <div className="flex items-start gap-2 sm:gap-3">
+                              <Info
+                                size={16}
+                                className="sm:size-[20px] text-yellow-600 flex-shrink-0 mt-0.5"
+                              />
+                              <div>
+                                <p className="text-xs sm:text-sm text-yellow-800 font-medium mb-1">
                                   Important Notice
                                 </p>
                                 <p className="text-xs text-yellow-700">
@@ -701,16 +1140,16 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* Image Crop Modal */}
+        {/* Image Crop Modal - Responsive */}
         {showAvatarModal && imageSrc && (
-          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full overflow-hidden animate-scaleIn">
-              <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-3 sm:p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-scaleIn">
+              <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                     Edit Profile Picture
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-xs sm:text-sm text-gray-500">
                     Crop and adjust your photo
                   </p>
                 </div>
@@ -719,12 +1158,12 @@ export default function Profile() {
                   className="text-gray-400 hover:text-gray-600 transition-colors"
                   disabled={uploading}
                 >
-                  <X size={20} />
+                  <X size={18} className="sm:size-[20px]" />
                 </button>
               </div>
 
-              <div className="p-6">
-                <div className="relative w-full h-[400px] bg-gradient-to-br from-gray-900 to-black rounded-xl overflow-hidden mb-6">
+              <div className="p-4 sm:p-6">
+                <div className="relative w-full h-[300px] sm:h-[400px] bg-gradient-to-br from-gray-900 to-black rounded-xl overflow-hidden mb-4 sm:mb-6">
                   <SimpleCropper
                     image={imageSrc}
                     crop={crop}
@@ -735,9 +1174,12 @@ export default function Profile() {
                   />
                 </div>
 
-                <div className="mb-6">
-                  <div className="flex items-center gap-4 mb-3">
-                    <ZoomOut size={20} className="text-gray-400" />
+                <div className="mb-4 sm:mb-6">
+                  <div className="flex items-center gap-3 sm:gap-4 mb-2 sm:mb-3">
+                    <ZoomOut
+                      size={18}
+                      className="sm:size-[20px] text-gray-400"
+                    />
                     <input
                       type="range"
                       min="1"
@@ -745,44 +1187,47 @@ export default function Profile() {
                       step="0.05"
                       value={zoom}
                       onChange={(e) => setZoom(parseFloat(e.target.value))}
-                      className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600"
+                      className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 sm:[&::-webkit-slider-thumb]:h-5 sm:[&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-600"
                     />
-                    <ZoomIn size={20} className="text-gray-400" />
+                    <ZoomIn
+                      size={18}
+                      className="sm:size-[20px] text-gray-400"
+                    />
                   </div>
-                  <div className="flex items-center justify-center gap-6 text-sm text-gray-500">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-2 sm:gap-6 text-xs sm:text-sm text-gray-500">
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 border border-white rounded-sm"></div>
+                      <div className="w-2 h-2 sm:w-3 sm:h-3 border border-white rounded-sm"></div>
                       <span>Drag to reposition</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-dashed border-white rounded-full"></div>
+                      <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-dashed border-white rounded-full"></div>
                       <span>Slide to zoom</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                   <button
                     onClick={handleCancelUpload}
-                    className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-all flex items-center justify-center gap-2"
+                    className="flex-1 py-2.5 sm:py-3 px-4 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-all flex items-center justify-center gap-2 text-sm sm:text-base"
                     disabled={uploading}
                   >
-                    <X size={18} />
+                    <X size={16} className="sm:size-[18px]" />
                     Cancel
                   </button>
                   <button
                     onClick={handleAvatarUpload}
-                    className="flex-1 py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 py-2.5 sm:py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                     disabled={uploading}
                   >
                     {uploading ? (
                       <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                        <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-2 border-white border-t-transparent"></div>
                         Uploading...
                       </>
                     ) : (
                       <>
-                        <Upload size={18} />
+                        <Upload size={16} className="sm:size-[18px]" />
                         Update Profile Picture
                       </>
                     )}
@@ -793,39 +1238,42 @@ export default function Profile() {
           </div>
         )}
 
-        {/* Delete Account Confirmation Modal */}
+        {/* Delete Account Confirmation Modal - Responsive */}
         {showSureModal && (
           <div
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-3 sm:p-4"
             onClick={() => setShowSureModal(false)}
           >
             <div
-              className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-scaleIn"
+              className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-scaleIn"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="p-6">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <AlertTriangle size={28} className="text-white" />
+              <div className="p-4 sm:p-6">
+                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <AlertTriangle
+                      size={24}
+                      className="sm:size-[28px] text-white"
+                    />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">
                       Delete Your Account?
                     </h3>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-xs sm:text-sm text-gray-600 mt-1">
                       This action cannot be undone
                     </p>
                   </div>
                 </div>
 
-                <div className="bg-red-50 border border-red-100 rounded-xl p-4 mb-6">
-                  <div className="flex items-start gap-3">
+                <div className="bg-red-50 border border-red-100 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
+                  <div className="flex items-start gap-2 sm:gap-3">
                     <AlertCircle
-                      size={20}
-                      className="text-red-600 flex-shrink-0 mt-0.5"
+                      size={18}
+                      className="sm:size-[20px] text-red-600 flex-shrink-0 mt-0.5"
                     />
                     <div>
-                      <p className="text-sm text-red-800 font-medium mb-1">
+                      <p className="text-xs sm:text-sm text-red-800 font-medium mb-1">
                         Warning: This will permanently delete:
                       </p>
                       <ul className="text-xs text-red-700 space-y-1">
@@ -850,28 +1298,31 @@ export default function Profile() {
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
-                      <AlertTriangle size={20} className="text-gray-600" />
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="flex items-center gap-2 sm:gap-3 p-3 bg-gray-50 rounded-lg">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                      <AlertTriangle
+                        size={16}
+                        className="sm:size-[20px] text-gray-600"
+                      />
                     </div>
-                    <p className="text-sm text-gray-700">
+                    <p className="text-xs sm:text-sm text-gray-700">
                       Are you absolutely sure you want to proceed?
                     </p>
                   </div>
 
-                  <div className="flex gap-3 pt-2">
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
                     <button
                       onClick={() => setShowSureModal(false)}
-                      className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-all duration-200 border border-gray-300"
+                      className="flex-1 py-2.5 sm:py-3 px-4 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-all duration-200 border border-gray-300 text-sm sm:text-base"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleConfirmDelete}
-                      className="flex-1 py-3 px-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
+                      className="flex-1 py-2.5 sm:py-3 px-4 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 text-sm sm:text-base"
                     >
-                      <Trash2 size={18} />
+                      <Trash2 size={16} className="sm:size-[18px]" />
                       Delete Account
                     </button>
                   </div>
@@ -917,17 +1368,34 @@ export default function Profile() {
             animation: scaleIn 0.2s ease-out;
           }
           
-          /* Custom range slider */
+          /* Responsive line clamp for bio */
+          .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+          
+          /* Custom range slider - responsive */
           input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            height: 20px;
-            width: 20px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            cursor: pointer;
-            border: 3px solid white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+          }
+          
+          @media (max-width: 640px) {
+            input[type="range"]::-webkit-slider-thumb {
+              height: 16px;
+              width: 16px;
+            }
+          }
+          
+          /* Responsive grid utilities */
+          @media (min-width: 640px) {
+            .xs\\:inline {
+              display: inline;
+            }
           }
         `}</style>
       </div>
@@ -935,7 +1403,7 @@ export default function Profile() {
   );
 }
 
-// Password Settings Component (Enhanced)
+// Password Settings Component (Enhanced) - Made responsive
 function PasswordSettings({ hasPassword, showToast }) {
   const [showPasswords, setShowPasswords] = useState({});
   const [loading, setLoading] = useState(false);
@@ -1055,17 +1523,17 @@ function PasswordSettings({ hasPassword, showToast }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {!hasPassword ? (
-        <div className="space-y-5">
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-5">
-            <div className="flex items-start gap-3">
+        <div className="space-y-4 sm:space-y-5">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-4 sm:p-5">
+            <div className="flex items-start gap-2 sm:gap-3">
               <AlertCircle
-                size={20}
-                className="text-blue-600 flex-shrink-0 mt-0.5"
+                size={18}
+                className="sm:size-[20px] text-blue-600 flex-shrink-0 mt-0.5"
               />
               <div>
-                <p className="text-sm text-blue-800 font-medium mb-1">
+                <p className="text-xs sm:text-sm text-blue-800 font-medium mb-1">
                   Set a password to enable email login
                 </p>
                 <p className="text-xs text-blue-600">
@@ -1075,18 +1543,21 @@ function PasswordSettings({ hasPassword, showToast }) {
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 <span className="flex items-center gap-2">
-                  <KeyRound size={16} className="text-gray-400" />
+                  <KeyRound
+                    size={14}
+                    className="sm:size-[16px] text-gray-400"
+                  />
                   New Password
                 </span>
               </label>
               <div className="relative">
                 <input
                   type={showPasswords.newPassword ? "text" : "password"}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-11"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-10 sm:pr-11 text-sm sm:text-base"
                   value={setPasswordForm.password}
                   onChange={(e) => {
                     setSetPasswordForm({
@@ -1103,16 +1574,16 @@ function PasswordSettings({ hasPassword, showToast }) {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
                 >
                   {showPasswords.newPassword ? (
-                    <EyeOff size={18} />
+                    <EyeOff size={16} className="sm:size-[18px]" />
                   ) : (
-                    <Eye size={18} />
+                    <Eye size={16} className="sm:size-[18px]" />
                   )}
                 </button>
               </div>
 
               {/* Password Strength Indicator */}
               {setPasswordForm.password && (
-                <div className="mt-3">
+                <div className="mt-2 sm:mt-3">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs text-gray-500">
                       Password strength
@@ -1142,16 +1613,19 @@ function PasswordSettings({ hasPassword, showToast }) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 <span className="flex items-center gap-2">
-                  <KeyRound size={16} className="text-gray-400" />
+                  <KeyRound
+                    size={14}
+                    className="sm:size-[16px] text-gray-400"
+                  />
                   Confirm Password
                 </span>
               </label>
               <div className="relative">
                 <input
                   type={showPasswords.confirmPassword ? "text" : "password"}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-11"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-10 sm:pr-11 text-sm sm:text-base"
                   value={setPasswordForm.password_confirmation}
                   onChange={(e) =>
                     setSetPasswordForm({
@@ -1167,15 +1641,15 @@ function PasswordSettings({ hasPassword, showToast }) {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
                 >
                   {showPasswords.confirmPassword ? (
-                    <EyeOff size={18} />
+                    <EyeOff size={16} className="sm:size-[18px]" />
                   ) : (
-                    <Eye size={18} />
+                    <Eye size={16} className="sm:size-[18px]" />
                   )}
                 </button>
               </div>
             </div>
 
-            <div className="pt-4">
+            <div className="pt-2 sm:pt-4">
               <button
                 onClick={handleSetPassword}
                 disabled={
@@ -1183,16 +1657,16 @@ function PasswordSettings({ hasPassword, showToast }) {
                   !setPasswordForm.password ||
                   !setPasswordForm.password_confirmation
                 }
-                className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full py-2.5 sm:py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base"
               >
                 {loading ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-2 border-white border-t-transparent"></div>
                     <span>Setting Password...</span>
                   </>
                 ) : (
                   <>
-                    <Lock size={18} />
+                    <Lock size={16} className="sm:size-[18px]" />
                     <span>Set Password</span>
                   </>
                 )}
@@ -1201,19 +1675,19 @@ function PasswordSettings({ hasPassword, showToast }) {
           </div>
         </div>
       ) : (
-        <div className="space-y-5">
-          <div className="space-y-4">
+        <div className="space-y-4 sm:space-y-5">
+          <div className="space-y-3 sm:space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 <span className="flex items-center gap-2">
-                  <Lock size={16} className="text-gray-400" />
+                  <Lock size={14} className="sm:size-[16px] text-gray-400" />
                   Current Password
                 </span>
               </label>
               <div className="relative">
                 <input
                   type={showPasswords.currentPassword ? "text" : "password"}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-11"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-10 sm:pr-11 text-sm sm:text-base"
                   value={changePasswordForm.current_password}
                   onChange={(e) =>
                     setChangePasswordForm({
@@ -1229,25 +1703,28 @@ function PasswordSettings({ hasPassword, showToast }) {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
                 >
                   {showPasswords.currentPassword ? (
-                    <EyeOff size={18} />
+                    <EyeOff size={16} className="sm:size-[18px]" />
                   ) : (
-                    <Eye size={18} />
+                    <Eye size={16} className="sm:size-[18px]" />
                   )}
                 </button>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 <span className="flex items-center gap-2">
-                  <KeyRound size={16} className="text-gray-400" />
+                  <KeyRound
+                    size={14}
+                    className="sm:size-[16px] text-gray-400"
+                  />
                   New Password
                 </span>
               </label>
               <div className="relative">
                 <input
                   type={showPasswords.newPassword ? "text" : "password"}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-11"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-10 sm:pr-11 text-sm sm:text-base"
                   value={changePasswordForm.password}
                   onChange={(e) =>
                     setChangePasswordForm({
@@ -1263,25 +1740,28 @@ function PasswordSettings({ hasPassword, showToast }) {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
                 >
                   {showPasswords.newPassword ? (
-                    <EyeOff size={18} />
+                    <EyeOff size={16} className="sm:size-[18px]" />
                   ) : (
-                    <Eye size={18} />
+                    <Eye size={16} className="sm:size-[18px]" />
                   )}
                 </button>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                 <span className="flex items-center gap-2">
-                  <KeyRound size={16} className="text-gray-400" />
+                  <KeyRound
+                    size={14}
+                    className="sm:size-[16px] text-gray-400"
+                  />
                   Confirm New Password
                 </span>
               </label>
               <div className="relative">
                 <input
                   type={showPasswords.confirmNewPassword ? "text" : "password"}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-11"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition text-gray-900 placeholder-gray-400 pr-10 sm:pr-11 text-sm sm:text-base"
                   value={changePasswordForm.password_confirmation}
                   onChange={(e) =>
                     setChangePasswordForm({
@@ -1297,9 +1777,9 @@ function PasswordSettings({ hasPassword, showToast }) {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1"
                 >
                   {showPasswords.confirmNewPassword ? (
-                    <EyeOff size={18} />
+                    <EyeOff size={16} className="sm:size-[18px]" />
                   ) : (
-                    <Eye size={18} />
+                    <Eye size={16} className="sm:size-[18px]" />
                   )}
                 </button>
               </div>
@@ -1309,16 +1789,16 @@ function PasswordSettings({ hasPassword, showToast }) {
               <button
                 onClick={handleChangePassword}
                 disabled={loading || !changePasswordForm.current_password}
-                className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full py-2.5 sm:py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base"
               >
                 {loading ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-2 border-white border-t-transparent"></div>
                     <span>Changing Password...</span>
                   </>
                 ) : (
                   <>
-                    <ShieldCheck size={18} />
+                    <ShieldCheck size={16} className="sm:size-[18px]" />
                     <span>Change Password</span>
                   </>
                 )}
@@ -1328,20 +1808,23 @@ function PasswordSettings({ hasPassword, showToast }) {
         </div>
       )}
 
-      {/* Confirmation Modal */}
+      {/* Confirmation Modal - Responsive */}
       {showConfirmModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[99] p-4 animate-scaleIn">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
-            <div className="p-6">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[99] p-3 sm:p-4 animate-scaleIn">
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-4 sm:p-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-                  <AlertCircle size={24} className="text-indigo-600" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                  <AlertCircle
+                    size={20}
+                    className="sm:size-[24px] text-indigo-600"
+                  />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                     Change Password
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-xs sm:text-sm text-gray-500">
                     Are you sure you want to change your password?
                   </p>
                 </div>
@@ -1349,24 +1832,24 @@ function PasswordSettings({ hasPassword, showToast }) {
 
               <div className="space-y-3">
                 <div className="bg-yellow-50 border border-yellow-100 rounded-lg p-3">
-                  <p className="text-sm text-yellow-800">
+                  <p className="text-xs sm:text-sm text-yellow-800">
                     You will be logged out from all other devices after changing
                     your password.
                   </p>
                 </div>
 
-                <div className="flex gap-3 pt-2">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2">
                   <button
                     onClick={() => setShowConfirmModal(false)}
-                    className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                    className="flex-1 py-2.5 sm:py-3 px-4 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={confirmChangePassword}
-                    className="flex-1 py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-lg hover:shadow-md transition-all flex items-center justify-center gap-2"
+                    className="flex-1 py-2.5 sm:py-3 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-lg hover:shadow-md transition-all flex items-center justify-center gap-2 text-sm sm:text-base"
                   >
-                    <Check size={18} />
+                    <Check size={16} className="sm:size-[18px]" />
                     Confirm Change
                   </button>
                 </div>
@@ -1379,7 +1862,7 @@ function PasswordSettings({ hasPassword, showToast }) {
   );
 }
 
-// Simple Cropper Component (Enhanced)
+// Simple Cropper Component (Enhanced) - Made responsive
 function SimpleCropper({
   image,
   crop,
@@ -1459,7 +1942,7 @@ function SimpleCropper({
     const deltaY = e.clientY - lastPosRef.current.y;
     lastPosRef.current = { x: e.clientX, y: e.clientY };
 
-    const cropSize = 400;
+    const cropSize = 300; // Reduced for mobile
     const maxMoveX = (imageSize.width * zoom - cropSize) / 2;
     const maxMoveY = (imageSize.height * zoom - cropSize) / 2;
 
@@ -1486,7 +1969,7 @@ function SimpleCropper({
     e.currentTarget.releasePointerCapture(e.pointerId);
   };
 
-  const cropSize = Math.min(400, 600) / zoom;
+  const cropSize = Math.min(300, 400) / zoom; // Responsive crop size
 
   return (
     <div
@@ -1550,7 +2033,7 @@ function SimpleCropper({
         </svg>
 
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <div className="text-white text-xs text-center bg-black/50 backdrop-blur-sm rounded-full px-3 py-1">
+          <div className="text-white text-xs text-center bg-black/50 backdrop-blur-sm rounded-full px-2 py-1">
             {Math.round(cropSize)}px
           </div>
         </div>

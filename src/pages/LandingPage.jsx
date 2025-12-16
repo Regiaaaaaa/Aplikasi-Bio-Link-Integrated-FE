@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import icon2 from "../assets/icon2.png";
 import {
   Music,
   Instagram,
@@ -209,8 +210,8 @@ const LandingPage = () => {
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center space-x-3 group cursor-pointer">
               <div className="relative">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center transform group-hover:scale-105 transition-all duration-300 shadow-lg">
-                  <Link className="text-white w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center transform group-hover:scale-105 transition-all duration-300">
+                  <img className="" src={icon2} alt="Synapse Logo" />
                 </div>
               </div>
               <span
@@ -630,9 +631,9 @@ const LandingPage = () => {
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
                 <div
-                  className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradients.primary} flex items-center justify-center shadow-lg`}
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center`}
                 >
-                  <Link className="text-white w-5 h-5" />
+                  <img src={icon2} alt="Synapse Logo" />
                 </div>
                 <span
                   className={`text-xl font-bold bg-gradient-to-r ${gradients.primary} bg-clip-text text-transparent`}

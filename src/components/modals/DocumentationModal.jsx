@@ -195,28 +195,27 @@ const DocumentationModal = ({ isOpen, onClose }) => {
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden">
         
         {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-400 px-6 py-5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="bg-white/20 p-2.5 rounded-lg">
-            <Book className="w-5 h-5 text-white" />
+        <div className="bg-gradient-to-r from-blue-600 to-blue-400 px-6 py-5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="bg-white/20 p-2.5 rounded-lg">
+              <Book className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-white">Documentation</h2>
+              <p className="text-blue-100 text-sm hidden sm:block">
+                Complete guide to Synapse features
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-xl font-bold text-white">Documentation</h2>
-            <p className="text-blue-100 text-sm hidden sm:block">
-              Complete guide to Synapse features
-            </p>
-          </div>
+
+          <button
+            onClick={onClose}
+            className="hover:bg-white/20 p-2 rounded-lg transition-colors text-white"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
-
-        <button
-          onClick={onClose}
-          className="hover:bg-white/20 p-2 rounded-lg transition-colors text-white"
-          aria-label="Close"
-        >
-          <X className="w-5 h-5" />
-        </button>
-      </div>
-
 
         {/* Mobile Category Selector */}
         <div className="lg:hidden border-b border-gray-200 flex-shrink-0">
@@ -224,9 +223,11 @@ const DocumentationModal = ({ isOpen, onClose }) => {
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors"
           >
-            <div className="flex items-center gap-2">
-              {documentationSections[activeTab].icon}
-              <span className="font-semibold text-gray-900">
+            <div className="flex items-center gap-2 text-gray-900">
+              {React.cloneElement(documentationSections[activeTab].icon, { 
+                className: "w-5 h-5 text-gray-700" 
+              })}
+              <span className="font-semibold">
                 {documentationSections[activeTab].title}
               </span>
             </div>
@@ -241,18 +242,25 @@ const DocumentationModal = ({ isOpen, onClose }) => {
             <div className="bg-white border-t border-gray-200 max-h-60 overflow-y-auto">
               {tabs.map((tab) => {
                 const section = documentationSections[tab];
+                const isActive = activeTab === tab;
                 return (
                   <button
                     key={tab}
                     onClick={() => handleTabChange(tab)}
                     className={`w-full px-4 py-3 flex items-center gap-3 text-left transition-colors ${
-                      activeTab === tab
-                        ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-500'
-                        : 'hover:bg-gray-50 text-gray-700'
+                      isActive
+                        ? 'bg-blue-50 border-l-4 border-blue-500'
+                        : 'hover:bg-gray-50'
                     }`}
                   >
-                    {section.icon}
-                    <span className="font-medium text-sm">{section.title}</span>
+                    {React.cloneElement(section.icon, { 
+                      className: `w-5 h-5 ${isActive ? 'text-blue-600' : 'text-gray-700'}` 
+                    })}
+                    <span className={`font-medium text-sm ${
+                      isActive ? 'text-blue-600' : 'text-gray-700'
+                    }`}>
+                      {section.title}
+                    </span>
                   </button>
                 );
               })}
@@ -268,17 +276,20 @@ const DocumentationModal = ({ isOpen, onClose }) => {
             <div className="p-3 space-y-1">
               {tabs.map((tab) => {
                 const section = documentationSections[tab];
+                const isActive = activeTab === tab;
                 return (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all ${
-                      activeTab === tab
+                      isActive
                         ? 'bg-blue-500 text-white'
                         : 'hover:bg-gray-200 text-gray-700'
                     }`}
                   >
-                    {section.icon}
+                    {React.cloneElement(section.icon, { 
+                      className: `w-5 h-5 ${isActive ? 'text-white' : 'text-gray-700'}` 
+                    })}
                     <span className="font-medium text-sm">{section.title}</span>
                   </button>
                 );
@@ -334,7 +345,7 @@ const DocumentationModal = ({ isOpen, onClose }) => {
         <div className="border-t border-gray-200 p-4 bg-gray-50 flex-shrink-0">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-sm text-gray-600 text-center sm:text-left">
-              Need more help? mailto:{" "}
+              Need more help? Contact:{" "}
               <a
                 href="mailto:synapsebioapp@gmail.com"
                 className="text-blue-600 hover:text-blue-700 font-medium underline"

@@ -1,5 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Music,
+  Instagram,
+  Gamepad2,
+  ShoppingBag,
+  Twitter,
+  Camera,
+  Headphones,
+  Zap,
+  Palette,
+  BarChart3,
+  Lock,
+  Smartphone,
+  Rocket,
+  User,
+  Link,
+  ExternalLink,
+  CheckCircle,
+  Sun,
+  Moon,
+  Menu,
+  X,
+  ChevronRight,
+  Youtube,
+  MessageCircle,
+} from "lucide-react";
 
 const LandingPage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -8,36 +34,47 @@ const LandingPage = () => {
   const [hoveredFeature, setHoveredFeature] = useState(null);
   const navigate = useNavigate();
 
+  // Daftar icon yang tersedia
+  const availableSocialIcons = [
+    { id: "twitter", icon: <Twitter />, name: "Twitter" },
+    { id: "instagram", icon: <Camera />, name: "Instagram" },
+    { id: "music", icon: <Headphones />, name: "Music" },
+    { id: "gaming", icon: <Gamepad2 />, name: "Gaming" },
+    { id: "youtube", icon: <Youtube />, name: "YouTube" },
+    { id: "tiktok", icon: <MessageCircle />, name: "TikTok" },
+  ];
+
   const [formData, setFormData] = useState({
     username: "yourname",
     bio: "Content Creator",
     links: [
       {
-        icon: "🎵",
+        icon: <Music className="w-5 h-5" />,
         label: "Latest Music Drop",
         color: "from-blue-500 to-cyan-500",
         url: "#",
       },
       {
-        icon: "📸",
+        icon: <Instagram className="w-5 h-5" />,
         label: "Instagram Feed",
         color: "from-purple-500 to-pink-500",
         url: "#",
       },
       {
-        icon: "🎮",
+        icon: <Gamepad2 className="w-5 h-5" />,
         label: "Gaming Content",
         color: "from-green-500 to-emerald-500",
         url: "#",
       },
       {
-        icon: "🛍️",
+        icon: <ShoppingBag className="w-5 h-5" />,
         label: "Shop My Merch",
         color: "from-orange-500 to-red-500",
         url: "#",
       },
     ],
-    socials: ["🐦", "📷", "🎵"],
+    // Simpan ID icon yang dipilih
+    selectedSocials: ["twitter", "instagram", "music"],
   });
 
   const toggleTheme = () => {
@@ -58,6 +95,19 @@ const LandingPage = () => {
       ...prev,
       links: updatedLinks,
     }));
+  };
+
+  const handleSocialToggle = (socialId) => {
+    setFormData((prev) => {
+      const newSelected = prev.selectedSocials.includes(socialId)
+        ? prev.selectedSocials.filter((id) => id !== socialId)
+        : [...prev.selectedSocials, socialId];
+
+      return {
+        ...prev,
+        selectedSocials: newSelected,
+      };
+    });
   };
 
   const generateLinkPreview = () => {
@@ -160,7 +210,7 @@ const LandingPage = () => {
             <div className="flex items-center space-x-3 group cursor-pointer">
               <div className="relative">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center transform group-hover:scale-105 transition-all duration-300 shadow-lg">
-                  <span className="text-white text-xl font-bold">S</span>
+                  <Link className="text-white w-5 h-5" />
                 </div>
               </div>
               <span
@@ -202,16 +252,26 @@ const LandingPage = () => {
                 <div
                   className={`w-5 h-5 rounded-full bg-gradient-to-r ${
                     gradients.primary
-                  } transform transition-transform duration-300 ${
+                  } transform transition-transform duration-300 flex items-center justify-center ${
                     isDark ? "translate-x-7" : "translate-x-0"
                   }`}
-                ></div>
+                >
+                  {isDark ? (
+                    <Moon className="w-3 h-3 text-white" />
+                  ) : (
+                    <Sun className="w-3 h-3 text-white" />
+                  )}
+                </div>
               </button>
               <button
                 className="md:hidden w-10 h-10 rounded-lg flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-300"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
-                <span className="text-xl">{mobileMenuOpen ? "✕" : "☰"}</span>
+                {mobileMenuOpen ? (
+                  <X className="w-5 h-5" />
+                ) : (
+                  <Menu className="w-5 h-5" />
+                )}
               </button>
             </div>
           </div>
@@ -303,25 +363,30 @@ const LandingPage = () => {
                     >
                       Social Links
                     </label>
-                    <div className="grid grid-cols-4 gap-2">
-                      {["🐦", "📷", "🎵", "🎮"].map((emoji) => (
-                        <button
-                          key={emoji}
-                          onClick={() => {
-                            const newSocials = formData.socials.includes(emoji)
-                              ? formData.socials.filter((s) => s !== emoji)
-                              : [...formData.socials, emoji];
-                            handleInputChange("socials", newSocials);
-                          }}
-                          className={`h-12 rounded-lg flex items-center justify-center text-lg transition-all duration-300 hover:scale-105 ${
-                            formData.socials.includes(emoji)
-                              ? `bg-gradient-to-br ${gradients.primary} text-white shadow-lg`
-                              : `${themeColors.card} border ${themeColors.border} hover:${themeColors.cardHover}`
-                          }`}
-                        >
-                          {emoji}
-                        </button>
-                      ))}
+                    <div className="grid grid-cols-6 gap-2">
+                      {availableSocialIcons.map((social) => {
+                        const isSelected = formData.selectedSocials.includes(
+                          social.id
+                        );
+                        return (
+                          <button
+                            key={social.id}
+                            type="button"
+                            onClick={() => handleSocialToggle(social.id)}
+                            className={`h-12 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-105 ${
+                              isSelected
+                                ? `bg-gradient-to-br ${gradients.primary} shadow-lg`
+                                : `${themeColors.card} border ${themeColors.border} hover:${themeColors.cardHover}`
+                            }`}
+                          >
+                            {React.cloneElement(social.icon, {
+                              className: `w-5 h-5 ${
+                                isSelected ? "text-white" : themeColors.text
+                              }`,
+                            })}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -332,9 +397,7 @@ const LandingPage = () => {
                   ></div>
                   <span className="relative text-white flex items-center justify-center space-x-2">
                     <span>Create Your Link</span>
-                    <span className="transform group-hover:translate-x-1 transition-transform duration-300">
-                      →
-                    </span>
+                    <ChevronRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
                 </button>
 
@@ -346,18 +409,33 @@ const LandingPage = () => {
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 pt-4">
                 {[
-                  { label: "Users", value: "50K+" },
-                  { label: "Links", value: "2M+" },
-                  { label: "Uptime", value: "99.9%" },
+                  {
+                    label: "Users",
+                    value: "50K+",
+                    icon: <User className="w-4 h-4" />,
+                  },
+                  {
+                    label: "Links",
+                    value: "2M+",
+                    icon: <Link className="w-4 h-4" />,
+                  },
+                  {
+                    label: "Uptime",
+                    value: "99.9%",
+                    icon: <CheckCircle className="w-4 h-4" />,
+                  },
                 ].map((stat) => (
                   <div
                     key={stat.label}
                     className={`text-center p-4 rounded-xl ${themeColors.card} border ${themeColors.border} hover:${themeColors.cardHover} transition-all duration-300`}
                   >
-                    <div
-                      className={`text-2xl font-bold bg-gradient-to-r ${gradients.primary} bg-clip-text text-transparent`}
-                    >
-                      {stat.value}
+                    <div className="flex items-center justify-center space-x-2">
+                      <div
+                        className={`text-2xl font-bold bg-gradient-to-r ${gradients.primary} bg-clip-text text-transparent`}
+                      >
+                        {stat.value}
+                      </div>
+                      <div className={themeColors.textMuted}>{stat.icon}</div>
                     </div>
                     <div
                       className={`text-xs ${themeColors.textMuted} mt-1 font-medium`}
@@ -394,7 +472,7 @@ const LandingPage = () => {
                   <div
                     className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${gradients.primary} flex items-center justify-center text-2xl shadow-lg`}
                   >
-                    <span className="text-white">👤</span>
+                    <User className="w-8 h-8 text-white" />
                   </div>
                   <div>
                     <h3 className={`text-xl font-bold ${themeColors.text}`}>
@@ -415,22 +493,20 @@ const LandingPage = () => {
                       onMouseLeave={() => setHoveredFeature(null)}
                     >
                       <div className="flex items-center space-x-3">
-                        <span className="text-xl">{link.icon}</span>
+                        <div className={themeColors.text}>{link.icon}</div>
                         <span
                           className={`font-medium text-sm ${themeColors.text}`}
                         >
                           {link.label}
                         </span>
                       </div>
-                      <span
-                        className={`text-lg transition-all duration-300 ${
+                      <ExternalLink
+                        className={`w-4 h-4 transition-all duration-300 ${
                           hoveredFeature === idx
                             ? "translate-x-0 opacity-100"
                             : "translate-x-2 opacity-0"
                         } ${themeColors.accentText}`}
-                      >
-                        →
-                      </span>
+                      />
                     </div>
                   ))}
                 </div>
@@ -441,14 +517,23 @@ const LandingPage = () => {
                       Connect
                     </span>
                     <div className="flex space-x-2">
-                      {formData.socials.map((emoji, idx) => (
-                        <div
-                          key={idx}
-                          className={`w-10 h-10 rounded-lg ${glassEffect} flex items-center justify-center text-lg transition-all duration-300 hover:scale-110 cursor-pointer`}
-                        >
-                          {emoji}
-                        </div>
-                      ))}
+                      {formData.selectedSocials.map((socialId, idx) => {
+                        const social = availableSocialIcons.find(
+                          (s) => s.id === socialId
+                        );
+                        if (!social) return null;
+
+                        return (
+                          <div
+                            key={idx}
+                            className={`w-10 h-10 rounded-lg ${glassEffect} flex items-center justify-center text-lg transition-all duration-300 hover:scale-110 cursor-pointer`}
+                          >
+                            {React.cloneElement(social.icon, {
+                              className: `w-5 h-5 ${themeColors.text}`,
+                            })}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -480,32 +565,32 @@ const LandingPage = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
-                icon: "⚡",
+                icon: <Zap className="w-6 h-6" />,
                 title: "Instant Updates",
                 desc: "See your changes in real-time with live preview",
               },
               {
-                icon: "🎨",
+                icon: <Palette className="w-6 h-6" />,
                 title: "Custom Design",
                 desc: "Personalize colors, fonts, and layouts easily",
               },
               {
-                icon: "📊",
+                icon: <BarChart3 className="w-6 h-6" />,
                 title: "Analytics",
                 desc: "Track clicks and visitor engagement metrics",
               },
               {
-                icon: "🔒",
+                icon: <Lock className="w-6 h-6" />,
                 title: "Secure",
                 desc: "Enterprise-grade security for your data",
               },
               {
-                icon: "📱",
+                icon: <Smartphone className="w-6 h-6" />,
                 title: "Responsive",
                 desc: "Perfect on desktop, tablet, and mobile",
               },
               {
-                icon: "🚀",
+                icon: <Rocket className="w-6 h-6" />,
                 title: "Fast Deploy",
                 desc: "Go live instantly with one-click publishing",
               },
@@ -518,7 +603,7 @@ const LandingPage = () => {
                   <div
                     className={`w-14 h-14 rounded-xl bg-gradient-to-br ${gradients.primary} flex items-center justify-center text-2xl transform group-hover:scale-110 transition-all duration-300 shadow-lg`}
                   >
-                    <span className="text-white">{feature.icon}</span>
+                    <div className="text-white">{feature.icon}</div>
                   </div>
                   <h3 className={`text-xl font-bold ${themeColors.text}`}>
                     {feature.title}
@@ -544,7 +629,7 @@ const LandingPage = () => {
                 <div
                   className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradients.primary} flex items-center justify-center shadow-lg`}
                 >
-                  <span className="text-white font-bold">S</span>
+                  <Link className="text-white w-5 h-5" />
                 </div>
                 <span
                   className={`text-xl font-bold bg-gradient-to-r ${gradients.primary} bg-clip-text text-transparent`}

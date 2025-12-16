@@ -43,7 +43,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                         {/* Policy Sections */}
                         <div className="space-y-6">
                             {/* Section 1 */}
-                            <div className="border-l-4 border-purple-500 pl-4">
+                            <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
                                     1. Data Collection
                                 </h3>
@@ -55,7 +55,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                             </div>
 
                             {/* Section 2 */}
-                            <div className="border-l-4 border-purple-500 pl-4">
+                            <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
                                     2. Data Usage
                                 </h3>
@@ -64,26 +64,26 @@ const SecurityModal = ({ isOpen, onClose }) => {
                                 </p>
                                 <ul className="mt-2 space-y-2 text-gray-600">
                                     <li className="flex items-start gap-2">
-                                        <span className="text-purple-600 mt-1">•</span>
+                                        <span className="text-blue-600 mt-1">•</span>
                                         <span>Provide and improve Synapse services</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <span className="text-purple-600 mt-1">•</span>
+                                        <span className="text-blue-600 mt-1">•</span>
                                         <span>Deliver analytics and insights about your Bundle performance</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <span className="text-purple-600 mt-1">•</span>
+                                        <span className="text-blue-600 mt-1">•</span>
                                         <span>Send important updates and notifications</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <span className="text-purple-600 mt-1">•</span>
+                                        <span className="text-blue-600 mt-1">•</span>
                                         <span>Prevent abuse and fraudulent activity</span>
                                     </li>
                                 </ul>
                             </div>
 
                             {/* Section 3 */}
-                            <div className="border-l-4 border-purple-500 pl-4">
+                            <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
                                     3. Data Security
                                 </h3>
@@ -95,7 +95,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                             </div>
 
                             {/* Section 4 */}
-                            <div className="border-l-4 border-purple-500 pl-4">
+                            <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
                                     4. Sharing Data with Third Parties
                                 </h3>
@@ -107,7 +107,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                             </div>
 
                             {/* Section 5 */}
-                            <div className="border-l-4 border-purple-500 pl-4">
+                            <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
                                     5. User Rights
                                 </h3>
@@ -116,26 +116,26 @@ const SecurityModal = ({ isOpen, onClose }) => {
                                 </p>
                                 <ul className="space-y-2 text-gray-600">
                                     <li className="flex items-start gap-2">
-                                        <span className="text-purple-600 mt-1">•</span>
+                                        <span className="text-blue-600 mt-1">•</span>
                                         <span><strong>Access:</strong> You can access all your personal data at any time</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <span className="text-purple-600 mt-1">•</span>
+                                        <span className="text-blue-600 mt-1">•</span>
                                         <span><strong>Edit:</strong> You can modify your profile information at any time</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <span className="text-purple-600 mt-1">•</span>
+                                        <span className="text-blue-600 mt-1">•</span>
                                         <span><strong>Delete:</strong> You can permanently delete your account and all your data</span>
                                     </li>
                                     <li className="flex items-start gap-2">
-                                        <span className="text-purple-600 mt-1">•</span>
+                                        <span className="text-blue-600 mt-1">•</span>
                                         <span><strong>Export:</strong> You can export all your data in a readable format</span>
                                     </li>
                                 </ul>
                             </div>
 
                             {/* Section 6 */}
-                            <div className="border-l-4 border-purple-500 pl-4">
+                            <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
                                     6. Cookies and Tracking
                                 </h3>
@@ -148,7 +148,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                             </div>
 
                             {/* Section 7 */}
-                            <div className="border-l-4 border-purple-500 pl-4">
+                            <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
                                     7. Policy Changes
                                 </h3>
@@ -160,7 +160,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                             </div>
 
                             {/* Section 8 */}
-                            <div className="border-l-4 border-purple-500 pl-4">
+                            <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-lg font-bold text-gray-900 mb-2">
                                     8. Contact Us
                                 </h3>
@@ -168,7 +168,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                                     If you have questions about our privacy policy or want to exercise your rights 
                                     regarding personal data, please contact us at:
                                 </p>
-                                <div className="mt-3 bg-purple-50 p-4 rounded-lg">
+                                <div className="mt-3 bg-blue-50 p-4 rounded-lg">
                                     <p className="text-gray-700">
                                         <strong>Email:</strong> synapsebioapp@gmail.com <br />
                                         <strong>Address:</strong> Jakarta, Indonesia
@@ -189,7 +189,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                     <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
                         <button 
                             onClick={onClose}
-                            className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-400 text-white font-semibold rounded-xl hover:opacity-90 transition-all"
+                            className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-400 text-white font-semibold rounded-xl hover:opacity-90 transition-all"
                         >
                             I Understand
                         </button>

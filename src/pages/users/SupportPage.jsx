@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 import Layout from "../../components/layouts/Layout";
 import {
   QuestionMarkCircleIcon,
@@ -96,6 +97,7 @@ const quickHelpCards = [
 ];
 
 const SupportPage = () => {
+  const { user } = useContext(AuthContext);
   const [openId, setOpenId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
@@ -117,7 +119,7 @@ const SupportPage = () => {
   return (
     <Layout>
       {/* FIXED: Proper background that covers entire viewport */}
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50/30 to-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50">
         {/* Hero Header Section */}
         <div className="bg-white border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -130,7 +132,7 @@ const SupportPage = () => {
                   Help Center
                 </h1>
                 <p className="text-gray-500 text-sm mt-1">
-                  Hi, Rafa! How can we help you? 👋
+                  Hi, {user?.name || "there"}! How can we help you? 👋
                 </p>
               </div>
             </div>
@@ -143,7 +145,7 @@ const SupportPage = () => {
                   placeholder="Search for help, guides, or FAQ..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-5 py-3.5 pl-12 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-gray-900 placeholder:text-gray-400"
+                  className="w-full px-5 py-3.5 pl-12 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder:text-gray-400"
                 />
                 <svg
                   className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2"
@@ -173,10 +175,10 @@ const SupportPage = () => {
                   <button
                     key={card.id}
                     onClick={() => setIsQuickStartModalOpen(true)}
-                    className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md border border-gray-100 transition-all duration-300 group hover:border-purple-200 text-left"
+                    className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md border border-gray-100 transition-all duration-300 group hover:border-blue-200 text-left"
                   >
                     <div className="text-3xl mb-3">{card.icon}</div>
-                    <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-purple-600 transition-colors">
+                    <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
                       {card.title}
                     </h3>
                     <p className="text-sm text-gray-500">{card.description}</p>
@@ -190,10 +192,10 @@ const SupportPage = () => {
                   <button
                     key={card.id}
                     onClick={() => setIsDocumentationModalOpen(true)}
-                    className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md border border-gray-100 transition-all duration-300 group hover:border-purple-200 text-left"
+                    className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md border border-gray-100 transition-all duration-300 group hover:border-blue-200 text-left"
                   >
                     <div className="text-3xl mb-3">{card.icon}</div>
-                    <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-purple-600 transition-colors">
+                    <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
                       {card.title}
                     </h3>
                     <p className="text-sm text-gray-500">{card.description}</p>
@@ -205,10 +207,10 @@ const SupportPage = () => {
                 <a
                   key={card.id}
                   href={card.link}
-                  className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md border border-gray-100 transition-all duration-300 group hover:border-purple-200"
+                  className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md border border-gray-100 transition-all duration-300 group hover:border-blue-200"
                 >
                   <div className="text-3xl mb-3">{card.icon}</div>
-                  <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-purple-600 transition-colors">
+                  <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
                     {card.title}
                   </h3>
                   <p className="text-sm text-gray-500">{card.description}</p>
@@ -246,7 +248,7 @@ const SupportPage = () => {
                       </span>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-medium text-purple-600 bg-purple-50 px-2 py-1 rounded-full">
+                          <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
                             {item.category}
                           </span>
                         </div>
@@ -257,7 +259,7 @@ const SupportPage = () => {
                     </div>
                     <ChevronDownIcon
                       className={`w-5 h-5 text-gray-400 transition-transform duration-300 flex-shrink-0 ml-4 ${
-                        openId === item.id ? "rotate-180 text-purple-600" : ""
+                        openId === item.id ? "rotate-180 text-blue-600" : ""
                       }`}
                     />
                   </button>
@@ -265,7 +267,7 @@ const SupportPage = () => {
                   {/* Answer Content */}
                   {openId === item.id && (
                     <div className="px-5 pb-5 pt-0">
-                      <div className="ml-14 pl-4 border-l-2 border-purple-200">
+                      <div className="ml-14 pl-4 border-l-2 border-blue-200">
                         <p className="text-gray-600 leading-relaxed">
                           {item.answer}
                         </p>
@@ -298,13 +300,13 @@ const SupportPage = () => {
               <h2 className="text-2xl font-bold text-white mb-3">
                 Still Need Help?
               </h2>
-              <p className="text-purple-100 mb-6 text-lg">
+              <p className="text-blue-100 mb-6 text-lg">
                 The Synapse support team is ready to help you 24/7. Contact us for
                 further questions or technical assistance.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-                <button className="px-8 py-3.5 bg-white text-purple-600 font-semibold rounded-xl hover:bg-purple-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2">
+                <button className="px-8 py-3.5 bg-white text-blue-600 font-semibold rounded-xl hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2">
                   <ChatBubbleLeftRightIcon className="w-5 h-5" />
                   Contact Support
                 </button>
@@ -360,7 +362,7 @@ const SupportPage = () => {
           {/* Additional Resources */}
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 pb-8">
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <LightBulbIcon className="w-8 h-8 text-purple-600 mb-3" />
+              <LightBulbIcon className="w-8 h-8 text-blue-600 mb-3" />
               <h3 className="font-semibold text-gray-900 mb-2">
                 Tips & Tricks
               </h3>
@@ -369,7 +371,7 @@ const SupportPage = () => {
               </p>
               <a
                 href="/tips"
-                className="text-purple-600 text-sm font-medium hover:text-purple-700 flex items-center gap-1"
+                className="text-blue-600 text-sm font-medium hover:text-blue-700 flex items-center gap-1"
               >
                 Learn more
                 <svg
@@ -389,7 +391,7 @@ const SupportPage = () => {
             </div>
 
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <ShieldCheckIcon className="w-8 h-8 text-purple-600 mb-3" />
+              <ShieldCheckIcon className="w-8 h-8 text-blue-600 mb-3" />
               <h3 className="font-semibold text-gray-900 mb-2">
                 Security & Privacy
               </h3>
@@ -399,7 +401,7 @@ const SupportPage = () => {
               {/* Click handler to open modal */}
               <button
                 onClick={() => setIsSecurityModalOpen(true)}
-                className="text-purple-600 text-sm font-medium hover:text-purple-700 flex items-center gap-1"
+                className="text-blue-600 text-sm font-medium hover:text-blue-700 flex items-center gap-1"
               >
                 Read policy
                 <svg
@@ -420,7 +422,7 @@ const SupportPage = () => {
 
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <svg
-                className="w-8 h-8 text-purple-600 mb-3"
+                className="w-8 h-8 text-blue-600 mb-3"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -438,7 +440,7 @@ const SupportPage = () => {
               </p>
               <a
                 href="/changelog"
-                className="text-purple-600 text-sm font-medium hover:text-purple-700 flex items-center gap-1"
+                className="text-blue-600 text-sm font-medium hover:text-blue-700 flex items-center gap-1"
               >
                 View updates
                 <svg

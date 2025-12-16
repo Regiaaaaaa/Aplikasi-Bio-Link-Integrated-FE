@@ -195,24 +195,28 @@ const DocumentationModal = ({ isOpen, onClose }) => {
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden">
         
         {/* Header */}
-        <div className="bg-white border-b border-gray-200 p-5 flex items-center justify-between flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="bg-blue-500 p-2.5 rounded-lg">
-              <Book className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">Documentation</h2>
-              <p className="text-gray-500 text-sm hidden sm:block">Complete guide to Synapse features</p>
-            </div>
+      <div className="bg-gradient-to-r from-blue-600 to-blue-400 px-6 py-5 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="bg-white/20 p-2.5 rounded-lg">
+            <Book className="w-5 h-5 text-white" />
           </div>
-          <button
-            onClick={onClose}
-            className="hover:bg-gray-100 p-2 rounded-lg transition-colors text-gray-500 hover:text-gray-700"
-            aria-label="Close"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div>
+            <h2 className="text-xl font-bold text-white">Documentation</h2>
+            <p className="text-blue-100 text-sm hidden sm:block">
+              Complete guide to Synapse features
+            </p>
+          </div>
         </div>
+
+        <button
+          onClick={onClose}
+          className="hover:bg-white/20 p-2 rounded-lg transition-colors text-white"
+          aria-label="Close"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
 
         {/* Mobile Category Selector */}
         <div className="lg:hidden border-b border-gray-200 flex-shrink-0">

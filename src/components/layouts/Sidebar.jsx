@@ -26,7 +26,7 @@ import {
   Shield,
   Database,
   Star,
-  BarChart2
+  BarChart2,
 } from "lucide-react";
 import { useContext, useState, useRef, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
@@ -222,12 +222,6 @@ export default function Sidebar({
               to="/dashboard"
               onClick={() => handleMenuItemClick("/dashboard")}
             />
-            <SidebarItem
-              icon={<Search size={20} />}
-              label="Search"
-              to="/search"
-              onClick={() => handleMenuItemClick("/search")}
-            />
 
             {/* Reporting Section */}
             <div className="mt-6 mb-2">
@@ -265,80 +259,6 @@ export default function Sidebar({
               label="Notifications"
               to="/notifications"
               onClick={() => handleMenuItemClick("/notifications")}
-            />
-            <SidebarItem
-              icon={<Mail size={20} />}
-              label="Mail"
-              to="/mail"
-              onClick={() => handleMenuItemClick("/mail")}
-            />
-            <SidebarItem
-              icon={<Inbox size={20} />}
-              label="Inbox"
-              to="/inbox"
-              onClick={() => handleMenuItemClick("/inbox")}
-            />
-            <SidebarItem
-              icon={<MessageSquare size={20} />}
-              label="Messages"
-              to="/messages"
-              onClick={() => handleMenuItemClick("/messages")}
-            />
-
-            {/* Productivity */}
-            <div className="mt-6 mb-2">
-              <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Productivity
-              </p>
-            </div>
-            <SidebarItem
-              icon={<FolderKanban size={20} />}
-              label="Kanban"
-              to="/kanban"
-              onClick={() => handleMenuItemClick("/kanban")}
-            />
-            <SidebarItem
-              icon={<CheckSquare size={20} />}
-              label="Tasks"
-              to="/tasks"
-              onClick={() => handleMenuItemClick("/tasks")}
-            />
-            <SidebarItem
-              icon={<Calendar size={20} />}
-              label="Calendar"
-              to="/calendar"
-              onClick={() => handleMenuItemClick("/calendar")}
-            />
-            <SidebarItem
-              icon={<FileCheck size={20} />}
-              label="Projects"
-              to="/projects"
-              onClick={() => handleMenuItemClick("/projects")}
-            />
-
-            {/* Team & Organization */}
-            <div className="mt-6 mb-2">
-              <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Organization
-              </p>
-            </div>
-            <SidebarItem
-              icon={<Users size={20} />}
-              label="Team"
-              to="/team"
-              onClick={() => handleMenuItemClick("/team")}
-            />
-            <SidebarItem
-              icon={<Database size={20} />}
-              label="Resources"
-              to="/resources"
-              onClick={() => handleMenuItemClick("/resources")}
-            />
-            <SidebarItem
-              icon={<Shield size={20} />}
-              label="Admin"
-              to="/admin"
-              onClick={() => handleMenuItemClick("/admin")}
             />
 
             {/* Help & Settings */}

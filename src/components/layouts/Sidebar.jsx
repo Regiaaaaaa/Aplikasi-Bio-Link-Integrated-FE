@@ -50,6 +50,7 @@ export default function Sidebar({
 
   const dropdownRef = useRef(null);
   const sidebarRef = useRef(null);
+  const isAdmin = user?.role === "admin";
 
   // Sync with parent collapsed state
   useEffect(() => {
@@ -180,24 +181,23 @@ export default function Sidebar({
               to="/dashboard"
               onClick={() => handleMenuItemClick("/dashboard")}
             />
-            <SidebarItemCollapsed
-              icon={<Search size={22} />}
-              label="Search"
-              to="/search"
-              onClick={() => handleMenuItemClick("/search")}
-            />
-            <SidebarItemCollapsed
-              icon={<ClipboardList size={22} />}
-              label="Check-ins"
-              to="/checkins"
-              onClick={() => handleMenuItemClick("/checkins")}
-            />
-            <SidebarItemCollapsed
-              icon={<Bell size={22} />}
-              label="Notifications"
-              to="/notifications"
-              onClick={() => handleMenuItemClick("/notifications")}
-            />
+            {/* NON ADMIN ONLY */}
+            {!isAdmin && (
+              <>
+                <SidebarItemCollapsed
+                  icon={<ClipboardList size={22} />}
+                  label="Check-ins"
+                  to="/checkins"
+                  onClick={() => handleMenuItemClick("/checkins")}
+                />
+                <SidebarItemCollapsed
+                  icon={<Bell size={22} />}
+                  label="Notifications"
+                  to="/notifications"
+                  onClick={() => handleMenuItemClick("/notifications")}
+                />
+              </>
+            )}
             <SidebarItemCollapsed
               icon={<UserCircle size={22} />}
               label="Profile"
@@ -223,74 +223,80 @@ export default function Sidebar({
               onClick={() => handleMenuItemClick("/dashboard")}
             />
 
-            {/* Reporting Section */}
-            <div className="mt-6 mb-2">
-              <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Main Menu
-              </p>
-            </div>
-            <SidebarItem
-              icon={<Home size={20} />}
-              label="My Page"
-              to="/checkins"
-              onClick={() => handleMenuItemClick("/checkins")}
-            />
-            <SidebarItem
-              icon={<Star size={20} />}
-              label="Premium Pack"
-              to="/premium-pack"
-              onClick={() => handleMenuItemClick("/premium-pack")}
-            />
-            <SidebarItem
-              icon={<BarChart2 size={20} />}
-              label="Analystic History"
-              to="/career"
-              onClick={() => handleMenuItemClick("/career")}
-            />
+            {/* NON ADMIN ONLY */}
+            {!isAdmin && (
+              <>
+                {/* Reporting Section */}
+                <div className="mt-6 mb-2">
+                  <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Main Menu
+                  </p>
+                </div>
+                <SidebarItem
+                  icon={<Home size={20} />}
+                  label="My Page"
+                  to="/checkins"
+                  onClick={() => handleMenuItemClick("/checkins")}
+                />
+                <SidebarItem
+                  icon={<Star size={20} />}
+                  label="Premium Pack"
+                  to="/premium-pack"
+                  onClick={() => handleMenuItemClick("/premium-pack")}
+                />
+                <SidebarItem
+                  icon={<BarChart2 size={20} />}
+                  label="Analystic History"
+                  to="/career"
+                  onClick={() => handleMenuItemClick("/career")}
+                />
 
-            {/* Communication */}
-            <div className="mt-6 mb-2">
-              <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Communication
-              </p>
-            </div>
-            <SidebarItem
-              icon={<Bell size={20} />}
-              label="Notifications"
-              to="/notifications"
-              onClick={() => handleMenuItemClick("/notifications")}
-            />
+                {/* Communication */}
+                <div className="mt-6 mb-2">
+                  <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Communication
+                  </p>
+                </div>
+                <SidebarItem
+                  icon={<Bell size={20} />}
+                  label="Notifications"
+                  to="/notifications"
+                  onClick={() => handleMenuItemClick("/notifications")}
+                />
 
-            {/* Help & Settings */}
-            <div className="mt-6 mb-2">
-              <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Support
-              </p>
-            </div>
-            <SidebarItem
-              icon={<FileText size={20} />}
-              label="Documentation"
-              to="/docs"
-              onClick={() => handleMenuItemClick("/docs")}
-            />
-            <SidebarItem
-              icon={<BookOpen size={20} />}
-              label="Knowledge Base"
-              to="/knowledge"
-              onClick={() => handleMenuItemClick("/knowledge")}
-            />
-            <SidebarItem
-              icon={<LifeBuoy size={20} />}
-              label="Support"
-              to="/support"
-              onClick={() => handleMenuItemClick("/support")}
-            />
-            <SidebarItem
-              icon={<Settings size={20} />}
-              label="Settings"
-              to="/settings"
-              onClick={() => handleMenuItemClick("/settings")}
-            />
+                {/* Help & Settings */}
+                <div className="mt-6 mb-2">
+                  <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Support
+                  </p>
+                </div>
+                <SidebarItem
+                  icon={<FileText size={20} />}
+                  label="Documentation"
+                  to="/docs"
+                  onClick={() => handleMenuItemClick("/docs")}
+                />
+                <SidebarItem
+                  icon={<BookOpen size={20} />}
+                  label="Knowledge Base"
+                  to="/knowledge"
+                  onClick={() => handleMenuItemClick("/knowledge")}
+                />
+                <SidebarItem
+                  icon={<LifeBuoy size={20} />}
+                  label="Support"
+                  to="/support"
+                  onClick={() => handleMenuItemClick("/support")}
+                />
+                <SidebarItem
+                  icon={<Settings size={20} />}
+                  label="Settings"
+                  to="/settings"
+                  onClick={() => handleMenuItemClick("/settings")}
+                />
+              </>
+            )}
+
             <SidebarItem
               icon={<UserCircle size={20} />}
               label="Profile"

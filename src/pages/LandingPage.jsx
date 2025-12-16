@@ -391,7 +391,7 @@ const LandingPage = () => {
                   </div>
                 </div>
 
-                <button className="group relative w-full py-4 rounded-xl font-semibold overflow-hidden transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-xl">
+                <button onClick={() => navigate("/login")} className="group relative w-full py-4 rounded-xl font-semibold overflow-hidden transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-xl">
                   <div
                     className={`absolute inset-0 bg-gradient-to-r ${gradients.primary}`}
                   ></div>

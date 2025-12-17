@@ -11,8 +11,13 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [rememberMe, setRememberMe] = useState(false); // State untuk remember me
+  const [errorMessage, setErrorMessage] = useState({
+    type: "",
+    title: "",
+    message: "",
+    detail: "",
+  });
+  const [rememberMe, setRememberMe] = useState(false);
   const { user, setUser, loading } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -141,7 +146,7 @@ export default function Login() {
         }
 
         .animate-pulse-custom {
-          animation: pulse 3s ease-in-out infinite;
+          animation: pulseCustom 2s ease-in-out infinite;
         }
 
         .animate-scaleIn {
@@ -150,6 +155,10 @@ export default function Login() {
 
         .animate-shake {
           animation: shake 0.5s ease-out;
+        }
+
+        .animate-fadeInUp {
+          animation: fadeInUp 0.5s ease-out;
         }
 
         .delay-100 {
@@ -166,6 +175,28 @@ export default function Login() {
 
         .delay-400 {
           animation-delay: 0.4s;
+        }
+
+        @keyframes pulseCustom {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(1.05);
+            opacity: 0.9;
+          }
+        }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
 
         .glass-card {

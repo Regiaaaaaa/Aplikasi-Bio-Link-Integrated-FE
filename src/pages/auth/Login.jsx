@@ -22,6 +22,39 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
+    useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const error = params.get("error");
+
+    // Google Redirect Error
+    if (error === "banned") {
+      setErrorMessage({
+        type: "banned",
+        title: "Akun Dinonaktifkan",
+        message: "Akun Anda dinonaktifkan",
+        detail: params.get("message") || "Silakan hubungi administrator",
+      });
+
+      setShowErrorModal(true);
+
+      // Clean Url
+      navigate("/login", { replace: true });
+    }
+
+    // Failed Google
+    if (error === "google_failed") {
+      setErrorMessage({
+        type: "error",
+        title: "Login Google Gagal",
+        message: "Autentikasi Google gagal. Silakan coba lagi.",
+      });
+
+      setShowErrorModal(true);
+      navigate("/login", { replace: true });
+    }
+  }, [location.search, navigate]);
+
+
   useEffect(() => {
     if (!loading && user && location.pathname !== "/google/callback") {
       navigate("/dashboard", { replace: true });

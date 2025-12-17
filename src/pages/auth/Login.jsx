@@ -50,11 +50,34 @@ export default function Login() {
         navigate("/dashboard", { replace: true });
       }, 2000);
     } catch (err) {
-      console.error(err);
-      setErrorMessage(
-        err.response?.data?.message ||
-          "Login failed. Please check your email and password!"
-      );
+      console.error("Login error:", err);
+
+      // Check if user is banned/deactivated
+      if (
+        err.response?.status === 403 &&
+        err.response?.data?.message?.includes("pelanggaran")
+      ) {
+        const banMessage =
+          err.response?.data?.detail ||
+          "Akun Anda telah dinonaktifkan karena melanggar kebijakan platform.";
+
+        setErrorMessage({
+          type: "banned",
+          title: "Akun Dinonaktifkan",
+          message:
+            err.response?.data?.message ||
+            "Kami mendeteksi pelanggaran pada akun Anda.",
+          detail: banMessage,
+        });
+      } else {
+        setErrorMessage({
+          type: "error",
+          title: "Login Gagal",
+          message:
+            err.response?.data?.message ||
+            "Login failed. Please check your email and password!",
+        });
+      }
       setShowErrorModal(true);
     } finally {
       setIsLoading(false);
@@ -244,7 +267,140 @@ export default function Login() {
         </div>
       )}
 
-      {showErrorModal && (
+      {/* Banned Account Modal */}
+      {showErrorModal && errorMessage.type === "banned" && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl animate-scaleIn">
+            <div className="flex flex-col text-center">
+              {/* Warning Icon */}
+              <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center mb-4 mx-auto animate-pulse-custom">
+                <svg
+                  className="w-10 h-10 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                  />
+                </svg>
+              </div>
+
+              {/* Title */}
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                {errorMessage.title}
+              </h3>
+              <p className="text-gray-600 mb-4">{errorMessage.message}</p>
+
+              {/* Ban Detail Card */}
+              <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-xl p-5 mb-4 text-left">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-white rounded-lg border border-red-100">
+                    <svg
+                      className="w-5 h-5 text-red-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.346 16.5c-.77.833.192 2.5 1.732 2.5z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-red-800 mb-1">
+                      Alasan Penonaktifan:
+                    </p>
+                    <p className="text-red-700 text-sm leading-relaxed">
+                      {errorMessage.detail ||
+                        "Akun Anda telah dinonaktifkan oleh administrator."}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Admin Section */}
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6">
+                <p className="text-sm font-semibold text-gray-800 mb-2 flex items-center justify-center gap-2">
+                  <svg
+                    className="w-4 h-4 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+                  Butuh Bantuan?
+                </p>
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-center gap-3">
+                    <a
+                      href="mailto:synapsebioapp@gmail.com"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                        />
+                      </svg>
+                      synapsebioapp@gmail.com
+                    </a>
+                  </div>
+
+                  <p className="text-xs text-gray-500">
+                    Hubungi administrator untuk mengajukan permohonan aktivasi
+                    ulang akun
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => {
+                    setShowErrorModal(false);
+                    window.location.href =
+                      "mailto:synapsebioapp@gmail.com?subject=Permohonan%20Aktivasi%20Akun&body=Saya%20ingin%20mengajukan%20permohonan%20aktivasi%20ulang%20akun%20saya.%0D%0A%0D%0AEmail:%20" +
+                      encodeURIComponent(email);
+                  }}
+                  className="flex-1 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+                >
+                  Hubungi Admin
+                </button>
+                <button
+                  onClick={() => setShowErrorModal(false)}
+                  className="flex-1 py-3 border-2 border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+                >
+                  Tutup
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Regular Error Modal */}
+      {showErrorModal && errorMessage.type === "error" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
           <div className="bg-white rounded-2xl p-8 max-w-sm mx-4 shadow-2xl animate-scaleIn">
             <div className="flex flex-col items-center text-center">
@@ -267,29 +423,16 @@ export default function Login() {
 
               {/* Error Message */}
               <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                Login Failed
+                {errorMessage.title}
               </h3>
-              <p className="text-gray-600 mb-4">{errorMessage}</p>
-
-              {/* Kontak Admin jika akun non-aktif */}
-              {errorMessage.includes("Pelanggaran") && (
-                <p className="text-sm text-gray-500 mb-4">
-                  Silahkan hubungi admin:{" "}
-                  <a
-                    href="mailto:synapsebioapp@gmail.com"
-                    className="text-red-600 underline"
-                  >
-                    synapsebioapp@gmail.com
-                  </a>
-                </p>
-              )}
+              <p className="text-gray-600 mb-4">{errorMessage.message}</p>
 
               {/* Button */}
               <button
                 onClick={() => setShowErrorModal(false)}
                 className="btn w-full h-12 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200"
               >
-                Try Again
+                Coba Lagi
               </button>
             </div>
           </div>

@@ -81,6 +81,7 @@ export default function AdminDashboard() {
       column.width = maxLength + 4;
     });
   };
+  const [banMessage, setBanMessage] = useState("");
 
   // Handle click outside untuk semua modal
   useEffect(() => {
@@ -123,6 +124,7 @@ export default function AdminDashboard() {
   const handleCloseConfirmModal = () => {
     setShowConfirmModal(false);
     setConfirmAction({ type: "", userId: null, userName: "" });
+    setBanMessage(""); // Reset ban message
   };
 
   // Stats data
@@ -221,6 +223,9 @@ export default function AdminDashboard() {
   const showConfirmActionModal = (type, userId, userName) => {
     setConfirmAction({ type, userId, userName });
     setShowConfirmModal(true);
+    if (type !== "ban") {
+      setBanMessage(""); // Clear ban message if not ban action
+    }
   };
 
   // Ban user (deactivate)
@@ -237,14 +242,19 @@ export default function AdminDashboard() {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            ban_message: banMessage,
+          }),
         }
       );
 
       if (response.ok) {
         await fetchUsers();
         handleCloseConfirmModal();
+        setBanMessage(""); // Reset message
       } else {
-        alert("Gagal menonaktifkan user");
+        const errorData = await response.json();
+        alert(errorData.message || "Gagal menonaktifkan user");
       }
     } catch (error) {
       console.error("Error banning user:", error);
@@ -425,8 +435,16 @@ export default function AdminDashboard() {
           >
             <div className="p-6">
               <div className="flex items-start gap-4 mb-6">
-                <div className="p-3 rounded-full bg-red-100">
-                  <AlertTriangle className="w-8 h-8 text-red-600" />
+                <div
+                  className={`p-3 rounded-full ${
+                    confirmAction.type === "ban" ? "bg-red-100" : "bg-green-100"
+                  }`}
+                >
+                  {confirmAction.type === "ban" ? (
+                    <AlertTriangle className="w-8 h-8 text-red-600" />
+                  ) : (
+                    <CheckCircle className="w-8 h-8 text-green-600" />
+                  )}
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -442,6 +460,28 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
+              {/* Tambahkan input alasan ban */}
+              {confirmAction.type === "ban" && (
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Alasan Penonaktifan
+                    <span className="text-red-500 ml-1">*</span>
+                  </label>
+                  <textarea
+                    value={banMessage}
+                    onChange={(e) => setBanMessage(e.target.value)}
+                    placeholder="Masukkan alasan penonaktifan akun pengguna..."
+                    rows="3"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                    required
+                  />
+                  <p className="text-xs text-gray-500 mt-2">
+                    Alasan ini akan ditampilkan kepada pengguna saat mencoba
+                    login.
+                  </p>
+                </div>
+              )}
+
               <div className="bg-gray-50 p-4 rounded-xl mb-6">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <AlertCircle className="w-4 h-4" />
@@ -456,7 +496,10 @@ export default function AdminDashboard() {
               <div className="flex gap-3">
                 <button
                   onClick={executeAction}
-                  disabled={processingUserId === confirmAction.userId}
+                  disabled={
+                    processingUserId === confirmAction.userId ||
+                    (confirmAction.type === "ban" && !banMessage.trim())
+                  }
                   className={`flex-1 py-3 font-medium rounded-xl transition-all ${
                     confirmAction.type === "ban"
                       ? "bg-gradient-to-r from-red-500 to-red-600 text-white hover:shadow-lg"

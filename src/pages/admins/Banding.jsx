@@ -15,11 +15,16 @@ import {
   MessageSquare,
   Download,
   Shield,
+  FileText,
+  Hash,
+  X,
+  Globe,
+  AlertTriangle,
+  Check,
+  X as XIcon,
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import Layout from "../../components/layouts/Layout";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
 
 export default function AdminAppealsPage() {
   const { user } = useContext(AuthContext);
@@ -157,7 +162,9 @@ export default function AdminAppealsPage() {
     setSelectedAppeal(appeal);
     setModalAction(action);
     setAdminReply(
-      action === "approve" ? "Banding diterima" : "Banding ditolak"
+      action === "approve"
+        ? "Banding diterima. Akun Anda telah diaktifkan kembali."
+        : "Banding ditolak. Akun Anda tetap dinonaktifkan."
     );
     setShowActionModal(true);
   };
@@ -193,6 +200,7 @@ export default function AdminAppealsPage() {
       if (response.ok) {
         await fetchAppeals();
         handleCloseActionModal();
+        handleCloseDetailModal();
       } else {
         const errorData = await response.json();
         alert(errorData.message || `Gagal memproses banding`);
@@ -229,7 +237,7 @@ export default function AdminAppealsPage() {
   };
 
   const getRelativeTime = (dateString) => {
-    if (!dateString) return "Never";
+    if (!dateString) return "Baru saja";
     const date = new Date(dateString);
     const now = new Date();
     const diff = now - date;
@@ -239,9 +247,9 @@ export default function AdminAppealsPage() {
     const days = Math.floor(diff / 86400000);
 
     if (minutes < 1) return "Baru saja";
-    if (minutes < 60) return `${minutes}m yang lalu`;
-    if (hours < 24) return `${hours}j yang lalu`;
-    if (days < 7) return `${days}h yang lalu`;
+    if (minutes < 60) return `${minutes} menit lalu`;
+    if (hours < 24) return `${hours} jam lalu`;
+    if (days < 7) return `${days} hari lalu`;
     return formatDateShort(dateString);
   };
 
@@ -255,6 +263,7 @@ export default function AdminAppealsPage() {
           border: "border-yellow-200",
           icon: Clock,
           iconColor: "text-yellow-600",
+          label: "Menunggu",
         };
       case "approved":
         return {
@@ -263,6 +272,7 @@ export default function AdminAppealsPage() {
           border: "border-green-200",
           icon: CheckCircle,
           iconColor: "text-green-600",
+          label: "Disetujui",
         };
       case "rejected":
         return {
@@ -271,6 +281,7 @@ export default function AdminAppealsPage() {
           border: "border-red-200",
           icon: XCircle,
           iconColor: "text-red-600",
+          label: "Ditolak",
         };
       default:
         return {
@@ -279,60 +290,9 @@ export default function AdminAppealsPage() {
           border: "border-gray-200",
           icon: AlertCircle,
           iconColor: "text-gray-600",
+          label: "Unknown",
         };
     }
-  };
-
-  // Export to Excel
-  const handleExportData = () => {
-    if (filteredAppeals.length === 0) {
-      alert("Tidak ada data untuk diekspor");
-      return;
-    }
-
-    const exportData = filteredAppeals.map((appeal, index) => ({
-      No: index + 1,
-      "Nama Pengguna": appeal.user?.name || "N/A",
-      Email: appeal.user?.email || "N/A",
-      "Alasan Banding": appeal.appeal_reason || "N/A",
-      "Bukti Pendukung": appeal.appeal_evidence || "Tidak ada",
-      Status:
-        appeal.status === "pending"
-          ? "Menunggu"
-          : appeal.status === "approved"
-          ? "Diterima"
-          : "Ditolak",
-      "Tanggal Pengajuan": formatDateShort(appeal.created_at),
-      "Balasan Admin": appeal.admin_reply || "Belum ada balasan",
-    }));
-
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Banding Pengguna");
-
-    // Auto column width
-    const maxWidth = exportData.reduce(
-      (w, r) => Math.max(w, r["Alasan Banding"]?.length || 0),
-      10
-    );
-    worksheet["!cols"] = [
-      { wch: 5 }, // No
-      { wch: 25 }, // Nama
-      { wch: 30 }, // Email
-      { wch: Math.min(maxWidth, 50) }, // Alasan
-      { wch: 30 }, // Bukti
-      { wch: 15 }, // Status
-      { wch: 20 }, // Tanggal
-      { wch: 30 }, // Balasan
-    ];
-
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
-    });
-    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
-    const today = new Date().toISOString().split("T")[0];
-    saveAs(data, `Banding-Pengguna-${today}.xlsx`);
   };
 
   return (
@@ -451,15 +411,15 @@ export default function AdminAppealsPage() {
             <div className="sticky top-0 bg-white border-b border-gray-100 p-6 z-10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-indigo-50 rounded-lg">
-                    <MessageSquare className="w-6 h-6 text-indigo-600" />
+                  <div className="p-2 bg-indigo-100 rounded-lg">
+                    <FileText className="w-6 h-6 text-indigo-600" />
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-gray-900">
-                      Detail Banding
+                      Detail Pengajuan Banding
                     </h3>
                     <p className="text-gray-500">
-                      Informasi lengkap pengajuan banding
+                      Informasi lengkap pengajuan banding pengguna
                     </p>
                   </div>
                 </div>
@@ -467,189 +427,332 @@ export default function AdminAppealsPage() {
                   onClick={handleCloseDetailModal}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200 hover:scale-110"
                 >
-                  <XCircle className="w-5 h-5 text-gray-500" />
+                  <X className="w-5 h-5 text-gray-500" />
                 </button>
               </div>
             </div>
 
             {/* Modal Content */}
             <div className="p-6">
-              {/* User Info */}
-              <div className="flex items-start gap-6 mb-8 p-4 bg-gradient-to-r from-indigo-50 to-white rounded-xl">
-                <img
-                  src={
-                    selectedAppeal.user?.avatar
-                      ? `http://localhost:8000/storage/${selectedAppeal.user.avatar}`
-                      : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                          selectedAppeal.user?.name || "User"
-                        )}&background=6366f1&color=fff&bold=true`
-                  }
-                  alt={selectedAppeal.user?.name}
-                  className="w-20 h-20 rounded-2xl object-cover border-4 border-white shadow-lg"
-                />
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h4 className="text-xl font-bold text-gray-900">
-                      {selectedAppeal.user?.name}
-                    </h4>
-                    <div className="flex gap-2">
-                      {selectedAppeal.user?.role === "admin" ? (
-                        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-700 border border-purple-200">
-                          Administrator
+              {/* User Info Card */}
+              <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-6 mb-8 border border-indigo-100">
+                <div className="flex items-start gap-6">
+                  <img
+                    src={
+                      selectedAppeal.user?.avatar
+                        ? `http://localhost:8000/storage/${selectedAppeal.user.avatar}`
+                        : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                            selectedAppeal.user?.name || "User"
+                          )}&background=6366f1&color=fff&bold=true`
+                    }
+                    alt={selectedAppeal.user?.name}
+                    className="w-20 h-20 rounded-2xl object-cover border-4 border-white shadow-lg"
+                  />
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-3 mb-4">
+                      <h4 className="text-xl font-bold text-gray-900">
+                        {selectedAppeal.user?.name}
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        <span
+                          className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold border ${
+                            selectedAppeal.status === "approved"
+                              ? "bg-green-100 text-green-700 border-green-200"
+                              : selectedAppeal.status === "rejected"
+                              ? "bg-red-100 text-red-700 border-red-200"
+                              : "bg-yellow-100 text-yellow-700 border-yellow-200"
+                          }`}
+                        >
+                          {selectedAppeal.status === "pending" && (
+                            <Clock className="w-3 h-3" />
+                          )}
+                          {selectedAppeal.status === "approved" && (
+                            <Check className="w-3 h-3" />
+                          )}
+                          {selectedAppeal.status === "rejected" && (
+                            <XIcon className="w-3 h-3" />
+                          )}
+                          {selectedAppeal.status === "pending"
+                            ? "Menunggu Review"
+                            : selectedAppeal.status === "approved"
+                            ? "Banding Diterima"
+                            : "Banding Ditolak"}
                         </span>
-                      ) : (
-                        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-blue-200">
-                          Pengguna
-                        </span>
-                      )}
 
-                      <span
-                        className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold border ${
-                          selectedAppeal.status === "approved"
-                            ? "bg-green-100 text-green-700 border-green-200"
-                            : selectedAppeal.status === "rejected"
-                            ? "bg-red-100 text-red-700 border-red-200"
-                            : "bg-yellow-100 text-yellow-700 border-yellow-200"
-                        }`}
-                      >
-                        {getStatusColor(selectedAppeal.status).icon && (
-                          <selectedAppeal.status.icon className="w-3 h-3" />
-                        )}
-                        {selectedAppeal.status === "pending"
-                          ? "Menunggu"
-                          : selectedAppeal.status === "approved"
-                          ? "Diterima"
-                          : "Ditolak"}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="space-y-2 text-gray-600">
-                    <p className="flex items-center gap-2">
-                      <Mail className="w-4 h-4" />
-                      {selectedAppeal.user?.email}
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      Bergabung:{" "}
-                      {formatDateShort(selectedAppeal.user?.created_at)}
-                    </p>
-                    {selectedAppeal.user?.ban_message && (
-                      <div className="p-3 bg-red-50 border border-red-200 rounded-lg mt-2">
-                        <p className="text-sm font-medium text-red-700 flex items-start gap-2">
-                          <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                          <span>
-                            Alasan Penonaktifan:{" "}
-                            {selectedAppeal.user.ban_message}
+                        {selectedAppeal.user?.role === "admin" ? (
+                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-700 border border-purple-200">
+                            <Shield className="w-3 h-3" />
+                            Administrator
                           </span>
-                        </p>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-blue-200">
+                            <User className="w-3 h-3" />
+                            Pengguna
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-200">
+                        <div className="p-2 bg-indigo-50 rounded-lg">
+                          <Mail className="w-4 h-4 text-indigo-600" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Email</p>
+                          <p className="text-sm font-medium text-gray-900">
+                            {selectedAppeal.user?.email}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-200">
+                        <div className="p-2 bg-blue-50 rounded-lg">
+                          <Calendar className="w-4 h-4 text-blue-600" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Bergabung</p>
+                          <p className="text-sm font-medium text-gray-900">
+                            {formatDateShort(selectedAppeal.user?.created_at)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {selectedAppeal.user?.ban_message && (
+                      <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl">
+                        <div className="flex items-start gap-2">
+                          <AlertTriangle className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium text-red-700">
+                              Alasan Penonaktifan Akun
+                            </p>
+                            <p className="text-sm text-red-600 mt-1">
+                              {selectedAppeal.user.ban_message}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* Appeal Content */}
-              <div className="space-y-6">
-                <div>
-                  <h5 className="text-lg font-semibold text-gray-900 mb-3">
-                    Alasan Banding
-                  </h5>
-                  <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl">
-                    <p className="text-gray-700 whitespace-pre-wrap">
-                      {selectedAppeal.appeal_reason || "Tidak ada alasan"}
-                    </p>
+              {/* Appeal Details */}
+              <div className="space-y-8">
+                {/* Appeal Reason Section */}
+                <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                    <h5 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                      <MessageSquare className="w-5 h-5 text-indigo-600" />
+                      Alasan Pengajuan Banding
+                    </h5>
+                  </div>
+                  <div className="p-6">
+                    <div className="prose prose-indigo max-w-none">
+                      <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
+                        {selectedAppeal.appeal_reason ||
+                          "Tidak ada alasan yang diberikan"}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 mt-4 text-sm text-gray-500">
+                      <Clock className="w-4 h-4" />
+                      <span>
+                        Diajukan pada {formatDate(selectedAppeal.created_at)}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
+                {/* Evidence Section */}
                 {selectedAppeal.appeal_evidence && (
-                  <div>
-                    <h5 className="text-lg font-semibold text-gray-900 mb-3">
-                      Bukti Pendukung
-                    </h5>
-                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl">
-                      <p className="text-gray-700 whitespace-pre-wrap">
-                        {selectedAppeal.appeal_evidence}
-                      </p>
+                  <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+                    <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                      <h5 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                        <FileText className="w-5 h-5 text-green-600" />
+                        Bukti Pendukung
+                      </h5>
                     </div>
-                  </div>
-                )}
-
-                {/* Admin Reply (if exists) */}
-                {selectedAppeal.admin_reply && (
-                  <div>
-                    <h5 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <Shield className="w-5 h-5 text-indigo-600" />
-                      Balasan Admin
-                    </h5>
-                    <div
-                      className={`p-4 rounded-xl border ${
-                        selectedAppeal.status === "approved"
-                          ? "bg-green-50 border-green-200"
-                          : selectedAppeal.status === "rejected"
-                          ? "bg-red-50 border-red-200"
-                          : "bg-gray-50 border-gray-200"
-                      }`}
-                    >
-                      <p className="text-gray-700 whitespace-pre-wrap">
-                        {selectedAppeal.admin_reply}
-                      </p>
+                    <div className="p-6">
+                      <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                        <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
+                          {selectedAppeal.appeal_evidence}
+                        </p>
+                      </div>
                       <p className="text-xs text-gray-500 mt-2">
-                        Dibalas pada: {formatDate(selectedAppeal.updated_at)}
+                        Informasi tambahan yang diberikan oleh pengguna
                       </p>
                     </div>
                   </div>
                 )}
 
-                {/* Timestamps */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
-                    <p className="text-sm font-medium text-gray-500 mb-1">
-                      Diajukan pada:
-                    </p>
-                    <p className="text-gray-900 font-semibold">
-                      {formatDate(selectedAppeal.created_at)}
-                    </p>
-                    <p className="text-sm text-gray-500 mt-1">
-                      {getRelativeTime(selectedAppeal.created_at)}
-                    </p>
+                {/* Admin Reply Section (if exists) */}
+                {selectedAppeal.admin_reply && (
+                  <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+                    <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                      <h5 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                        <Shield className="w-5 h-5 text-purple-600" />
+                        Balasan Administrator
+                      </h5>
+                    </div>
+                    <div className="p-6">
+                      <div
+                        className={`p-4 rounded-xl border ${
+                          selectedAppeal.status === "approved"
+                            ? "bg-green-50 border-green-200"
+                            : selectedAppeal.status === "rejected"
+                            ? "bg-red-50 border-red-200"
+                            : "bg-gray-50 border-gray-200"
+                        }`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div
+                            className={`p-2 rounded-lg ${
+                              selectedAppeal.status === "approved"
+                                ? "bg-green-100"
+                                : selectedAppeal.status === "rejected"
+                                ? "bg-red-100"
+                                : "bg-gray-100"
+                            }`}
+                          >
+                            {selectedAppeal.status === "approved" ? (
+                              <CheckCircle className="w-5 h-5 text-green-600" />
+                            ) : selectedAppeal.status === "rejected" ? (
+                              <XCircle className="w-5 h-5 text-red-600" />
+                            ) : (
+                              <Clock className="w-5 h-5 text-gray-600" />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-gray-700 whitespace-pre-wrap">
+                              {selectedAppeal.admin_reply}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-2">
+                              Dibalas pada{" "}
+                              {formatDate(selectedAppeal.updated_at)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Appeal ID & Timeline */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                    <h6 className="text-sm font-semibold text-gray-900 mb-4">
+                      Informasi Banding
+                    </h6>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">
+                          ID Banding
+                        </span>
+                        <span className="font-mono text-sm font-medium text-gray-900">
+                          #{selectedAppeal.id}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Status</span>
+                        <span
+                          className={`font-medium text-sm ${
+                            selectedAppeal.status === "approved"
+                              ? "text-green-600"
+                              : selectedAppeal.status === "rejected"
+                              ? "text-red-600"
+                              : "text-yellow-600"
+                          }`}
+                        >
+                          {selectedAppeal.status === "pending"
+                            ? "Menunggu Review"
+                            : selectedAppeal.status === "approved"
+                            ? "Disetujui"
+                            : "Ditolak"}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">
+                          Durasi Menunggu
+                        </span>
+                        <span className="text-sm font-medium text-gray-900">
+                          {getRelativeTime(selectedAppeal.created_at)}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
-                  {selectedAppeal.updated_at !== selectedAppeal.created_at && (
-                    <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
-                      <p className="text-sm font-medium text-gray-500 mb-1">
-                        Diproses pada:
-                      </p>
-                      <p className="text-gray-900 font-semibold">
-                        {formatDate(selectedAppeal.updated_at)}
-                      </p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {getRelativeTime(selectedAppeal.updated_at)}
-                      </p>
+                  <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                    <h6 className="text-sm font-semibold text-gray-900 mb-4">
+                      Timeline
+                    </h6>
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <div className="w-2 h-2 rounded-full bg-indigo-500 mt-1.5"></div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            Diajukan
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {formatDate(selectedAppeal.created_at)}
+                          </p>
+                        </div>
+                      </div>
+                      {selectedAppeal.status !== "pending" && (
+                        <div className="flex items-start gap-3">
+                          <div
+                            className={`w-2 h-2 rounded-full ${
+                              selectedAppeal.status === "approved"
+                                ? "bg-green-500"
+                                : "bg-red-500"
+                            } mt-1.5`}
+                          ></div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              {selectedAppeal.status === "approved"
+                                ? "Disetujui"
+                                : "Ditolak"}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {formatDate(selectedAppeal.updated_at)}
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
 
                 {/* Action Buttons (if pending) */}
                 {selectedAppeal.status === "pending" && (
-                  <div className="flex gap-3 pt-6 border-t border-gray-200">
-                    <button
-                      onClick={() =>
-                        handleOpenActionModal(selectedAppeal, "approve")
-                      }
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200"
-                    >
-                      <CheckCircle className="w-4 h-4" />
-                      Setujui Banding
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleOpenActionModal(selectedAppeal, "reject")
-                      }
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200"
-                    >
-                      <XCircle className="w-4 h-4" />
-                      Tolak Banding
-                    </button>
+                  <div className="pt-6 border-t border-gray-200">
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <div className="flex-1 text-center sm:text-left">
+                        <p className="text-sm text-gray-600 mb-2">
+                          Tinjau pengajuan banding ini dan berikan keputusan
+                        </p>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <button
+                          onClick={() =>
+                            handleOpenActionModal(selectedAppeal, "approve")
+                          }
+                          className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                          Setujui Banding
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleOpenActionModal(selectedAppeal, "reject")
+                          }
+                          className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+                        >
+                          <XCircle className="w-4 h-4" />
+                          Tolak Banding
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -670,10 +773,11 @@ export default function AdminAppealsPage() {
                 </div>
                 <div>
                   <h1 className="text-3xl font-bold text-gray-900">
-                    Manajemen Banding
+                    Manajemen Banding Pengguna
                   </h1>
                   <p className="text-gray-600 mt-1">
-                    Kelola pengajuan banding dari pengguna yang dinonaktifkan
+                    Review dan kelola pengajuan banding dari pengguna yang
+                    dinonaktifkan
                   </p>
                 </div>
               </div>
@@ -688,14 +792,7 @@ export default function AdminAppealsPage() {
                 <RefreshCw
                   className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
                 />
-                Refresh
-              </button>
-              <button
-                onClick={handleExportData}
-                className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-gray-900 to-black text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200"
-              >
-                <Download className="w-4 h-4" />
-                Ekspor Data
+                Refresh Data
               </button>
             </div>
           </div>
@@ -705,7 +802,7 @@ export default function AdminAppealsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[
             {
-              icon: MessageSquare,
+              icon: FileText,
               color: "blue",
               value: stats.total,
               label: "Total Banding",
@@ -716,7 +813,8 @@ export default function AdminAppealsPage() {
               color: "yellow",
               value: stats.pending,
               label: "Menunggu",
-              description: "Perlu diproses",
+              description: "Perlu direview",
+              highlight: stats.pending > 0,
             },
             {
               icon: CheckCircle,
@@ -735,11 +833,19 @@ export default function AdminAppealsPage() {
           ].map((stat, index) => (
             <div
               key={index}
-              className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-indigo-300"
+              className={`bg-white border rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 hover:border-indigo-300 ${
+                stat.highlight
+                  ? "border-yellow-300 ring-1 ring-yellow-200"
+                  : "border-gray-200"
+              }`}
             >
               <div className="flex items-center gap-4 mb-4">
                 <div
-                  className={`p-3 bg-${stat.color}-50 rounded-xl border border-${stat.color}-100`}
+                  className={`p-3 ${
+                    stat.color === "yellow"
+                      ? "bg-yellow-50 border-yellow-100"
+                      : `bg-${stat.color}-50 border-${stat.color}-100`
+                  } rounded-xl border`}
                 >
                   <stat.icon className={`w-6 h-6 text-${stat.color}-600`} />
                 </div>
@@ -750,7 +856,15 @@ export default function AdminAppealsPage() {
                   <p className="text-gray-600 text-sm">{stat.label}</p>
                 </div>
               </div>
-              <p className="text-xs text-gray-500">{stat.description}</p>
+              <p
+                className={`text-xs ${
+                  stat.highlight
+                    ? "text-yellow-600 font-medium"
+                    : "text-gray-500"
+                }`}
+              >
+                {stat.description}
+              </p>
             </div>
           ))}
         </div>
@@ -762,7 +876,7 @@ export default function AdminAppealsPage() {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div>
                 <h2 className="text-xl font-bold text-gray-900">
-                  Daftar Banding
+                  Daftar Pengajuan Banding
                 </h2>
                 <p className="text-gray-600 text-sm mt-1">
                   {filteredAppeals.length} dari {appeals.length} banding
@@ -776,7 +890,7 @@ export default function AdminAppealsPage() {
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Cari banding..."
+                    placeholder="Cari berdasarkan nama, email, atau alasan..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-11 pr-4 py-2.5 w-full sm:w-64 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
@@ -790,7 +904,7 @@ export default function AdminAppealsPage() {
                     className="inline-flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <Filter className="w-4 h-4" />
-                    Filter
+                    Filter Status
                     <ChevronDown
                       className={`w-4 h-4 transition-transform duration-200 ${
                         showFilterMenu ? "rotate-180" : ""
@@ -803,7 +917,7 @@ export default function AdminAppealsPage() {
                       <div className="p-4 space-y-4">
                         <div>
                           <p className="text-xs font-semibold text-gray-500 mb-2">
-                            Status Banding
+                            Filter Berdasarkan Status
                           </p>
                           <div className="space-y-2">
                             {[
@@ -814,17 +928,17 @@ export default function AdminAppealsPage() {
                               },
                               {
                                 value: "pending",
-                                label: "Menunggu",
+                                label: "Menunggu Review",
                                 color: "yellow",
                               },
                               {
                                 value: "approved",
-                                label: "Disetujui",
+                                label: "Sudah Disetujui",
                                 color: "green",
                               },
                               {
                                 value: "rejected",
-                                label: "Ditolak",
+                                label: "Sudah Ditolak",
                                 color: "red",
                               },
                             ].map((status) => (
@@ -889,12 +1003,12 @@ export default function AdminAppealsPage() {
                   <MessageSquare className="w-12 h-12 text-gray-400" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Tidak ada banding ditemukan
+                  Tidak ada pengajuan banding ditemukan
                 </h3>
                 <p className="text-gray-600 max-w-sm">
                   {searchTerm || statusFilter !== "all"
                     ? "Coba ubah filter pencarian untuk menemukan banding yang Anda cari."
-                    : "Belum ada pengajuan banding dari pengguna."}
+                    : "Belum ada pengajuan banding dari pengguna yang dinonaktifkan."}
                 </p>
               </div>
             ) : (
@@ -913,7 +1027,7 @@ export default function AdminAppealsPage() {
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Aksi
                     </th>
                   </tr>
@@ -939,10 +1053,14 @@ export default function AdminAppealsPage() {
                                     )}&background=6366f1&color=fff&bold=true`
                               }
                               alt={appeal.user?.name}
-                              className="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm"
+                              className="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm hover:scale-105 transition-transform duration-200 cursor-pointer"
+                              onClick={() => handleViewDetail(appeal)}
                             />
                             <div>
-                              <p className="font-semibold text-gray-900">
+                              <p
+                                className="font-semibold text-gray-900 hover:text-indigo-600 cursor-pointer transition-colors"
+                                onClick={() => handleViewDetail(appeal)}
+                              >
                                 {appeal.user?.name}
                               </p>
                               <p className="text-sm text-gray-500">
@@ -957,7 +1075,8 @@ export default function AdminAppealsPage() {
                             {appeal.appeal_reason || "Tidak ada alasan"}
                           </p>
                           {appeal.appeal_evidence && (
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                              <FileText className="w-3 h-3" />
                               Ada bukti pendukung
                             </p>
                           )}
@@ -982,11 +1101,7 @@ export default function AdminAppealsPage() {
                             <span
                               className={`text-sm font-medium ${status.text}`}
                             >
-                              {appeal.status === "pending"
-                                ? "Menunggu"
-                                : appeal.status === "approved"
-                                ? "Diterima"
-                                : "Ditolak"}
+                              {status.label}
                             </span>
                           </div>
                         </td>
@@ -995,21 +1110,22 @@ export default function AdminAppealsPage() {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleViewDetail(appeal)}
-                              className="p-2 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200"
-                              title="Lihat Detail"
+                              className="p-2 text-gray-600 hover:text-white hover:bg-indigo-600 rounded-lg transition-all duration-200 hover:scale-110 group"
+                              title="Lihat Detail Banding"
                             >
-                              <Eye className="w-5 h-5" />
+                              <Eye className="w-5 h-5 group-hover:animate-pulse" />
                             </button>
 
                             {appeal.status === "pending" && (
-                              <>
+                              <div className="flex gap-2">
                                 <button
                                   onClick={() =>
                                     handleOpenActionModal(appeal, "approve")
                                   }
                                   disabled={processingId === appeal.id}
-                                  className="px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 hover:bg-green-100 rounded-lg transition-colors duration-200 disabled:opacity-50"
+                                  className="px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 hover:bg-green-100 rounded-lg transition-colors duration-200 hover:scale-105 disabled:opacity-50 flex items-center gap-1"
                                 >
+                                  <Check className="w-3 h-3" />
                                   Setujui
                                 </button>
                                 <button
@@ -1017,11 +1133,12 @@ export default function AdminAppealsPage() {
                                     handleOpenActionModal(appeal, "reject")
                                   }
                                   disabled={processingId === appeal.id}
-                                  className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 border border-red-200 hover:bg-red-100 rounded-lg transition-colors duration-200 disabled:opacity-50"
+                                  className="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-50 border border-red-200 hover:bg-red-100 rounded-lg transition-colors duration-200 hover:scale-105 disabled:opacity-50 flex items-center gap-1"
                                 >
+                                  <XIcon className="w-3 h-3" />
                                   Tolak
                                 </button>
-                              </>
+                              </div>
                             )}
                           </div>
                         </td>
@@ -1045,11 +1162,14 @@ export default function AdminAppealsPage() {
                 <span className="font-semibold text-gray-900">
                   {appeals.length}
                 </span>{" "}
-                banding
+                pengajuan banding
               </div>
               <div className="flex items-center gap-1">
                 <AlertCircle className="w-4 h-4" />
-                <span>Klik ikon mata untuk melihat detail banding</span>
+                <span>
+                  Klik ikon <Eye className="w-3 h-3 inline mx-1" /> untuk
+                  melihat detail lengkap
+                </span>
               </div>
             </div>
           </div>
@@ -1089,6 +1209,16 @@ export default function AdminAppealsPage() {
           }
         }
 
+        @keyframes pulse {
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.7;
+          }
+        }
+
         .animate-fadeIn {
           animation: fadeIn 0.3s ease-out;
         }
@@ -1099,6 +1229,10 @@ export default function AdminAppealsPage() {
 
         .animate-slideDown {
           animation: slideDown 0.2s ease-out;
+        }
+
+        .animate-pulse {
+          animation: pulse 1s ease-in-out infinite;
         }
 
         .overflow-y-auto::-webkit-scrollbar {

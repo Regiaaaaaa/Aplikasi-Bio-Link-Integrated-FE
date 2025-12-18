@@ -23,115 +23,116 @@ export default function Login() {
   const location = useLocation();
 
   useEffect(() => {
-  const params = new URLSearchParams(location.search);
-  const error = params.get("error");
+    const params = new URLSearchParams(location.search);
+    const error = params.get("error");
 
-  // Google Redirect Error
-  if (error === "banned") {
-    setErrorMessage({
-      type: "banned",
-      title: "Akun Dinonaktifkan",
-      message: "Akun Anda dinonaktifkan",
-      detail: params.get("message") || "Silakan hubungi administrator",
-    });
-    setShowErrorModal(true);
-    navigate("/login", { replace: true });
-  }
-
-  // Failed Google
-  if (error === "google_failed") {
-    setErrorMessage({
-      type: "error",
-      title: "Login Google Gagal",
-      message: "Autentikasi Google gagal. Silakan coba lagi.",
-    });
-    setShowErrorModal(true);
-    navigate("/login", { replace: true });
-  }
-}, [location.search, navigate]);
-
-// Handle All Redirect 
-useEffect(() => {
-  const params = new URLSearchParams(location.search);
-  const error = params.get("error");
-
-  // Google Redirect Error
-  if (error === "banned") {
-    setErrorMessage({
-      type: "banned",
-      title: "Akun Dinonaktifkan",
-      message: "Akun Anda dinonaktifkan",
-      detail: params.get("message") || "Silakan hubungi administrator",
-    });
-    setShowErrorModal(true);
-    navigate("/login", { replace: true });
-  }
-
-  // Failed Google
-  if (error === "google_failed") {
-    setErrorMessage({
-      type: "error",
-      title: "Login Google Gagal",
-      message: "Autentikasi Google gagal. Silakan coba lagi.",
-    });
-    setShowErrorModal(true);
-    navigate("/login", { replace: true });
-  }
-}, [location.search, navigate]);
-
-// Handle Redirect After Login
-useEffect(() => {
-  if (!loading && user && location.pathname !== "/google/callback") {
-    // Cek banned (backend return boolean)
-    if (user.is_active === false) {
-      navigate("/banned", { replace: true });
-    } else if (user.role === "admin") {
-      navigate("/admin", { replace: true });
-    } else {
-      setTimeout(() => {
-        navigate("/dashboard", { replace: true });
-      }, 2000); 
-    }
-  }
-}, [loading, user, navigate, location]);
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
-  
-  try {
-    const { data } = await axiosClient.post("/login", { email, password });
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("justLoggedIn", "true");
-    axiosClient.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
-
-    // Simpan email
-    if (rememberMe) {
-      localStorage.setItem("rememberedEmail", email);
-    } else {
-      localStorage.removeItem("rememberedEmail");
+    // Google Redirect Error
+    if (error === "banned") {
+      setErrorMessage({
+        type: "banned",
+        title: "Akun Dinonaktifkan",
+        message: "Akun Anda dinonaktifkan",
+        detail: params.get("message") || "Silakan hubungi administrator",
+      });
+      setShowErrorModal(true);
+      navigate("/login", { replace: true });
     }
 
-    // Set user (useEffect handle redirect)
-    setUser(data.user);
-
-    // Cek active status
-    if (data.user.is_active === true) {
-      setShowSuccessModal(true);
+    // Failed Google
+    if (error === "google_failed") {
+      setErrorMessage({
+        type: "error",
+        title: "Login Google Gagal",
+        message: "Autentikasi Google gagal. Silakan coba lagi.",
+      });
+      setShowErrorModal(true);
+      navigate("/login", { replace: true });
     }
-    
-  } catch (err) {
-    console.error("Login error:", err);
-    setErrorMessage({
-      type: "error",
-      title: "Login Gagal",
-      message: err.response?.data?.message || "Email atau password salah!",
-    });
-    setShowErrorModal(true);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  }, [location.search, navigate]);
+
+  // Handle All Redirect
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const error = params.get("error");
+
+    // Google Redirect Error
+    if (error === "banned") {
+      setErrorMessage({
+        type: "banned",
+        title: "Akun Dinonaktifkan",
+        message: "Akun Anda dinonaktifkan",
+        detail: params.get("message") || "Silakan hubungi administrator",
+      });
+      setShowErrorModal(true);
+      navigate("/login", { replace: true });
+    }
+
+    // Failed Google
+    if (error === "google_failed") {
+      setErrorMessage({
+        type: "error",
+        title: "Login Google Gagal",
+        message: "Autentikasi Google gagal. Silakan coba lagi.",
+      });
+      setShowErrorModal(true);
+      navigate("/login", { replace: true });
+    }
+  }, [location.search, navigate]);
+
+  // Handle Redirect After Login
+  useEffect(() => {
+    if (!loading && user && location.pathname !== "/google/callback") {
+      // Cek banned (backend return boolean)
+      if (user.is_active === false) {
+        navigate("/banned", { replace: true });
+      } else if (user.role === "admin") {
+        navigate("/admin", { replace: true });
+      } else {
+        setTimeout(() => {
+          navigate("/dashboard", { replace: true });
+        }, 2000);
+      }
+    }
+  }, [loading, user, navigate, location]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const { data } = await axiosClient.post("/login", { email, password });
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("justLoggedIn", "true");
+      axiosClient.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${data.token}`;
+
+      // Simpan email
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", email);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+      }
+
+      // Set user (useEffect handle redirect)
+      setUser(data.user);
+
+      // Cek active status
+      if (data.user.is_active === true) {
+        setShowSuccessModal(true);
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setErrorMessage({
+        type: "error",
+        title: "Login Gagal",
+        message: err.response?.data?.message || "Email atau password salah!",
+      });
+      setShowErrorModal(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleGoogleLogin = () => {
     window.location.href = "http://localhost:8000/api/auth/google/redirect";
@@ -452,12 +453,7 @@ const handleSubmit = async (e) => {
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
-                  onClick={() => {
-                    setShowErrorModal(false);
-                    window.location.href =
-                      "mailto:synapsebioapp@gmail.com?subject=Permohonan%20Aktivasi%20Akun&body=Saya%20ingin%20mengajukan%20permohonan%20aktivasi%20ulang%20akun%20saya.%0D%0A%0D%0AEmail:%20" +
-                      encodeURIComponent(email);
-                  }}
+                  onClick={() => navigate("/banned")}
                   className="flex-1 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
                 >
                   Hubungi Admin

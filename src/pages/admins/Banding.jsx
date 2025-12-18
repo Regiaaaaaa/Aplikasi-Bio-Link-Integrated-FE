@@ -551,7 +551,7 @@ export default function AdminAppealsPage() {
                   <div className="p-6">
                     <div className="prose prose-indigo max-w-none">
                       <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
-                        {selectedAppeal.appeal_reason ||
+                        {selectedAppeal.message ||
                           "Tidak ada alasan yang diberikan"}
                       </p>
                     </div>

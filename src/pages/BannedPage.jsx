@@ -126,14 +126,10 @@ export default function BannedPage() {
 
       if (response.data.success || response.status === 200) {
         setSubmissionSuccess(true);
-        setFormData({
-          message: "",
-          appeal_reason: "",
-          appeal_evidence: "",
-        });
-        // Refresh tracking setelah submit berhasil
-        await fetchAppealHistory();
-        setTimeout(() => setSubmissionSuccess(false), 3000);
+        // RELOAD PAGE SETELAH 1 DETIK
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       }
     } catch (error) {
       console.error("Error response:", error.response);

@@ -1007,10 +1007,10 @@ export default function BannedPage() {
             <p className="text-sm text-gray-600">
               Butuh bantuan? Hubungi{" "}
               <a
-                href="mailto:support@example.com"
+                href="mailto:synapsebioapp@example.com"
                 className="font-medium text-indigo-600 hover:text-indigo-700"
               >
-                support@example.com
+                synapsebioapp@gmail.com
               </a>
             </p>
           </div>

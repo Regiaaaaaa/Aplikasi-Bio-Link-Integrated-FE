@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
-export default function UserRoute({ children }) {
+export default function BannedRoute({ children }) {
   const { user, loading } = useContext(AuthContext);
 
   if (loading) {
@@ -14,17 +14,14 @@ export default function UserRoute({ children }) {
     );
   }
 
+  // Check if user is not logged in
   if (!user) return <Navigate to="/login" replace />;
 
-  // Cek banned
-  if (user.is_active === false) {
-    return <Navigate to="/banned" replace />;
+  // 
+  if (user.is_active === true) {
+    return <Navigate to="/dashboard" replace />;
   }
 
-  // Hanya untuk role 'user'
-  if (user.role !== "user") {
-    return <Navigate to="/admin" replace />;
-  }
-
+  // Cek banned user
   return children;
 }

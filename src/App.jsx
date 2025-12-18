@@ -9,12 +9,14 @@ import AdminDashboard from "./pages/admins/DashboardAdmin";
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 import UserRoute from "./components/routes/UserRoute";
 import AdminRoute from "./components/routes/AdminRoute";
+import BannedRoute from "./components/routes/BannedRoute"; 
 import { AuthProvider } from "./context/AuthContext";
 import LandingPage from "./pages/LandingPage";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Profile from "./pages/Profile";
 import SupportPage from "./pages/users/SupportPage";
 import PremiumPackPage from "./pages/users/PremiumPackPage";
+import BannedPage from "./pages/BannedPage";
 
 // Route 
 export default function App() {
@@ -29,7 +31,17 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/google/callback" element={<GoogleCallback />} />
 
-          {/* User-only */}
+          {/* Banned Page */}
+          <Route
+            path="/banned"
+            element={
+              <BannedRoute>
+                <BannedPage />
+              </BannedRoute>
+            }
+          />
+
+          {/* User-only (user aktif) */}
           <Route
             path="/dashboard"
             element={
@@ -39,20 +51,20 @@ export default function App() {
             }
           />
           <Route
-          path="/support"
-          element={
-          <UserRoute>
-          <SupportPage />
-          </UserRoute>
-          }
+            path="/support"
+            element={
+              <UserRoute>
+                <SupportPage />
+              </UserRoute>
+            }
           />
           <Route
-          path="/premium-pack"
-          element={
-          <UserRoute>
-          <PremiumPackPage />
-          </UserRoute>
-          }
+            path="/premium-pack"
+            element={
+              <UserRoute>
+                <PremiumPackPage />
+              </UserRoute>
+            }
           />
 
           {/* Shared (user & admin) */}

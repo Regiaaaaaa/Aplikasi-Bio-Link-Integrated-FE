@@ -35,6 +35,7 @@ import Layout from "../../components/layouts/Layout";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import ExcelJS from "exceljs";
+import ExcelLogo from "../../assets/ExcelLogo.png";
 
 export default function AdminDashboard() {
   const { user } = useContext(AuthContext);
@@ -816,10 +817,16 @@ export default function AdminDashboard() {
               </button>
               <button
                 onClick={handleExportData}
-                className="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-gray-900 to-black text-white font-medium rounded-xl hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+                className="inline-flex items-center gap-2 px-5 py-3
+             bg-gradient-to-r from-emerald-600 to-green-700
+             text-white font-medium rounded-xl
+             hover:shadow-lg transition-all duration-200
+             hover:scale-[1.02]"
               >
-                <Download className="w-4 h-4" />
-                Ekspor Data
+                <span className="bg-white p-1 rounded-sm">
+                  <img src={ExcelLogo} alt="Excel" className="w-5 h-5" />
+                </span>
+                Ekspor Excel
               </button>
             </div>
           </div>

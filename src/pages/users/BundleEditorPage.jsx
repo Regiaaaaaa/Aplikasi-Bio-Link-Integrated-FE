@@ -739,7 +739,7 @@ function BundleEditorPage() {
                   className="hidden sm:flex items-center gap-2 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors text-sm mobile-button"
                 >
                   {showPreview ? <EyeOff size={16} /> : <Eye size={16} />}
-                  <span className="hidden md:inline">
+                  <span className="hidden md:inline text-black">
                     {showPreview ? "Hide" : "Show"} Preview
                   </span>
                 </button>

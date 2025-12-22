@@ -136,7 +136,7 @@ export default function Register() {
               {/* Button */}
               <button
                 onClick={() => navigate("/login", { replace: true })}
-                className="btn w-full h-12 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200"
+                className="btn w-full h-12 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200"
               >
                 Go to Login
               </button>
@@ -153,7 +153,7 @@ export default function Register() {
             <div className="mb-6 animate-slideDown">
               <div className="flex items-center gap-2">
                 <img src={icon2} alt="Synapse Logo" className="w-8 h-8" />
-                <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
                   Synapse
                 </span>
               </div>
@@ -310,7 +310,7 @@ export default function Register() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="btn w-full h-12 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.01]"
+                className="btn w-full h-12 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.01]"
               >
                 {isLoading ? (
                   <span className="loading loading-spinner loading-sm"></span>
@@ -359,14 +359,14 @@ export default function Register() {
               By signing up, you agree to our{" "}
               <a
                 href="#"
-                className="text-indigo-600 hover:text-purple-600 font-medium"
+                className="text-indigo-600 hover:text-blue-600 font-medium"
               >
                 Terms
               </a>{" "}
               and{" "}
               <a
                 href="#"
-                className="text-indigo-600 hover:text-purple-600 font-medium"
+                className="text-indigo-600 hover:text-blue-600 font-medium"
               >
                 Privacy Policy
               </a>
@@ -377,7 +377,7 @@ export default function Register() {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="font-semibold text-indigo-600 hover:text-purple-600 transition-colors"
+                className="font-semibold text-indigo-600 hover:text-blue-600 transition-colors"
               >
                 Log in
               </Link>
@@ -409,7 +409,7 @@ export default function Register() {
         </div>
 
         {/* RIGHT: IMAGE */}
-        <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-indigo-50 to-purple-50 items-center justify-center animate-slideLeft">
+        <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-indigo-50 to-blue-50 items-center justify-center animate-slideLeft">
           {/* Home Button */}
           <div className="absolute top-8 left-8 z-20 animate-slideDown">
             <button
@@ -442,7 +442,7 @@ export default function Register() {
               alt="Register visual"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-purple-600/10"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-blue-600/10"></div>
           </div>
 
           {/* Quote Card */}

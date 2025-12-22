@@ -19,6 +19,8 @@ import PremiumPackPage from "./pages/users/PremiumPackPage";
 import BannedPage from "./pages/BannedPage";
 import AdminAppealsPage from "./pages/admins/Banding";
 import ThemeTest from "./pages/ThemeTest";
+import BundlePage from "./pages/users/BundlePage";
+import BundleEditorPage from './pages/users/BundleEditorPage';
 
 // Route
 export default function App() {
@@ -67,6 +69,23 @@ export default function App() {
                 <PremiumPackPage />
               </UserRoute>
             }
+          />
+            <Route
+            path="/bundles-page"
+            element={
+              <UserRoute>
+                <BundlePage />
+              </UserRoute>
+            }
+            />
+            <Route
+            path="/bundles/:bundleId/edit"
+            element={
+              <UserRoute>
+                <BundleEditorPage />
+              </UserRoute>
+            }
+
           />
 
                   <Route

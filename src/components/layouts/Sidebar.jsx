@@ -241,8 +241,8 @@ export default function Sidebar({
                 <SidebarItem
                   icon={<Home size={20} />}
                   label="My Page"
-                  to="/checkins"
-                  onClick={() => handleMenuItemClick("/checkins")}
+                  to="/bundle-page"
+                  onClick={() => handleMenuItemClick("/bundles-page")}
                 />
                 <SidebarItem
                   icon={<Star size={20} />}

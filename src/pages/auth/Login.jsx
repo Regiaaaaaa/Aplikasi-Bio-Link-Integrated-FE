@@ -454,7 +454,7 @@ export default function Login() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={() => navigate("/banned")}
-                  className="flex-1 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+                  className="flex-1 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
                 >
                   Hubungi Admin
                 </button>
@@ -513,9 +513,9 @@ export default function Login() {
       <div className="h-screen w-screen overflow-hidden flex flex-col md:flex-row bg-white">
         {/* Decorative Elements */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-          <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-indigo-200 to-purple-200 rounded-full opacity-30 blur-3xl animate-float"></div>
+          <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-indigo-200 to-blue-200 rounded-full opacity-30 blur-3xl animate-float"></div>
           <div
-            className="absolute -bottom-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full opacity-30 blur-3xl animate-float"
+            className="absolute -bottom-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-200 to-pink-200 rounded-full opacity-30 blur-3xl animate-float"
             style={{ animationDelay: "2s" }}
           ></div>
         </div>
@@ -527,7 +527,7 @@ export default function Login() {
             <div className="mb-6 animate-slideDown">
               <div className="flex items-center gap-2">
                 <img src={icon2} alt="Synapse Logo" className="w-8 h-8" />
-                <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
                   Synapse
                 </span>
               </div>
@@ -538,7 +538,7 @@ export default function Login() {
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">
                 Holla,
                 <br />
-                <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
                   Welcome Back
                 </span>
               </h1>
@@ -633,7 +633,7 @@ export default function Login() {
                 </label>
                 <Link
                   to="/forgot-password"
-                  className="text-sm font-semibold text-indigo-600 hover:text-purple-600 transition-colors"
+                  className="text-sm font-semibold text-indigo-600 hover:text-blue-600 transition-colors"
                 >
                   Forgot Password?
                 </Link>
@@ -643,7 +643,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="btn w-full h-12 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.01]"
+                className="btn w-full h-12 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.01]"
               >
                 {isLoading ? (
                   <span className="loading loading-spinner loading-sm"></span>
@@ -692,7 +692,7 @@ export default function Login() {
               Don't have an account?{" "}
               <Link
                 to="/register"
-                className="font-semibold text-indigo-600 hover:text-purple-600 transition-colors"
+                className="font-semibold text-indigo-600 hover:text-blue-600 transition-colors"
               >
                 Sign Up
               </Link>
@@ -724,7 +724,7 @@ export default function Login() {
         </div>
 
         {/* RIGHT: IMAGE SECTION */}
-        <div className="hidden md:flex md:w-1/2 relative bg-gradient-to-br from-indigo-50 to-purple-50 items-center justify-center animate-slideRight">
+        <div className="hidden md:flex md:w-1/2 relative bg-gradient-to-br from-indigo-50 to-blue-50 items-center justify-center animate-slideRight">
           {/* Home Button */}
           <div className="absolute top-8 right-8 z-20 animate-slideDown">
             <button
@@ -757,7 +757,7 @@ export default function Login() {
               alt="Login visual"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-purple-600/10"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to--600/10"></div>
           </div>
 
           {/* Quote Card */}

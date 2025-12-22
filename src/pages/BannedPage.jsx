@@ -28,6 +28,8 @@ import {
   CheckCheck,
   Info,
   FileSearch,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 
 export default function BannedPage() {
@@ -36,9 +38,10 @@ export default function BannedPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const [appealHistory, setAppealHistory] = useState([]);
-  const [showTracking, setShowTracking] = useState(true);
+  const [showHistory, setShowHistory] = useState(false);
   const [loadingTracking, setLoadingTracking] = useState(false);
   const [latestAppeal, setLatestAppeal] = useState(null);
+  const [showDetailedAppeal, setShowDetailedAppeal] = useState(false);
   const [formData, setFormData] = useState({
     message: "",
     appeal_reason: "",
@@ -126,7 +129,6 @@ export default function BannedPage() {
 
       if (response.data.success || response.status === 200) {
         setSubmissionSuccess(true);
-        // RELOAD PAGE SETELAH 1 DETIK
         setTimeout(() => {
           window.location.reload();
         }, 1000);
@@ -190,94 +192,15 @@ export default function BannedPage() {
     }
   };
 
-  const getStatusDescription = (status) => {
-    switch (status) {
-      case "approved":
-        return "Banding Anda telah diterima oleh admin";
-      case "rejected":
-        return "Banding Anda telah ditolak oleh admin";
-      default:
-        return "Banding Anda sedang dalam proses review";
-    }
-  };
-
-  const getTrackingSteps = (status, hasAdminReply) => {
-    const steps = [
-      {
-        id: 1,
-        name: "Diajukan",
-        description: "Banding telah diajukan",
-        icon: Package,
-      },
-      {
-        id: 2,
-        name: "Dalam Review",
-        description: "Sedang diperiksa admin",
-        icon: FileSearch,
-      },
-      {
-        id: 3,
-        name: "Diproses",
-        description: "Admin memberikan keputusan",
-        icon: TrendingUp,
-      },
-      {
-        id: 4,
-        name:
-          status === "approved"
-            ? "Diterima"
-            : status === "rejected"
-            ? "Ditolak"
-            : "Selesai",
-        description:
-          status === "approved"
-            ? "Banding berhasil diterima"
-            : status === "rejected"
-            ? "Banding ditolak admin"
-            : "Keputusan telah dibuat",
-        icon:
-          status === "approved"
-            ? CheckCheck
-            : status === "rejected"
-            ? XCircle
-            : CheckCheck,
-      },
-    ];
-
-    let activeStep = 1;
-    if (status === "pending" && !hasAdminReply) {
-      activeStep = 2;
-    } else if (status === "pending" && hasAdminReply) {
-      activeStep = 3;
-    } else if (status === "approved" || status === "rejected") {
-      activeStep = 4;
-    }
-
-    return steps.map((step) => ({
-      ...step,
-      active: step.id <= activeStep,
-    }));
-  };
-
   const formatDate = (dateString) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
     return date.toLocaleDateString("id-ID", {
       day: "numeric",
-      month: "long",
+      month: "short",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    });
-  };
-
-  const formatDateShort = (dateString) => {
-    if (!dateString) return "-";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
     });
   };
 
@@ -294,781 +217,350 @@ export default function BannedPage() {
     if (diffMins < 60) return `${diffMins} menit lalu`;
     if (diffHours < 24) return `${diffHours} jam lalu`;
     if (diffDays < 7) return `${diffDays} hari lalu`;
-    return formatDateShort(dateString);
-  };
-
-  const renderTrackingStatus = () => {
-    if (!latestAppeal) {
-      return (
-        <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-            <Package className="w-8 h-8 text-gray-400" />
-          </div>
-          <h4 className="text-gray-700 font-medium mb-2">Belum Ada Banding</h4>
-          <p className="text-gray-500 text-sm">
-            Ajukan banding pertama Anda untuk melihat status di sini
-          </p>
-        </div>
-      );
-    }
-
-    const status = getStatusBadgeColor(latestAppeal.status);
-    const StatusIcon = status.icon;
-    const trackingSteps = getTrackingSteps(
-      latestAppeal.status,
-      latestAppeal.admin_reply
-    );
-
-    return (
-      <div className="space-y-6">
-        {/* Status Header with Detailed Status Info */}
-        <div
-          className={`bg-gradient-to-r p-5 rounded-xl border ${
-            latestAppeal.status === "approved"
-              ? "from-green-50 to-green-100 border-green-200"
-              : latestAppeal.status === "rejected"
-              ? "from-red-50 to-red-100 border-red-200"
-              : "from-yellow-50 to-yellow-100 border-yellow-200"
-          }`}
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-xl ${status.bg} ${status.border}`}>
-                <StatusIcon className={`w-6 h-6 ${status.iconColor}`} />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {latestAppeal.status === "approved"
-                    ? "🎉 Banding Diterima!"
-                    : latestAppeal.status === "rejected"
-                    ? "❌ Banding Ditolak"
-                    : "⏳ Menunggu Review"}
-                </h3>
-                <p className="text-sm text-gray-600">
-                  ID: #{latestAppeal.id.slice(0, 8)}
-                </p>
-              </div>
-            </div>
-            <div className="text-right">
-              <div
-                className={`px-4 py-2 rounded-full ${status.bg} ${status.text} font-semibold text-sm shadow-sm`}
-              >
-                {getStatusText(latestAppeal.status)}
-              </div>
-              <p className="text-xs text-gray-500 mt-1">
-                {getTimeAgo(latestAppeal.updated_at)}
-              </p>
-            </div>
-          </div>
-
-          {/* Status Summary */}
-          {latestAppeal.admin_reply && (
-            <div className="bg-white/80 backdrop-blur-sm p-4 rounded-lg border border-gray-100 shadow-sm mb-4">
-              <div className="flex items-start gap-3">
-                <Shield
-                  className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
-                    latestAppeal.status === "approved"
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                />
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900 mb-1">
-                    {latestAppeal.status === "approved"
-                      ? "Admin telah menyetujui banding Anda"
-                      : "Admin telah menolak banding Anda"}
-                  </p>
-                  <p className="text-xs text-gray-600">
-                    Keputusan dibuat pada {formatDate(latestAppeal.updated_at)}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="space-y-4">
-            {/* Timeline Tracking */}
-            <div className="relative pt-2">
-              <div className="flex justify-between mb-2">
-                {trackingSteps.map((step, idx) => {
-                  const StepIcon = step.icon;
-                  return (
-                    <div
-                      key={step.id}
-                      className="text-center relative z-10 flex-1"
-                    >
-                      <div
-                        className={`w-10 h-10 mx-auto rounded-full flex items-center justify-center mb-2 transition-all ${
-                          step.active
-                            ? latestAppeal.status === "approved"
-                              ? "bg-green-600 text-white shadow-lg"
-                              : latestAppeal.status === "rejected"
-                              ? "bg-red-600 text-white shadow-lg"
-                              : "bg-indigo-600 text-white shadow-lg"
-                            : "bg-gray-200 text-gray-400"
-                        }`}
-                      >
-                        <StepIcon className="w-5 h-5" />
-                      </div>
-                      <p
-                        className={`text-xs font-medium ${
-                          step.active ? "text-gray-900" : "text-gray-500"
-                        }`}
-                      >
-                        {step.name}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {step.description}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-              <div
-                className="absolute top-6 left-10 right-10 h-0.5 bg-gray-200"
-                style={{ zIndex: 0 }}
-              >
-                <div
-                  className={`h-full transition-all duration-500 ${
-                    latestAppeal.status === "approved"
-                      ? "bg-green-600"
-                      : latestAppeal.status === "rejected"
-                      ? "bg-red-600"
-                      : "bg-indigo-600"
-                  }`}
-                  style={{
-                    width:
-                      latestAppeal.status === "approved" ||
-                      latestAppeal.status === "rejected"
-                        ? "100%"
-                        : latestAppeal.admin_reply
-                        ? "66%"
-                        : "33%",
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Message Preview */}
-            <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-50 rounded-full flex items-center justify-center flex-shrink-0 border border-blue-200">
-                  <UserIcon className="w-5 h-5 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-sm font-medium text-gray-900">
-                      Pesan Anda:
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {formatDateShort(latestAppeal.created_at)}
-                    </span>
-                  </div>
-                  <p className="text-gray-700 text-sm line-clamp-3">
-                    {latestAppeal.message}
-                  </p>
-                  {!showTracking && (
-                    <button
-                      onClick={() => setShowTracking(true)}
-                      className="text-xs text-indigo-600 hover:text-indigo-700 mt-2 font-medium flex items-center gap-1"
-                    >
-                      Lihat detail lengkap
-                      <ChevronRight className="w-3 h-3" />
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Detailed View (when expanded) */}
-        {showTracking && (
-          <div className="space-y-4 animate-slideDown">
-            {/* Your Appeal */}
-            <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-blue-50 rounded-lg border border-blue-100">
-                  <MessageSquare className="w-5 h-5 text-blue-600" />
-                </div>
-                <h4 className="text-lg font-semibold text-gray-900">
-                  Detail Banding Anda
-                </h4>
-              </div>
-
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm font-medium text-gray-700 mb-2">
-                    Pesan Banding:
-                  </p>
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <p className="text-gray-700 whitespace-pre-wrap">
-                      {latestAppeal.message}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-blue-600" />
-                    <div>
-                      <span className="font-medium">Diajukan:</span>
-                      <p className="text-xs">
-                        {formatDate(latestAppeal.created_at)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-blue-600" />
-                    <div>
-                      <span className="font-medium">Terakhir Update:</span>
-                      <p className="text-xs">
-                        {formatDate(latestAppeal.updated_at)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Admin Response - PROMINENTLY DISPLAYED */}
-            {latestAppeal.admin_reply && (
-              <div
-                className={`rounded-xl p-5 border-2 ${
-                  latestAppeal.status === "approved"
-                    ? "bg-gradient-to-br from-green-50 via-green-100 to-green-50 border-green-200"
-                    : "bg-gradient-to-br from-red-50 via-red-100 to-red-50 border-red-200"
-                } shadow-sm`}
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className={`p-3 rounded-xl ${
-                      latestAppeal.status === "approved"
-                        ? "bg-green-100 border border-green-200"
-                        : "bg-red-100 border border-red-200"
-                    }`}
-                  >
-                    <Shield
-                      className={`w-6 h-6 ${
-                        latestAppeal.status === "approved"
-                          ? "text-green-700"
-                          : "text-red-700"
-                      }`}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                      💬 Balasan Admin
-                      {latestAppeal.status === "approved" && (
-                        <span className="text-xs bg-green-600 text-white px-2 py-1 rounded-full font-semibold">
-                          DITERIMA
-                        </span>
-                      )}
-                      {latestAppeal.status === "rejected" && (
-                        <span className="text-xs bg-red-600 text-white px-2 py-1 rounded-full font-semibold">
-                          DITOLAK
-                        </span>
-                      )}
-                    </h4>
-                    <p className="text-xs text-gray-600 mt-1">
-                      Dibalas {getTimeAgo(latestAppeal.updated_at)}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
-                  <div className="flex items-start gap-3">
-                    <Quote
-                      className={`w-5 h-5 flex-shrink-0 mt-1 ${
-                        latestAppeal.status === "approved"
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    />
-                    <div className="flex-1">
-                      <p className="text-gray-900 font-medium mb-2 text-base leading-relaxed">
-                        {latestAppeal.admin_reply}
-                      </p>
-                      <div className="flex items-center justify-between pt-3 border-t border-gray-200">
-                        <span className="text-xs text-gray-500">
-                          <Calendar className="w-3 h-3 inline mr-1" />
-                          {formatDate(latestAppeal.updated_at)}
-                        </span>
-                        {latestAppeal.status === "approved" && (
-                          <span className="flex items-center gap-1 text-green-700 font-semibold text-xs">
-                            <CheckCheck className="w-4 h-4" />
-                            Akun akan segera aktif
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Status Explanation */}
-            <div
-              className={`rounded-xl p-4 border ${
-                latestAppeal.status === "approved"
-                  ? "bg-green-50 border-green-200"
-                  : latestAppeal.status === "rejected"
-                  ? "bg-red-50 border-red-200"
-                  : "bg-yellow-50 border-yellow-200"
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                <Info
-                  className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
-                    latestAppeal.status === "approved"
-                      ? "text-green-600"
-                      : latestAppeal.status === "rejected"
-                      ? "text-red-600"
-                      : "text-yellow-600"
-                  }`}
-                />
-                <div className="text-sm text-gray-700">
-                  <p className="font-bold mb-2 text-base">
-                    {latestAppeal.status === "approved"
-                      ? "✅ Status: Banding Diterima"
-                      : latestAppeal.status === "rejected"
-                      ? "❌ Status: Banding Ditolak"
-                      : "⏳ Status: Menunggu Review"}
-                  </p>
-                  <p className="leading-relaxed">
-                    {latestAppeal.status === "approved"
-                      ? "Selamat! Banding Anda telah disetujui oleh admin. Akun Anda akan segera diaktifkan kembali dalam waktu dekat. Terima kasih atas kesabaran Anda."
-                      : latestAppeal.status === "rejected"
-                      ? "Mohon maaf, banding Anda telah ditinjau dan ditolak oleh admin. Anda masih dapat mengajukan banding baru dengan memberikan penjelasan yang lebih detail dan bukti pendukung yang lebih kuat untuk pertimbangan lebih lanjut."
-                      : "Banding Anda sedang dalam antrian review. Tim admin kami akan memeriksa dan memproses banding Anda dengan teliti. Proses ini biasanya membutuhkan waktu 1-3 hari kerja. Mohon bersabar menunggu."}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Previous Appeals (if any) */}
-        {appealHistory.length > 1 && (
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <div className="flex items-center justify-between mb-4">
-              <h4 className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                <History className="w-4 h-4" />
-                Riwayat Banding Sebelumnya
-              </h4>
-              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                {appealHistory.length - 1} banding
-              </span>
-            </div>
-            <div className="space-y-2 max-h-60 overflow-y-auto">
-              {appealHistory.slice(1).map((appeal) => {
-                const appealStatus = getStatusBadgeColor(appeal.status);
-                return (
-                  <div
-                    key={appeal.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200"
-                  >
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div
-                        className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                          appeal.status === "approved"
-                            ? "bg-green-500"
-                            : appeal.status === "rejected"
-                            ? "bg-red-500"
-                            : "bg-yellow-500"
-                        }`}
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-700 line-clamp-1 mb-1">
-                          {appeal.message}
-                        </p>
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <span>{formatDateShort(appeal.created_at)}</span>
-                          <span>•</span>
-                          <span
-                            className={`font-medium ${
-                              appeal.status === "approved"
-                                ? "text-green-600"
-                                : appeal.status === "rejected"
-                                ? "text-red-600"
-                                : "text-yellow-600"
-                            }`}
-                          >
-                            {getStatusText(appeal.status)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </div>
-    );
+    return formatDate(dateString);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <div className="mx-auto w-24 h-24 bg-gradient-to-br from-red-100 to-red-50 rounded-full flex items-center justify-center mb-6 shadow-lg">
-            <AlertTriangle className="w-12 h-12 text-red-500" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-4 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto">
+        {/* Compact Header */}
+        <div className="text-center mb-5">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl mb-2 shadow-lg">
+            <AlertTriangle className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-1">
             Akun Dinonaktifkan
           </h1>
-          <div className="max-w-2xl mx-auto">
-            <p className="text-lg text-gray-600 mb-4">
-              {user?.ban_message ||
-                "Maaf, akun Anda telah dinonaktifkan sementara oleh administrator sistem."}
-            </p>
-            <p className="text-gray-500">
-              Anda dapat mengajukan banding untuk mengaktifkan kembali akun
-              Anda.
-            </p>
-          </div>
+          <p className="text-gray-600 max-w-xl mx-auto text-sm">
+            {user?.ban_message ||
+              "Akun Anda telah dinonaktifkan. Ajukan banding untuk mengaktifkan kembali."}
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Form */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-indigo-100 rounded-lg border border-indigo-200">
-                    <FileText className="w-6 h-6 text-indigo-600" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          {/* Main Content - 2 columns */}
+          <div className="lg:col-span-2 space-y-5">
+            {/* Latest Appeal Status - Compact Card */}
+            {latestAppeal && (
+              <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                <div
+                  className={`p-3.5 ${
+                    latestAppeal.status === "approved"
+                      ? "bg-gradient-to-r from-green-50 to-green-100"
+                      : latestAppeal.status === "rejected"
+                      ? "bg-gradient-to-r from-red-50 to-red-100"
+                      : "bg-gradient-to-r from-yellow-50 to-yellow-100"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      {latestAppeal.status === "approved" ? (
+                        <CheckCheck className="w-6 h-6 text-green-600" />
+                      ) : latestAppeal.status === "rejected" ? (
+                        <XCircle className="w-6 h-6 text-red-600" />
+                      ) : (
+                        <Clock className="w-6 h-6 text-yellow-600" />
+                      )}
+                      <div>
+                        <h3 className="font-semibold text-gray-900">
+                          {latestAppeal.status === "approved"
+                            ? "Banding Diterima"
+                            : latestAppeal.status === "rejected"
+                            ? "Banding Ditolak"
+                            : "Menunggu Review"}
+                        </h3>
+                        <p className="text-xs text-gray-600">
+                          {getTimeAgo(latestAppeal.updated_at)}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() =>
+                        setShowDetailedAppeal(!showDetailedAppeal)
+                      }
+                      className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1"
+                    >
+                      {showDetailedAppeal ? (
+                        <>
+                          <ChevronUp className="w-4 h-4" />
+                          Sembunyikan
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-4 h-4" />
+                          Detail
+                        </>
+                      )}
+                    </button>
                   </div>
-                  <h2 className="text-xl font-semibold text-gray-800">
-                    Formulir Pengajuan Banding
-                  </h2>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setShowTracking(!showTracking)}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg transition-colors border border-indigo-200"
-                  >
-                    <History className="w-4 h-4" />
-                    {showTracking ? "Sembunyikan" : "Tampilkan"} Tracking
-                  </button>
-                  <button
-                    onClick={fetchAppealHistory}
-                    disabled={loadingTracking}
-                    className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 border border-gray-300"
-                    title="Refresh status"
-                  >
-                    <RefreshCw
-                      className={`w-4 h-4 ${
-                        loadingTracking ? "animate-spin" : ""
-                      }`}
-                    />
-                  </button>
-                </div>
-              </div>
 
-              {/* Success Message */}
-              {submissionSuccess && (
-                <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl animate-fadeIn">
-                  <div className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <div>
-                      <p className="text-green-700 font-medium">
-                        Pengajuan banding berhasil dikirim!
-                      </p>
-                      <p className="text-green-600 text-sm mt-1">
-                        Banding Anda sedang dalam proses review oleh admin.
+                  {/* Admin Reply Preview */}
+                  {latestAppeal.admin_reply && !showDetailedAppeal && (
+                    <div className="mt-3 p-3 bg-white/60 backdrop-blur rounded-lg">
+                      <p className="text-sm text-gray-700 flex items-start gap-2">
+                        <Quote className="w-4 h-4 flex-shrink-0 mt-0.5 text-gray-400" />
+                        <span className="line-clamp-2">
+                          {latestAppeal.admin_reply}
+                        </span>
                       </p>
                     </div>
+                  )}
+                </div>
+
+                {/* Detailed View */}
+                {showDetailedAppeal && (
+                  <div className="p-3.5 border-t border-gray-200 space-y-3 bg-gray-50">
+                    <div>
+                      <p className="text-xs font-medium text-gray-600 mb-2">
+                        Pesan Anda:
+                      </p>
+                      <p className="text-sm text-gray-700 bg-white p-3 rounded-lg border border-gray-200">
+                        {latestAppeal.message}
+                      </p>
+                    </div>
+
+                    {latestAppeal.admin_reply && (
+                      <div>
+                        <p className="text-xs font-medium text-gray-600 mb-2">
+                          Balasan Admin:
+                        </p>
+                        <p className="text-sm text-gray-700 bg-white p-3 rounded-lg border border-gray-200">
+                          {latestAppeal.admin_reply}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between text-xs text-gray-500 pt-2">
+                      <span>Diajukan: {formatDate(latestAppeal.created_at)}</span>
+                      <span>
+                        Update: {formatDate(latestAppeal.updated_at)}
+                      </span>
+                    </div>
                   </div>
+                )}
+              </div>
+            )}
+
+            {/* Form Banding - Compact */}
+            <div className="bg-white rounded-xl shadow-md p-5 border border-gray-200">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Ajukan Banding
+                </h2>
+                <button
+                  onClick={fetchAppealHistory}
+                  disabled={loadingTracking}
+                  className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <RefreshCw
+                    className={`w-4 h-4 ${
+                      loadingTracking ? "animate-spin" : ""
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {submissionSuccess && (
+                <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <p className="text-sm text-green-700 font-medium">
+                    Banding berhasil dikirim!
+                  </p>
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* User Info */}
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center border border-blue-600">
-                      <User className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{user?.name}</p>
-                      <p className="text-sm text-gray-600 flex items-center gap-1">
-                        <Mail className="w-3 h-3" />
-                        {user?.email}
-                      </p>
-                    </div>
+              <form onSubmit={handleSubmit} className="space-y-3.5">
+                {/* User Info - Compact */}
+                <div className="flex items-center gap-3 p-2.5 bg-blue-50 rounded-lg border border-blue-100">
+                  <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-gray-900 text-sm truncate">
+                      {user?.name}
+                    </p>
+                    <p className="text-xs text-gray-600 truncate">
+                      {user?.email}
+                    </p>
                   </div>
                 </div>
 
-                {/* Appeal Reason */}
+                {/* Alasan Banding */}
                 <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="block text-sm font-medium text-gray-700">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium text-gray-700">
                       Alasan Banding <span className="text-red-500">*</span>
                     </label>
                     <span className="text-xs text-gray-500">
-                      {formData.appeal_reason.length}/1000 karakter
+                      {formData.appeal_reason.length}/1000
                     </span>
                   </div>
                   <textarea
                     name="appeal_reason"
                     value={formData.appeal_reason}
                     onChange={handleInputChange}
-                    rows={5}
+                    rows={4}
                     maxLength={1000}
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors resize-none shadow-sm"
-                    placeholder="Jelaskan secara detail mengapa Anda merasa akun seharusnya diaktifkan kembali. Berikan penjelasan yang jelas dan informatif..."
+                    className="w-full px-3 py-2.5 text-sm bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 resize-none transition-all"
+                    placeholder="Jelaskan mengapa akun seharusnya diaktifkan kembali..."
                     required
                   />
-                  <p className="text-xs text-gray-500 mt-2">
-                    Jelaskan situasi Anda dengan jelas. Semakin detail
-                    penjelasan Anda, semakin besar peluang banding diterima.
-                  </p>
                 </div>
 
-                {/* Supporting Evidence */}
+                {/* Bukti Pendukung */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <div className="flex items-center gap-2">
-                      <FileText className="w-4 h-4" />
-                      Bukti Pendukung (Opsional)
-                    </div>
+                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    Bukti Pendukung (Opsional)
                   </label>
                   <textarea
                     name="appeal_evidence"
                     value={formData.appeal_evidence}
                     onChange={handleInputChange}
-                    rows={3}
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors resize-none shadow-sm"
-                    placeholder="Contoh: Link ke screenshot, email, atau dokumen pendukung lainnya..."
+                    rows={2}
+                    className="w-full px-3 py-2.5 text-sm bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 resize-none transition-all"
+                    placeholder="Link ke screenshot atau dokumen pendukung..."
                   />
-                  <p className="text-xs text-gray-500 mt-2">
-                    Anda dapat menyertakan tautan ke bukti pendukung untuk
-                    memperkuat alasan banding Anda.
-                  </p>
                 </div>
 
                 {/* Submit Button */}
-                <div className="pt-6 border-t border-gray-200">
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <ClockIcon className="w-4 h-4" />
-                        <span>Biasanya diproses dalam 1-3 hari kerja</span>
-                      </div>
-                    </div>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || !formData.appeal_reason.trim()}
-                      className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-lg shadow-md"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <RefreshCw className="w-4 h-4 animate-spin" />
-                          Mengirim...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="w-4 h-4" />
-                          Ajukan Banding
-                        </>
-                      )}
-                    </button>
+                <div className="flex items-center justify-between pt-2">
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <ClockIcon className="w-3 h-3" />
+                    <span>Proses 1-3 hari kerja</span>
                   </div>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !formData.appeal_reason.trim()}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        Mengirim...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        Ajukan Banding
+                      </>
+                    )}
+                  </button>
                 </div>
               </form>
             </div>
           </div>
 
-          {/* Right Column - Tracking & Info */}
-          <div className="space-y-8">
-            {/* Tracking Panel */}
-            <div className="bg-white rounded-2xl shadow-xl">
-              <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-indigo-100 rounded-lg border border-indigo-200">
-                      <TrendingUp className="w-5 h-5 text-indigo-600" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-800">
-                      Tracking Banding
-                    </h3>
-                  </div>
-                  {appealHistory.length > 0 && (
-                    <div className="text-xs font-medium text-gray-600">
-                      Total: {appealHistory.length}
-                    </div>
-                  )}
-                </div>
+          {/* Sidebar - 1 column */}
+          <div className="space-y-5">
+            {/* Panduan - Compact */}
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
+              <div className="flex items-center gap-2 mb-3">
+                <AlertCircle className="w-4 h-4 text-blue-600" />
+                <h3 className="font-semibold text-gray-900 text-sm">Panduan</h3>
               </div>
-
-              <div className="p-4">
-                {loadingTracking ? (
-                  <div className="flex flex-col items-center justify-center py-12">
-                    <RefreshCw className="w-8 h-8 text-gray-400 animate-spin mb-3" />
-                    <p className="text-gray-500 text-sm">Memuat status...</p>
-                  </div>
-                ) : (
-                  renderTrackingStatus()
-                )}
-              </div>
-            </div>
-
-            {/* Information Card */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-blue-100 rounded-lg border border-blue-200">
-                  <AlertCircle className="w-5 h-5 text-blue-600" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-800">
-                  Panduan Banding
-                </h3>
-              </div>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-gray-700">
-                    <span className="font-medium">Sampaikan dengan jujur:</span>{" "}
-                    Jelaskan situasi Anda dengan detail dan kejujuran.
-                  </p>
+              <ul className="space-y-2">
+                <li className="flex items-start gap-2 text-xs text-gray-700">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1 flex-shrink-0" />
+                  <span>Jelaskan situasi dengan jujur dan detail</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-gray-700">
-                    <span className="font-medium">Perhatikan status:</span> Cek
-                    tracking untuk melihat perkembangan banding Anda.
-                  </p>
+                <li className="flex items-start gap-2 text-xs text-gray-700">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1 flex-shrink-0" />
+                  <span>Sertakan bukti jika memungkinkan</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-gray-700">
-                    <span className="font-medium">Sabar menunggu:</span> Proses
-                    review membutuhkan waktu 1-3 hari kerja.
-                  </p>
+                <li className="flex items-start gap-2 text-xs text-gray-700">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1 flex-shrink-0" />
+                  <span>Sabar menunggu review admin</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>
-                  <p className="text-sm text-gray-700">
-                    <span className="font-medium">Jika ditolak:</span> Anda bisa
-                    ajukan banding baru dengan penjelasan yang lebih baik.
-                  </p>
+                <li className="flex items-start gap-2 text-xs text-gray-700">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1 flex-shrink-0" />
+                  <span>Jika ditolak, bisa ajukan banding baru</span>
                 </li>
               </ul>
             </div>
 
-            {/* Action Buttons */}
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <div className="space-y-3">
+            {/* History Appeals */}
+            {appealHistory.length > 1 && (
+              <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                 <button
-                  onClick={() => setShowTracking(!showTracking)}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-all duration-200 hover:border-gray-400 group shadow-sm"
+                  onClick={() => setShowHistory(!showHistory)}
+                  className="w-full p-3 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
-                  <div
-                    className={`p-2 rounded-lg border ${
-                      showTracking
-                        ? "bg-indigo-50 border-indigo-200"
-                        : "bg-gray-50 border-gray-200"
-                    } group-hover:bg-indigo-50 group-hover:border-indigo-200 transition-colors`}
-                  >
-                    <Eye className="w-4 h-4 text-gray-600" />
+                  <div className="flex items-center gap-2">
+                    <History className="w-4 h-4 text-gray-600" />
+                    <span className="text-sm font-medium text-gray-900">
+                      Riwayat Banding
+                    </span>
+                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+                      {appealHistory.length - 1}
+                    </span>
                   </div>
-                  <span className="flex-1 text-left">
-                    {showTracking
-                      ? "Sembunyikan Tracking"
-                      : "Tampilkan Tracking"}
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
+                  {showHistory ? (
+                    <ChevronUp className="w-4 h-4 text-gray-400" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                  )}
                 </button>
 
-                <button
-                  onClick={logout}
-                  className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 font-medium rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all duration-200 hover:shadow-md group border border-gray-300"
-                >
-                  <div className="p-2 rounded-lg bg-gray-200 group-hover:bg-gray-300 transition-colors border border-gray-300">
-                    <LogOut className="w-4 h-4 text-gray-600" />
+                {showHistory && (
+                  <div className="border-t border-gray-200 max-h-64 overflow-y-auto">
+                    {appealHistory.slice(1).map((appeal) => (
+                      <div
+                        key={appeal.id}
+                        className="p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-medium text-gray-900">
+                            {formatDate(appeal.created_at)}
+                          </span>
+                          <span
+                            className={`text-xs px-2 py-0.5 rounded-full ${
+                              appeal.status === "approved"
+                                ? "bg-green-100 text-green-700"
+                                : appeal.status === "rejected"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-yellow-100 text-yellow-700"
+                            }`}
+                          >
+                            {getStatusText(appeal.status)}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-600 line-clamp-2">
+                          {appeal.message}
+                        </p>
+                      </div>
+                    ))}
                   </div>
-                  <span className="flex-1 text-left">Keluar Akun</span>
-                  <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
-                </button>
+                )}
               </div>
-            </div>
-          </div>
-        </div>
+            )}
 
-        {/* Footer Note */}
-        <div className="mt-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-sm border border-gray-200">
-            <AlertCircle className="w-4 h-4 text-gray-400" />
-            <p className="text-sm text-gray-600">
-              Butuh bantuan? Hubungi{" "}
+            {/* Action Buttons */}
+            <div className="bg-white rounded-xl p-3 border border-gray-200">
+              <button
+                onClick={logout}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="text-sm">Keluar Akun</span>
+              </button>
+            </div>
+
+            {/* Contact */}
+            <div className="bg-white rounded-xl p-3 border border-gray-200">
+              <div className="flex items-center gap-2 text-xs text-gray-600 mb-1">
+                <AlertCircle className="w-3.5 h-3.5" />
+                <span>Butuh bantuan?</span>
+              </div>
               <a
-                href="mailto:synapsebioapp@example.com"
-                className="font-medium text-indigo-600 hover:text-indigo-700"
+                href="mailto:synapsebioapp@gmail.com"
+                className="text-xs text-blue-600 hover:text-blue-700 font-medium block"
               >
                 synapsebioapp@gmail.com
               </a>
-            </p>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* CSS Animations */}
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-20px);
-            max-height: 0;
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-            max-height: 2000px;
-          }
-        }
-
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
-        }
-
-        .animate-slideDown {
-          animation: slideDown 0.3s ease-out;
-          overflow: hidden;
-        }
-
-        /* Custom scrollbar */
-        .overflow-y-auto::-webkit-scrollbar {
-          width: 6px;
-        }
-
-        .overflow-y-auto::-webkit-scrollbar-track {
-          background: #f1f1f1;
-          border-radius: 3px;
-        }
-
-        .overflow-y-auto::-webkit-scrollbar-thumb {
-          background: #c1c1c1;
-          border-radius: 3px;
-        }
-
-        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-          background: #a1a1a1;
-        }
-      `}</style>
     </div>
   );
 }

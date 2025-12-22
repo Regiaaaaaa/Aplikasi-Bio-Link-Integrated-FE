@@ -142,8 +142,8 @@ const LandingPage = () => {
       glassStrong: "backdrop-blur-xl bg-white/90",
       accentText: "text-blue-700",
       accentBg: "bg-blue-50",
-      buttonPrimary: "from-blue-600 to-indigo-600",
-      buttonHover: "from-blue-700 to-indigo-700",
+      buttonPrimary: "from-blue-400 to-blue-600",
+      buttonHover: "from-blue-500 to-blue-700",
       inputBg: "bg-white",
       inputBorder: "border-slate-300",
       inputFocus: "ring-blue-500/50",
@@ -165,8 +165,8 @@ const LandingPage = () => {
       glassStrong: "backdrop-blur-xl bg-slate-900/80",
       accentText: "text-blue-400",
       accentBg: "bg-blue-950/30",
-      buttonPrimary: "from-blue-600 to-indigo-600",
-      buttonHover: "from-blue-700 to-indigo-700",
+      buttonPrimary: "from-blue-400 to-blue-600",
+      buttonHover: "from-blue-500 to-blue-700",
       inputBg: "bg-slate-800/80",
       inputBorder: "border-slate-700",
       inputFocus: "ring-blue-500/50",
@@ -178,9 +178,9 @@ const LandingPage = () => {
   const themeColors = colors[theme];
 
   const gradients = {
-    primary: "from-blue-600 via-indigo-600 to-blue-700",
+    primary: "from-blue-400 via-blue-500 to-blue-600",
     secondary: "from-slate-600 to-slate-700",
-    accent: "from-blue-500 to-indigo-500",
+    accent: "from-blue-300 to-blue-500",
   };
 
   const glassEffect = `${themeColors.glass} border ${themeColors.border} ${themeColors.shadow}`;
@@ -193,44 +193,50 @@ const LandingPage = () => {
       {/* Subtle animated background */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div
-          className="absolute w-[800px] h-[800px] rounded-full blur-3xl opacity-[0.03] bg-gradient-to-r from-blue-500 to-indigo-500 animate-float-slow"
+          className="absolute w-[800px] h-[800px] rounded-full blur-3xl opacity-[0.03] bg-gradient-to-r from-blue-400 to-blue-600 animate-float-slow"
           style={{ left: "-10%", top: "10%" }}
         />
         <div
-          className="absolute w-[600px] h-[600px] rounded-full blur-3xl opacity-[0.02] bg-gradient-to-r from-indigo-500 to-blue-500 animate-float-slower"
+          className="absolute w-[600px] h-[600px] rounded-full blur-3xl opacity-[0.02] bg-gradient-to-r from-blue-600 to-blue-400 animate-float-slower"
           style={{ right: "0%", bottom: "20%" }}
         />
       </div>
 
-      {/* Navigation */}
+      {/* Floating Navigation - Linktree Style */}
       <nav
-        className={`fixed w-full top-0 z-50 ${themeColors.nav} border-b ${themeColors.navBorder} backdrop-blur-xl transition-all duration-300`}
+        className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
+          scrollY > 50 ? "top-4" : "top-6"
+        }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+        <div
+          className={`${strongGlassEffect} rounded-full px-6 py-4 transition-all duration-300 ${
+            scrollY > 50 ? "shadow-2xl scale-95" : "shadow-xl"
+          }`}
+        >
+          <div className="flex items-center space-x-8">
             <div
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="flex items-center space-x-3 group cursor-pointer"
             >
               <div className="relative">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center transform group-hover:scale-105 transition-all duration-300">
-                  <img src={icon2} alt="Synapse Logo" />
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center transform group-hover:scale-105 transition-all duration-300">
+                  <img src={icon2} alt="Synapse Logo" className="w-full h-full" />
                 </div>
               </div>
 
               <span
-                className={`text-2xl font-bold bg-gradient-to-r ${gradients.primary} bg-clip-text text-transparent`}
+                className={`text-xl font-bold ${themeColors.text} hidden sm:block`}
               >
                 Synapse
               </span>
             </div>
 
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-6">
               {["Features", "Pricing", "Templates"].map((item) => (
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  className={`relative px-3 py-2 ${themeColors.textSecondary} hover:${themeColors.accentText} transition-colors duration-300 group font-medium`}
+                  className={`relative px-3 py-2 ${themeColors.textSecondary} hover:${themeColors.accentText} transition-colors duration-300 group font-medium text-sm`}
                 >
                   {item}
                   <span
@@ -238,38 +244,32 @@ const LandingPage = () => {
                   ></span>
                 </a>
               ))}
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={toggleTheme}
+                className={`w-11 h-11 rounded-full ${glassEffect} flex items-center justify-center transition-all duration-300 hover:scale-105`}
+              >
+                {isDark ? (
+                  <Moon className="w-4 h-4" />
+                ) : (
+                  <Sun className="w-4 h-4" />
+                )}
+              </button>
+
               <button
                 onClick={() => navigate("/login")}
-                className="group relative px-6 py-2.5 rounded-lg font-medium overflow-hidden transition-all duration-300 hover:scale-105"
+                className="group relative px-5 py-2.5 rounded-full font-medium overflow-hidden transition-all duration-300 hover:scale-105 hidden sm:block"
               >
                 <div
                   className={`absolute inset-0 bg-gradient-to-r ${gradients.primary}`}
                 ></div>
                 <span className="relative text-white text-sm">Get Started</span>
               </button>
-            </div>
 
-            <div className="flex items-center space-x-4">
               <button
-                onClick={toggleTheme}
-                className={`w-14 h-7 rounded-full ${glassEffect} p-1 transition-all duration-300 hover:scale-105`}
-              >
-                <div
-                  className={`w-5 h-5 rounded-full bg-gradient-to-r ${
-                    gradients.primary
-                  } transform transition-transform duration-300 flex items-center justify-center ${
-                    isDark ? "translate-x-7" : "translate-x-0"
-                  }`}
-                >
-                  {isDark ? (
-                    <Moon className="w-3 h-3 text-white" />
-                  ) : (
-                    <Sun className="w-3 h-3 text-white" />
-                  )}
-                </div>
-              </button>
-              <button
-                className="md:hidden w-10 h-10 rounded-lg flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-300"
+                className="md:hidden w-11 h-11 rounded-full flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-300"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? (
@@ -283,8 +283,40 @@ const LandingPage = () => {
         </div>
       </nav>
 
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div
+          className={`fixed inset-0 z-40 ${themeColors.bg} bg-opacity-95 backdrop-blur-lg md:hidden`}
+        >
+          <div className="flex flex-col items-center justify-center h-full space-y-8">
+            {["Features", "Pricing", "Templates"].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`text-2xl font-semibold ${themeColors.text} hover:${themeColors.accentText} transition-colors duration-300`}
+              >
+                {item}
+              </a>
+            ))}
+            <button
+              onClick={() => {
+                navigate("/login");
+                setMobileMenuOpen(false);
+              }}
+              className="group relative px-8 py-3 rounded-full font-semibold overflow-hidden transition-all duration-300"
+            >
+              <div
+                className={`absolute inset-0 bg-gradient-to-r ${gradients.primary}`}
+              ></div>
+              <span className="relative text-white">Get Started</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center">
+      <section className="relative pt-40 pb-20 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center">
         <div className="max-w-7xl mx-auto w-full">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left Column - Form */}
@@ -640,7 +672,7 @@ const LandingPage = () => {
                   <img src={icon2} alt="Synapse Logo" />
                 </div>
                 <span
-                  className={`text-xl font-bold bg-gradient-to-r ${gradients.primary} bg-clip-text text-transparent`}
+                  className={`text-xl font-bold ${themeColors.text}`}
                 >
                   Synapse
                 </span>

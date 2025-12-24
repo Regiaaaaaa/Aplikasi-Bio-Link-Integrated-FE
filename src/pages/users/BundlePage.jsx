@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Plus, ExternalLink, Trash2, Edit, Link2 } from "lucide-react";
 import CreateBundleModal from "../../components/CreateBundleModal";
+import ConfirmDangerModal from "../../components/ConfirmDangerModal";
 import Layout from "../../components/layouts/Layout";
 import {
   FaInstagram,
@@ -16,6 +17,8 @@ function BundlesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedBundleId, setSelectedBundleId] = useState(null);
 
   useEffect(() => {
     fetchBundles();
@@ -46,8 +49,6 @@ function BundlesPage() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this bundle?")) return;
-
     try {
       const token = localStorage.getItem("token");
 
@@ -63,7 +64,7 @@ function BundlesPage() {
 
       fetchBundles();
     } catch (err) {
-      alert("Failed to delete bundle: " + err.message);
+      console.error(err);
     }
   };
 
@@ -319,7 +320,10 @@ function BundlesPage() {
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(bundle.id)}
+                      onClick={() => {
+                        setSelectedBundleId(bundle.id);
+                        setDeleteModalOpen(true);
+                      }}
                       className="action-button px-4 py-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-all border border-red-200"
                       title="Delete bundle"
                     >
@@ -338,6 +342,23 @@ function BundlesPage() {
               onSuccess={handleCreateSuccess}
             />
           )}
+
+          {/* Delete Confirm Modal */}
+          <ConfirmDangerModal
+            isOpen={deleteModalOpen}
+            onClose={() => setDeleteModalOpen(false)}
+            title="Delete Bundle?"
+            subtitle="This action cannot be undone"
+            warningItems={[
+              "Bundle data and links",
+              "Analytics and stats",
+              "Public access to this bundle",
+              "Public access to this bundle",
+              "Public access to this bundle",
+            ]}
+            confirmText="Delete Bundle"
+            onConfirm={() => handleDelete(selectedBundleId)}
+          />
         </div>
       </div>
     </Layout>

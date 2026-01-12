@@ -22,34 +22,6 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const error = params.get("error");
-
-    // Google Redirect Error
-    if (error === "banned") {
-      setErrorMessage({
-        type: "banned",
-        title: "Akun Dinonaktifkan",
-        message: "Akun Anda dinonaktifkan",
-        detail: params.get("message") || "Silakan hubungi administrator",
-      });
-      setShowErrorModal(true);
-      navigate("/login", { replace: true });
-    }
-
-    // Failed Google
-    if (error === "google_failed") {
-      setErrorMessage({
-        type: "error",
-        title: "Login Google Gagal",
-        message: "Autentikasi Google gagal. Silakan coba lagi.",
-      });
-      setShowErrorModal(true);
-      navigate("/login", { replace: true });
-    }
-  }, [location.search, navigate]);
-
   // Handle All Redirect
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -64,7 +36,6 @@ export default function Login() {
         detail: params.get("message") || "Silakan hubungi administrator",
       });
       setShowErrorModal(true);
-      navigate("/login", { replace: true });
     }
 
     // Failed Google
@@ -75,25 +46,26 @@ export default function Login() {
         message: "Autentikasi Google gagal. Silakan coba lagi.",
       });
       setShowErrorModal(true);
-      navigate("/login", { replace: true });
     }
   }, [location.search, navigate]);
 
-  // Handle Redirect After Login
-  useEffect(() => {
-    if (!loading && user && location.pathname !== "/google/callback") {
-      // Cek banned (backend return boolean)
+    useEffect(() => {
+      if (loading) return;
+      if (!user) return;
+
       if (user.is_active === false) {
         navigate("/banned", { replace: true });
-      } else if (user.role === "admin") {
-        navigate("/admin", { replace: true });
-      } else {
-        setTimeout(() => {
-          navigate("/dashboard", { replace: true });
-        }, 2000);
+        return;
       }
-    }
-  }, [loading, user, navigate, location]);
+
+      if (user.role === "admin") {
+        navigate("/admin", { replace: true });
+        return;
+      }
+
+      navigate("/dashboard", { replace: true });
+    }, [loading, user, navigate]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -160,11 +132,6 @@ export default function Login() {
         </div>
       </div>
     );
-  }
-
-  if (user) {
-    navigate("/dashboard", { replace: true });
-    return null;
   }
 
   return (

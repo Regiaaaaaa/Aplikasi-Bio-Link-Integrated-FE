@@ -53,6 +53,7 @@ export default function Login() {
       if (loading) return;
       if (!user) return;
 
+      // Roles-based delegation
       if (user.is_active === false) {
         navigate("/banned", { replace: true });
         return;

@@ -18,6 +18,8 @@ import {
 import SecurityModal from "../../components/modals/SecurityModal";
 import QuickStartModal from "../../components/modals/QuickStartModal";
 import DocumentationModal from "../../components/modals/DocumentationModal";
+import ChangelogModal from "../../components/modals/ChangelogModal";
+import TipsModal from "../../components/modals/TipsModal";
 
 // --- FAQ Data ---
 const faqsData = [
@@ -98,8 +100,9 @@ const SupportPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
   const [isQuickStartModalOpen, setIsQuickStartModalOpen] = useState(false);
-  const [isDocumentationModalOpen, setIsDocumentationModalOpen] =
-    useState(false);
+  const [isDocumentationModalOpen, setIsDocumentationModalOpen] = useState(false);
+  const [isChangelogModalOpen, setIsChangelogModalOpen] = useState(false);
+  const [isTipsModalOpen, setIsTipsModalOpen] = useState(false);
 
   const toggleOpen = (id) => {
     setOpenId(openId === id ? null : id);
@@ -370,9 +373,9 @@ const SupportPage = () => {
               <p className="text-xs sm:text-sm text-gray-600 mb-4">
                 Maximize your Synapse usage with tips from experts
               </p>
-              <a
-                href="/tips"
-                className="text-blue-600 text-xs sm:text-sm font-medium hover:text-blue-700 flex items-center gap-1 inline-flex"
+              <button
+                onClick={() => setIsTipsModalOpen(true)}
+                className="text-blue-600 text-xs sm:text-sm font-medium hover:text-blue-700 flex items-center gap-1"
               >
                 Learn more
                 <svg
@@ -388,7 +391,7 @@ const SupportPage = () => {
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-              </a>
+              </button>
             </div>
 
             <div className="bg-white rounded-lg p-5 sm:p-6 border border-gray-200 hover:border-blue-300 transition-colors">
@@ -426,9 +429,9 @@ const SupportPage = () => {
               <p className="text-xs sm:text-sm text-gray-600 mb-4">
                 Latest updates and new features we've released
               </p>
-              <a
-                href="/changelog"
-                className="text-blue-600 text-xs sm:text-sm font-medium hover:text-blue-700 flex items-center gap-1 inline-flex"
+              <button
+                onClick={() => setIsChangelogModalOpen(true)}
+                className="text-blue-600 text-xs sm:text-sm font-medium hover:text-blue-700 flex items-center gap-1"
               >
                 View updates
                 <svg
@@ -444,7 +447,7 @@ const SupportPage = () => {
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -464,6 +467,16 @@ const SupportPage = () => {
       <DocumentationModal
         isOpen={isDocumentationModalOpen}
         onClose={() => setIsDocumentationModalOpen(false)}
+      />
+
+      <ChangelogModal
+        isOpen={isChangelogModalOpen}
+        onClose={() => setIsChangelogModalOpen(false)}
+      />
+
+      <TipsModal
+        isOpen={isTipsModalOpen}
+        onClose={() => setIsTipsModalOpen(false)}
       />
     </Layout>
   );

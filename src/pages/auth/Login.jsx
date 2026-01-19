@@ -4,7 +4,7 @@ import axiosClient from "../../utils/axiosClient";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import loginImage from "../../assets/img4.jpg";
 import icon2 from "../../assets/icon2.png";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -271,15 +271,15 @@ export default function Login() {
         }
       `}</style>
 
-      {/* Success Modal */}
+      {/* Success Modal - Responsive */}
       {showSuccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-2xl p-8 max-w-sm mx-4 shadow-2xl animate-scaleIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn p-4">
+          <div className="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-sm mx-auto shadow-2xl animate-scaleIn">
             <div className="flex flex-col items-center text-center">
               {/* Success Icon */}
-              <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mb-4">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mb-4">
                 <svg
-                  className="w-8 h-8 text-white"
+                  className="w-6 h-6 sm:w-8 sm:h-8 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -294,10 +294,10 @@ export default function Login() {
               </div>
 
               {/* Success Message */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                 Login Successful!
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-sm sm:text-base text-gray-600 mb-6">
                 Welcome back! Redirecting to dashboard...
               </p>
 
@@ -311,15 +311,15 @@ export default function Login() {
         </div>
       )}
 
-      {/* Banned Account Modal */}
+      {/* Banned Account Modal - Responsive */}
       {showErrorModal && errorMessage.type === "banned" && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl animate-scaleIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn p-4">
+          <div className="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-md mx-auto shadow-2xl animate-scaleIn">
             <div className="flex flex-col text-center">
               {/* Warning Icon */}
-              <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center mb-4 mx-auto animate-pulse-custom">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center mb-4 mx-auto animate-pulse-custom">
                 <svg
-                  className="w-10 h-10 text-white"
+                  className="w-8 h-8 sm:w-10 sm:h-10 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -334,17 +334,19 @@ export default function Login() {
               </div>
 
               {/* Title */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                 {errorMessage.title}
               </h3>
-              <p className="text-gray-600 mb-4">{errorMessage.message}</p>
+              <p className="text-sm sm:text-base text-gray-600 mb-4">
+                {errorMessage.message}
+              </p>
 
               {/* Ban Detail Card */}
-              <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-xl p-5 mb-4 text-left">
+              <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-xl p-4 sm:p-5 mb-4 text-left">
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-white rounded-lg border border-red-100">
                     <svg
-                      className="w-5 h-5 text-red-600"
+                      className="w-4 h-4 sm:w-5 sm:h-5 text-red-600"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -358,10 +360,10 @@ export default function Login() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-red-800 mb-1">
+                    <p className="text-xs sm:text-sm font-semibold text-red-800 mb-1">
                       Alasan Penonaktifan:
                     </p>
-                    <p className="text-red-700 text-sm leading-relaxed">
+                    <p className="text-red-700 text-xs sm:text-sm leading-relaxed">
                       {errorMessage.detail ||
                         "Akun Anda telah dinonaktifkan oleh administrator."}
                     </p>
@@ -371,9 +373,9 @@ export default function Login() {
 
               {/* Contact Admin Section */}
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6">
-                <p className="text-sm font-semibold text-gray-800 mb-2 flex items-center justify-center gap-2">
+                <p className="text-xs sm:text-sm font-semibold text-gray-800 mb-2 flex items-center justify-center gap-2">
                   <svg
-                    className="w-4 h-4 text-gray-600"
+                    className="w-3 h-3 sm:w-4 sm:h-4 text-gray-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -392,10 +394,10 @@ export default function Login() {
                   <div className="flex items-center justify-center gap-3">
                     <a
                       href="mailto:synapsebioapp@gmail.com"
-                      className="inline-flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors"
+                      className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors"
                     >
                       <svg
-                        className="w-4 h-4"
+                        className="w-3 h-3 sm:w-4 sm:h-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -422,13 +424,13 @@ export default function Login() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={() => navigate("/banned")}
-                  className="flex-1 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+                  className="flex-1 py-2.5 sm:py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all duration-200 text-sm sm:text-base"
                 >
                   Hubungi Admin
                 </button>
                 <button
                   onClick={() => setShowErrorModal(false)}
-                  className="flex-1 py-3 border-2 border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+                  className="flex-1 py-2.5 sm:py-3 border-2 border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 text-sm sm:text-base"
                 >
                   Tutup
                 </button>
@@ -438,15 +440,15 @@ export default function Login() {
         </div>
       )}
 
-      {/* Regular Error Modal */}
+      {/* Regular Error Modal - Responsive */}
       {showErrorModal && errorMessage.type === "error" && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-2xl p-8 max-w-sm mx-4 shadow-2xl animate-scaleIn">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn p-4">
+          <div className="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-sm mx-auto shadow-2xl animate-scaleIn">
             <div className="flex flex-col items-center text-center">
               {/* Error Icon */}
-              <div className="w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mb-4 animate-shake">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center mb-4 animate-shake">
                 <svg
-                  className="w-8 h-8 text-white"
+                  className="w-6 h-6 sm:w-8 sm:h-8 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -461,15 +463,17 @@ export default function Login() {
               </div>
 
               {/* Error Message */}
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                 {errorMessage.title}
               </h3>
-              <p className="text-gray-600 mb-4">{errorMessage.message}</p>
+              <p className="text-sm sm:text-base text-gray-600 mb-4">
+                {errorMessage.message}
+              </p>
 
               {/* Button */}
               <button
                 onClick={() => setShowErrorModal(false)}
-                className="btn w-full h-12 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200"
+                className="btn w-full h-11 sm:h-12 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200 text-sm sm:text-base"
               >
                 Coba Lagi
               </button>
@@ -479,36 +483,53 @@ export default function Login() {
       )}
 
       <div className="h-screen w-screen overflow-hidden flex flex-col md:flex-row bg-white">
+        {/* Mobile Back Button */}
+        <div className="md:hidden w-full px-4 py-3 border-b border-gray-100 bg-white">
+          <button
+            onClick={goToLandingPage}
+            className="flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="text-sm font-medium">Back to Home</span>
+          </button>
+        </div>
+
         {/* Decorative Elements */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-          <div className="absolute -top-40 -left-40 w-80 h-80 bg-gradient-to-br from-indigo-200 to-blue-200 rounded-full opacity-30 blur-3xl animate-float"></div>
+          <div className="absolute -top-40 -left-40 w-60 h-60 sm:w-80 sm:h-80 bg-gradient-to-br from-indigo-200 to-blue-200 rounded-full opacity-30 blur-3xl animate-float"></div>
           <div
-            className="absolute -bottom-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-200 to-pink-200 rounded-full opacity-30 blur-3xl animate-float"
+            className="absolute -bottom-40 -right-40 w-60 h-60 sm:w-80 sm:h-80 bg-gradient-to-br from-blue-200 to-pink-200 rounded-full opacity-30 blur-3xl animate-float"
             style={{ animationDelay: "2s" }}
           ></div>
         </div>
 
         {/* LEFT: LOGIN FORM */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center px-8 md:px-16 lg:px-24 py-12 relative z-10 animate-fadeIn overflow-y-auto">
+        <div className="w-full md:w-1/2 flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-16 xl:px-24 py-6 sm:py-8 md:py-12 relative z-10 animate-fadeIn overflow-y-auto">
           <div className="max-w-md w-full mx-auto my-auto">
             {/* Brand Logo */}
-            <div className="mb-6 animate-slideDown">
-              <div className="flex items-center gap-2">
-                <img src={icon2} alt="Synapse Logo" className="w-8 h-8" />
-                <span className="text-xl font-bold text-black">Synapse</span>
+            <div className="mb-4 sm:mb-6 animate-slideDown">
+              <div className="flex items-center gap-2 justify-center md:justify-start">
+                <img
+                  src={icon2}
+                  alt="Synapse Logo"
+                  className="w-7 h-7 sm:w-8 sm:h-8"
+                />
+                <span className="text-lg sm:text-xl font-bold text-black">
+                  Synapse
+                </span>
               </div>
             </div>
 
             {/* Welcome Text */}
-            <div className="mb-6 animate-slideUp">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">
+            <div className="mb-6 sm:mb-8 animate-slideUp text-center md:text-left">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">
                 Hello,
                 <br />
                 <span className="bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
                   Welcome Back
                 </span>
               </h1>
-              <p className="text-gray-600">
+              <p className="text-sm sm:text-base text-gray-600">
                 Hey, welcome back to your special place
               </p>
             </div>
@@ -516,17 +537,17 @@ export default function Login() {
             {/* Form */}
             <form
               onSubmit={handleSubmit}
-              className="space-y-4 animate-slideUp delay-100"
+              className="space-y-3 sm:space-y-4 animate-slideUp delay-100"
             >
               {/* Email Input */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">
                   Email
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
                     <svg
-                      className="w-5 h-5 text-gray-500"
+                      className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -546,7 +567,7 @@ export default function Login() {
                     placeholder="yourname@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="input w-full pl-11 pr-4 py-2.5 h-12 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200 relative z-0"
+                    className="input w-full pl-10 sm:pl-11 pr-4 py-2 sm:py-2.5 h-11 sm:h-12 bg-white border-2 border-gray-200 rounded-lg text-sm sm:text-base text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200 relative z-0"
                     required
                   />
                 </div>
@@ -554,7 +575,7 @@ export default function Login() {
 
               {/* Password Input */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">
                   Password
                 </label>
 
@@ -562,7 +583,7 @@ export default function Login() {
                   {/* Icon kiri */}
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
                     <svg
-                      className="w-5 h-5 text-gray-500"
+                      className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -582,7 +603,7 @@ export default function Login() {
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="input w-full pl-11 pr-11 py-2.5 h-12 bg-white border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
+                    className="input w-full pl-10 sm:pl-11 pr-10 sm:pr-11 py-2 sm:py-2.5 h-11 sm:h-12 bg-white border-2 border-gray-200 rounded-lg text-sm sm:text-base text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all duration-200"
                     required
                   />
 
@@ -592,27 +613,31 @@ export default function Login() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                   >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    {showPassword ? (
+                      <EyeOff size={18} className="sm:w-5 sm:h-5" />
+                    ) : (
+                      <Eye size={18} className="sm:w-5 sm:h-5" />
+                    )}
                   </button>
                 </div>
               </div>
 
               {/* Remember & Forgot */}
-              <div className="flex items-center justify-between pt-1">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-1 gap-2 sm:gap-0">
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="custom-checkbox"
+                    className="custom-checkbox w-4 h-4 sm:w-5 sm:h-5"
                   />
-                  <span className="text-sm text-gray-700 group-hover:text-gray-900 font-medium">
+                  <span className="text-xs sm:text-sm text-gray-700 group-hover:text-gray-900 font-medium">
                     Remember me
                   </span>
                 </label>
                 <Link
                   to="/forgot-password"
-                  className="text-sm font-semibold text-indigo-600 hover:text-blue-600 transition-colors"
+                  className="text-xs sm:text-sm font-semibold text-indigo-600 hover:text-blue-600 transition-colors"
                 >
                   Forgot Password?
                 </Link>
@@ -622,7 +647,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="btn w-full h-12 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.01]"
+                className="btn w-full h-11 sm:h-12 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-semibold rounded-lg border-0 shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.01] text-sm sm:text-base"
               >
                 {isLoading ? (
                   <span className="loading loading-spinner text-white loading-sm"></span>
@@ -633,7 +658,7 @@ export default function Login() {
             </form>
 
             {/* Divider */}
-            <div className="flex items-center my-5 animate-slideUp delay-200">
+            <div className="flex items-center my-4 sm:my-5 animate-slideUp delay-200">
               <div className="flex-1 border-t border-gray-300"></div>
               <span className="px-3 text-xs text-gray-500 font-medium">or</span>
               <div className="flex-1 border-t border-gray-300"></div>
@@ -643,9 +668,9 @@ export default function Login() {
             <button
               type="button"
               onClick={handleGoogleLogin}
-              className="btn w-full h-12 bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 rounded-lg font-medium text-gray-700 shadow-sm hover:shadow-md transition-all duration-200 animate-slideUp delay-200"
+              className="btn w-full h-11 sm:h-12 bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 rounded-lg font-medium text-gray-700 shadow-sm hover:shadow-md transition-all duration-200 animate-slideUp delay-200 text-sm sm:text-base"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -677,8 +702,8 @@ export default function Login() {
               </Link>
             </p>
 
-            {/* Back to Home */}
-            <div className="mt-5 pt-5 border-t border-gray-200">
+            {/* Back to Home - Desktop only */}
+            <div className="mt-5 pt-5 border-t border-gray-200 hidden md:block">
               <button
                 onClick={goToLandingPage}
                 className="w-full flex items-center justify-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors py-1 group"
@@ -702,7 +727,7 @@ export default function Login() {
           </div>
         </div>
 
-        {/* RIGHT: IMAGE SECTION */}
+        {/* RIGHT: IMAGE SECTION - Hidden on mobile */}
         <div className="hidden md:flex md:w-1/2 relative bg-gradient-to-br from-indigo-50 to-blue-50 items-center justify-center animate-slideRight">
           {/* Home Button */}
           <div className="absolute top-8 right-8 z-20 animate-slideDown">
@@ -736,7 +761,7 @@ export default function Login() {
               alt="Login visual"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to--600/10"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-blue-600/10"></div>
           </div>
 
           {/* Quote Card */}

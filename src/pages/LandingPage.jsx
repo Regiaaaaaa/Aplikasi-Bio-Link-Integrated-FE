@@ -111,12 +111,6 @@ const LandingPage = () => {
     });
   };
 
-  const generateLinkPreview = () => {
-    return `synapse.link/${formData.username
-      .toLowerCase()
-      .replace(/\s+/g, "")}`;
-  };
-
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener("scroll", handleScroll);
@@ -190,48 +184,52 @@ const LandingPage = () => {
     <div
       className={`min-h-screen ${themeColors.bg} ${themeColors.text} transition-all duration-500 overflow-hidden`}
     >
-      {/* Subtle animated background */}
-      <div className="fixed inset-0 pointer-events-none z-0">
+      {/* Subtle animated background - Responsive */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div
-          className="absolute w-[800px] h-[800px] rounded-full blur-3xl opacity-[0.03] bg-gradient-to-r from-blue-400 to-blue-600 animate-float-slow"
+          className="absolute w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] lg:w-[800px] lg:h-[800px] rounded-full blur-3xl opacity-[0.03] bg-gradient-to-r from-blue-400 to-blue-600 animate-float-slow"
           style={{ left: "-10%", top: "10%" }}
         />
         <div
-          className="absolute w-[600px] h-[600px] rounded-full blur-3xl opacity-[0.02] bg-gradient-to-r from-blue-600 to-blue-400 animate-float-slower"
+          className="absolute w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] lg:w-[600px] lg:h-[600px] rounded-full blur-3xl opacity-[0.02] bg-gradient-to-r from-blue-600 to-blue-400 animate-float-slower"
           style={{ right: "0%", bottom: "20%" }}
         />
       </div>
 
-      {/* Floating Navigation - Linktree Style */}
+      {/* Floating Navigation - Responsive */}
       <nav
-        className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
-          scrollY > 50 ? "top-4" : "top-6"
+        className={`fixed top-4 left-4 right-4 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 z-50 transition-all duration-300 ${
+          scrollY > 50 ? "top-2" : "top-4"
         }`}
       >
         <div
-          className={`${strongGlassEffect} rounded-full px-6 py-4 transition-all duration-300 ${
-            scrollY > 50 ? "shadow-2xl scale-95" : "shadow-xl"
+          className={`${strongGlassEffect} rounded-full px-4 py-3 sm:px-6 sm:py-4 transition-all duration-300 ${
+            scrollY > 50 ? "shadow-2xl sm:scale-95" : "shadow-xl"
           }`}
         >
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center justify-between sm:justify-start sm:space-x-8">
             <div
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="flex items-center space-x-3 group cursor-pointer"
             >
               <div className="relative">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center transform group-hover:scale-105 transition-all duration-300">
-                  <img src={icon2} alt="Synapse Logo" className="w-full h-full" />
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transform group-hover:scale-105 transition-all duration-300">
+                  <img
+                    src={icon2}
+                    alt="Synapse Logo"
+                    className="w-full h-full"
+                  />
                 </div>
               </div>
 
               <span
-                className={`text-xl font-bold ${themeColors.text} hidden sm:block`}
+                className={`text-lg sm:text-xl font-bold ${themeColors.text} hidden sm:block`}
               >
                 Synapse
               </span>
             </div>
 
-            <div className="hidden md:flex items-center space-x-6">
+            <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
               {["Features", "Pricing", "Templates"].map((item) => (
                 <a
                   key={item}
@@ -246,21 +244,21 @@ const LandingPage = () => {
               ))}
             </div>
 
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               <button
                 onClick={toggleTheme}
-                className={`w-11 h-11 rounded-full ${glassEffect} flex items-center justify-center transition-all duration-300 hover:scale-105`}
+                className={`w-9 h-9 sm:w-11 sm:h-11 rounded-full ${glassEffect} flex items-center justify-center transition-all duration-300 hover:scale-105`}
               >
                 {isDark ? (
-                  <Moon className="w-4 h-4" />
+                  <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 ) : (
-                  <Sun className="w-4 h-4" />
+                  <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 )}
               </button>
 
               <button
                 onClick={() => navigate("/login")}
-                className="group relative px-5 py-2.5 rounded-full font-medium overflow-hidden transition-all duration-300 hover:scale-105 hidden sm:block"
+                className="group relative px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-medium overflow-hidden transition-all duration-300 hover:scale-105 hidden sm:block"
               >
                 <div
                   className={`absolute inset-0 bg-gradient-to-r ${gradients.primary}`}
@@ -269,7 +267,7 @@ const LandingPage = () => {
               </button>
 
               <button
-                className="md:hidden w-11 h-11 rounded-full flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-300"
+                className="md:hidden w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-300"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? (
@@ -288,7 +286,7 @@ const LandingPage = () => {
         <div
           className={`fixed inset-0 z-40 ${themeColors.bg} bg-opacity-95 backdrop-blur-lg md:hidden`}
         >
-          <div className="flex flex-col items-center justify-center h-full space-y-8">
+          <div className="flex flex-col items-center justify-center h-full space-y-8 px-4">
             {["Features", "Pricing", "Templates"].map((item) => (
               <a
                 key={item}
@@ -315,26 +313,28 @@ const LandingPage = () => {
         </div>
       )}
 
-      {/* Hero Section */}
-      <section className="relative pt-40 pb-20 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center">
+      {/* Hero Section - Responsive */}
+      <section className="relative pt-32 pb-16 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center">
         <div className="max-w-7xl mx-auto w-full">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             {/* Left Column - Form */}
-            <div className="text-center lg:text-left space-y-8">
+            <div className="text-center lg:text-left space-y-6 lg:space-y-8">
               <div
-                className={`inline-flex items-center space-x-3 ${glassEffect} px-5 py-3 rounded-full`}
+                className={`inline-flex items-center space-x-3 ${glassEffect} px-4 py-2.5 sm:px-5 sm:py-3 rounded-full`}
               >
                 <div className="relative">
-                  <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div>
+                  <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-emerald-500 rounded-full"></div>
                   <div className="absolute inset-0 bg-emerald-500 rounded-full animate-ping opacity-75"></div>
                 </div>
-                <span className={`text-sm font-medium ${themeColors.text}`}>
+                <span
+                  className={`text-xs sm:text-sm font-medium ${themeColors.text}`}
+                >
                   Live Preview Editing
                 </span>
               </div>
 
-              <div className="space-y-6">
-                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight">
+              <div className="space-y-4 sm:space-y-6">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
                   <span className={themeColors.text}>Professional Links.</span>
                   <br />
                   <span
@@ -345,7 +345,7 @@ const LandingPage = () => {
                 </h1>
 
                 <p
-                  className={`text-lg ${themeColors.textSecondary} max-w-lg mx-auto lg:mx-0 leading-relaxed`}
+                  className={`text-base sm:text-lg ${themeColors.textSecondary} max-w-lg mx-auto lg:mx-0 leading-relaxed`}
                 >
                   Create a stunning link-in-bio page with real-time preview.
                   Professional, customizable, and ready in minutes.
@@ -353,7 +353,9 @@ const LandingPage = () => {
               </div>
 
               {/* Form */}
-              <div className={`space-y-5 p-8 rounded-2xl ${strongGlassEffect}`}>
+              <div
+                className={`space-y-5 p-6 sm:p-8 rounded-2xl ${strongGlassEffect}`}
+              >
                 <div className="space-y-4">
                   <div>
                     <label
@@ -363,7 +365,7 @@ const LandingPage = () => {
                     </label>
                     <div className="relative">
                       <div
-                        className={`absolute left-4 top-1/2 transform -translate-y-1/2 ${themeColors.textMuted} text-sm`}
+                        className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${themeColors.textMuted} text-xs sm:text-sm`}
                       >
                         synapse.link/
                       </div>
@@ -373,7 +375,7 @@ const LandingPage = () => {
                         onChange={(e) =>
                           handleInputChange("username", e.target.value)
                         }
-                        className={`w-full pl-32 pr-4 py-3.5 rounded-xl ${themeColors.inputBg} border ${themeColors.inputBorder} focus:outline-none focus:ring-2 ${themeColors.inputFocus} focus:border-blue-500 transition-all duration-300 text-sm font-medium`}
+                        className={`w-full pl-28 sm:pl-32 pr-4 py-3 sm:py-3.5 rounded-xl ${themeColors.inputBg} border ${themeColors.inputBorder} focus:outline-none focus:ring-2 ${themeColors.inputFocus} focus:border-blue-500 transition-all duration-300 text-sm font-medium`}
                         placeholder="yourname"
                       />
                     </div>
@@ -389,7 +391,7 @@ const LandingPage = () => {
                       type="text"
                       value={formData.bio}
                       onChange={(e) => handleInputChange("bio", e.target.value)}
-                      className={`w-full px-4 py-3.5 rounded-xl ${themeColors.inputBg} border ${themeColors.inputBorder} focus:outline-none focus:ring-2 ${themeColors.inputFocus} focus:border-blue-500 transition-all duration-300 text-sm`}
+                      className={`w-full px-4 py-3 sm:py-3.5 rounded-xl ${themeColors.inputBg} border ${themeColors.inputBorder} focus:outline-none focus:ring-2 ${themeColors.inputFocus} focus:border-blue-500 transition-all duration-300 text-sm`}
                       placeholder="Your professional tagline"
                     />
                   </div>
@@ -400,24 +402,24 @@ const LandingPage = () => {
                     >
                       Social Links
                     </label>
-                    <div className="grid grid-cols-6 gap-2">
+                    <div className="grid grid-cols-6 gap-1.5 sm:gap-2">
                       {availableSocialIcons.map((social) => {
                         const isSelected = formData.selectedSocials.includes(
-                          social.id
+                          social.id,
                         );
                         return (
                           <button
                             key={social.id}
                             type="button"
                             onClick={() => handleSocialToggle(social.id)}
-                            className={`h-12 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-105 ${
+                            className={`h-10 sm:h-12 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-105 ${
                               isSelected
                                 ? `bg-gradient-to-br ${gradients.primary} shadow-lg`
                                 : `${themeColors.card} border ${themeColors.border} hover:${themeColors.cardHover}`
                             }`}
                           >
                             {React.cloneElement(social.icon, {
-                              className: `w-5 h-5 ${
+                              className: `w-4 h-4 sm:w-5 sm:h-5 ${
                                 isSelected ? "text-white" : themeColors.text
                               }`,
                             })}
@@ -430,14 +432,14 @@ const LandingPage = () => {
 
                 <button
                   onClick={() => navigate("/login")}
-                  className="group relative w-full py-4 rounded-xl font-semibold overflow-hidden transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-xl"
+                  className="group relative w-full py-3.5 sm:py-4 rounded-xl font-semibold overflow-hidden transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-xl"
                 >
                   <div
                     className={`absolute inset-0 bg-gradient-to-r ${gradients.primary}`}
                   ></div>
                   <span className="relative text-white flex items-center justify-center space-x-2">
                     <span>Create Your Link</span>
-                    <ChevronRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
+                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
                 </button>
 
@@ -447,31 +449,31 @@ const LandingPage = () => {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-4 pt-4">
+              <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-4">
                 {[
                   {
                     label: "Users",
                     value: "50K+",
-                    icon: <User className="w-4 h-4" />,
+                    icon: <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />,
                   },
                   {
                     label: "Links",
                     value: "2M+",
-                    icon: <Link className="w-4 h-4" />,
+                    icon: <Link className="w-3.5 h-3.5 sm:w-4 sm:h-4" />,
                   },
                   {
                     label: "Uptime",
                     value: "99.9%",
-                    icon: <CheckCircle className="w-4 h-4" />,
+                    icon: <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />,
                   },
                 ].map((stat) => (
                   <div
                     key={stat.label}
-                    className={`text-center p-4 rounded-xl ${themeColors.card} border ${themeColors.border} hover:${themeColors.cardHover} transition-all duration-300`}
+                    className={`text-center p-3 sm:p-4 rounded-xl ${themeColors.card} border ${themeColors.border} hover:${themeColors.cardHover} transition-all duration-300`}
                   >
-                    <div className="flex items-center justify-center space-x-2">
+                    <div className="flex items-center justify-center space-x-1.5 sm:space-x-2">
                       <div
-                        className={`text-2xl font-bold bg-gradient-to-r ${gradients.primary} bg-clip-text text-transparent`}
+                        className={`text-xl sm:text-2xl font-bold bg-gradient-to-r ${gradients.primary} bg-clip-text text-transparent`}
                       >
                         {stat.value}
                       </div>
@@ -488,17 +490,17 @@ const LandingPage = () => {
             </div>
 
             {/* Right Column - Preview */}
-            <div className="relative">
+            <div className="relative mt-8 lg:mt-0">
               <div
-                className={`absolute -inset-4 bg-gradient-to-r ${gradients.primary} rounded-3xl blur-2xl opacity-5`}
+                className={`absolute -inset-2 sm:-inset-4 bg-gradient-to-r ${gradients.primary} rounded-3xl blur-2xl opacity-5`}
               ></div>
 
               <div
-                className={`relative ${strongGlassEffect} rounded-2xl p-8 transition-all duration-300`}
+                className={`relative ${strongGlassEffect} rounded-2xl p-6 sm:p-8 transition-all duration-300`}
               >
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                   <div
-                    className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full ${themeColors.card} border ${themeColors.border} text-xs font-semibold shadow-lg`}
+                    className={`inline-flex items-center space-x-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full ${themeColors.card} border ${themeColors.border} text-xs font-semibold shadow-lg`}
                   >
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -508,40 +510,44 @@ const LandingPage = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-4 mb-6 mt-2">
+                <div className="flex items-center space-x-3 sm:space-x-4 mb-6 mt-2">
                   <div
-                    className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${gradients.primary} flex items-center justify-center text-2xl shadow-lg`}
+                    className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br ${gradients.primary} flex items-center justify-center shadow-lg`}
                   >
-                    <User className="w-8 h-8 text-white" />
+                    <User className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                   </div>
                   <div>
-                    <h3 className={`text-xl font-bold ${themeColors.text}`}>
+                    <h3
+                      className={`text-lg sm:text-xl font-bold ${themeColors.text}`}
+                    >
                       @{formData.username}
                     </h3>
-                    <p className={`text-sm ${themeColors.textMuted}`}>
+                    <p
+                      className={`text-xs sm:text-sm ${themeColors.textMuted}`}
+                    >
                       {formData.bio}
                     </p>
                   </div>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {formData.links.map((link, idx) => (
                     <div
                       key={idx}
-                      className={`p-4 rounded-xl ${themeColors.card} border ${themeColors.border} hover:${themeColors.cardHover} hover:border-blue-400 transition-all duration-300 cursor-pointer flex items-center justify-between group`}
+                      className={`p-3 sm:p-4 rounded-xl ${themeColors.card} border ${themeColors.border} hover:${themeColors.cardHover} hover:border-blue-400 transition-all duration-300 cursor-pointer flex items-center justify-between group`}
                       onMouseEnter={() => setHoveredFeature(idx)}
                       onMouseLeave={() => setHoveredFeature(null)}
                     >
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-2 sm:space-x-3">
                         <div className={themeColors.text}>{link.icon}</div>
                         <span
-                          className={`font-medium text-sm ${themeColors.text}`}
+                          className={`font-medium text-xs sm:text-sm ${themeColors.text}`}
                         >
                           {link.label}
                         </span>
                       </div>
                       <ExternalLink
-                        className={`w-4 h-4 transition-all duration-300 ${
+                        className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-all duration-300 ${
                           hoveredFeature === idx
                             ? "translate-x-0 opacity-100"
                             : "translate-x-2 opacity-0"
@@ -551,25 +557,29 @@ const LandingPage = () => {
                   ))}
                 </div>
 
-                <div className={`pt-6 mt-6 border-t ${themeColors.border}`}>
+                <div
+                  className={`pt-4 sm:pt-6 mt-4 sm:mt-6 border-t ${themeColors.border}`}
+                >
                   <div className="flex items-center justify-between">
-                    <span className={`text-sm font-medium ${themeColors.text}`}>
+                    <span
+                      className={`text-xs sm:text-sm font-medium ${themeColors.text}`}
+                    >
                       Connect
                     </span>
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-1.5 sm:space-x-2">
                       {formData.selectedSocials.map((socialId, idx) => {
                         const social = availableSocialIcons.find(
-                          (s) => s.id === socialId
+                          (s) => s.id === socialId,
                         );
                         if (!social) return null;
 
                         return (
                           <div
                             key={idx}
-                            className={`w-10 h-10 rounded-lg ${glassEffect} flex items-center justify-center text-lg transition-all duration-300 hover:scale-110 cursor-pointer`}
+                            className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg ${glassEffect} flex items-center justify-center transition-all duration-300 hover:scale-110 cursor-pointer`}
                           >
                             {React.cloneElement(social.icon, {
-                              className: `w-5 h-5 ${themeColors.text}`,
+                              className: `w-3.5 h-3.5 sm:w-5 sm:h-5 ${themeColors.text}`,
                             })}
                           </div>
                         );
@@ -583,11 +593,14 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Features */}
-      <section id="features" className="relative py-24 px-4 sm:px-6 lg:px-8">
+      {/* Features - Responsive */}
+      <section
+        id="features"
+        className="relative py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8"
+      >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 space-y-4">
-            <h2 className="text-4xl sm:text-5xl font-bold">
+          <div className="text-center mb-12 sm:mb-16 space-y-3 sm:space-y-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold">
               <span className={themeColors.text}>Powerful Features. </span>
               <span
                 className={`bg-gradient-to-r ${gradients.primary} bg-clip-text text-transparent`}
@@ -596,59 +609,63 @@ const LandingPage = () => {
               </span>
             </h2>
             <p
-              className={`text-lg ${themeColors.textSecondary} max-w-2xl mx-auto`}
+              className={`text-base sm:text-lg ${themeColors.textSecondary} max-w-2xl mx-auto px-4`}
             >
               Everything you need to create a professional online presence
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {[
               {
-                icon: <Zap className="w-6 h-6" />,
+                icon: <Zap className="w-5 h-5 sm:w-6 sm:h-6" />,
                 title: "Instant Updates",
                 desc: "See your changes in real-time with live preview",
               },
               {
-                icon: <Palette className="w-6 h-6" />,
+                icon: <Palette className="w-5 h-5 sm:w-6 sm:h-6" />,
                 title: "Custom Design",
                 desc: "Personalize colors, fonts, and layouts easily",
               },
               {
-                icon: <BarChart3 className="w-6 h-6" />,
+                icon: <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6" />,
                 title: "Analytics",
                 desc: "Track clicks and visitor engagement metrics",
               },
               {
-                icon: <Lock className="w-6 h-6" />,
+                icon: <Lock className="w-5 h-5 sm:w-6 sm:h-6" />,
                 title: "Secure",
                 desc: "Enterprise-grade security for your data",
               },
               {
-                icon: <Smartphone className="w-6 h-6" />,
+                icon: <Smartphone className="w-5 h-5 sm:w-6 sm:h-6" />,
                 title: "Responsive",
                 desc: "Perfect on desktop, tablet, and mobile",
               },
               {
-                icon: <Rocket className="w-6 h-6" />,
+                icon: <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />,
                 title: "Fast Deploy",
                 desc: "Go live instantly with one-click publishing",
               },
             ].map((feature, idx) => (
               <div
                 key={idx}
-                className={`group p-8 rounded-2xl ${themeColors.card} border ${themeColors.border} hover:${themeColors.cardHover} hover:border-blue-400 transition-all duration-300 cursor-pointer`}
+                className={`group p-6 sm:p-8 rounded-2xl ${themeColors.card} border ${themeColors.border} hover:${themeColors.cardHover} hover:border-blue-400 transition-all duration-300 cursor-pointer`}
               >
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div
-                    className={`w-14 h-14 rounded-xl bg-gradient-to-br ${gradients.primary} flex items-center justify-center text-2xl transform group-hover:scale-110 transition-all duration-300 shadow-lg`}
+                    className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br ${gradients.primary} flex items-center justify-center transform group-hover:scale-110 transition-all duration-300 shadow-lg`}
                   >
                     <div className="text-white">{feature.icon}</div>
                   </div>
-                  <h3 className={`text-xl font-bold ${themeColors.text}`}>
+                  <h3
+                    className={`text-lg sm:text-xl font-bold ${themeColors.text}`}
+                  >
                     {feature.title}
                   </h3>
-                  <p className={`${themeColors.textSecondary} leading-relaxed`}>
+                  <p
+                    className={`${themeColors.textSecondary} text-sm sm:text-base leading-relaxed`}
+                  >
                     {feature.desc}
                   </p>
                 </div>
@@ -658,47 +675,53 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Footer - Responsive */}
       <footer
-        className={`border-t ${themeColors.border} py-16 px-4 sm:px-6 lg:px-8`}
+        className={`border-t ${themeColors.border} py-12 sm:py-16 px-4 sm:px-6 lg:px-8`}
       >
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-12 mb-12">
-            <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 mb-8 sm:mb-12">
+            <div className="space-y-3 sm:space-y-4">
               <div className="flex items-center space-x-3">
                 <div
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center`}
+                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center`}
                 >
-                  <img src={icon2} alt="Synapse Logo" />
+                  <img
+                    src={icon2}
+                    alt="Synapse Logo"
+                    className="w-full h-full"
+                  />
                 </div>
                 <span
-                  className={`text-xl font-bold ${themeColors.text}`}
+                  className={`text-lg sm:text-xl font-bold ${themeColors.text}`}
                 >
                   Synapse
                 </span>
               </div>
-              <p className={`text-sm ${themeColors.textSecondary}`}>
+              <p className={`text-xs sm:text-sm ${themeColors.textSecondary}`}>
                 Professional link pages made simple. Join thousands of creators.
               </p>
             </div>
 
             {["Product", "Resources", "Company"].map((category) => (
               <div key={category}>
-                <h4 className={`font-semibold mb-4 ${themeColors.text}`}>
+                <h4
+                  className={`font-semibold mb-3 sm:mb-4 ${themeColors.text}`}
+                >
                   {category}
                 </h4>
-                <ul className="space-y-2">
+                <ul className="space-y-1.5 sm:space-y-2">
                   {["Features", "Pricing", "Templates", "Support"].map(
                     (item) => (
                       <li key={item}>
                         <a
                           href="#"
-                          className={`text-sm ${themeColors.textSecondary} hover:${themeColors.accentText} transition-colors duration-300`}
+                          className={`text-xs sm:text-sm ${themeColors.textSecondary} hover:${themeColors.accentText} transition-colors duration-300`}
                         >
                           {item}
                         </a>
                       </li>
-                    )
+                    ),
                   )}
                 </ul>
               </div>
@@ -706,21 +729,23 @@ const LandingPage = () => {
           </div>
 
           <div
-            className={`pt-8 border-t ${themeColors.border} flex flex-col md:flex-row justify-between items-center gap-4`}
+            className={`pt-6 sm:pt-8 border-t ${themeColors.border} flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4`}
           >
-            <p className={`text-sm ${themeColors.textMuted}`}>
+            <p
+              className={`text-xs sm:text-sm ${themeColors.textMuted} text-center sm:text-left`}
+            >
               © 2026 Synapse. All rights reserved.
             </p>
-            <div className="flex space-x-6">
+            <div className="flex space-x-4 sm:space-x-6">
               <a
                 href="#"
-                className={`text-sm ${themeColors.textSecondary} hover:${themeColors.accentText} transition-colors duration-300`}
+                className={`text-xs sm:text-sm ${themeColors.textSecondary} hover:${themeColors.accentText} transition-colors duration-300`}
               >
                 Privacy
               </a>
               <a
                 href="#"
-                className={`text-sm ${themeColors.textSecondary} hover:${themeColors.accentText} transition-colors duration-300`}
+                className={`text-xs sm:text-sm ${themeColors.textSecondary} hover:${themeColors.accentText} transition-colors duration-300`}
               >
                 Terms
               </a>

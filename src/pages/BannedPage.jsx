@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import axios from "axios";
+import axiosClient from "../utils/axiosClient";
 import {
   AlertTriangle,
   Clock,
@@ -52,15 +52,12 @@ export default function BannedPage() {
   const fetchAppealHistory = async () => {
     try {
       setLoadingTracking(true);
-      const response = await axios.get(
-        "http://localhost:8000/api/user/appeals",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axiosClient.get("/user/appeals", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
       const data = response.data.data || [];
       setAppealHistory(data);
 
@@ -73,7 +70,7 @@ export default function BannedPage() {
     } catch (error) {
       console.error(
         "Gagal mengambil riwayat banding:",
-        error.response?.data || error.message
+        error.response?.data || error.message,
       );
     } finally {
       setLoadingTracking(false);
@@ -116,16 +113,12 @@ export default function BannedPage() {
         appeal_evidence: formData.appeal_evidence || null,
       };
 
-      const response = await axios.post(
-        "http://localhost:8000/api/user/appeals",
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axiosClient.post("/user/appeals", payload, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.data.success || response.status === 200) {
         setSubmissionSuccess(true);
@@ -248,8 +241,8 @@ export default function BannedPage() {
                     latestAppeal.status === "approved"
                       ? "bg-gradient-to-r from-green-50 to-green-100"
                       : latestAppeal.status === "rejected"
-                      ? "bg-gradient-to-r from-red-50 to-red-100"
-                      : "bg-gradient-to-r from-yellow-50 to-yellow-100"
+                        ? "bg-gradient-to-r from-red-50 to-red-100"
+                        : "bg-gradient-to-r from-yellow-50 to-yellow-100"
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -266,8 +259,8 @@ export default function BannedPage() {
                           {latestAppeal.status === "approved"
                             ? "Banding Diterima"
                             : latestAppeal.status === "rejected"
-                            ? "Banding Ditolak"
-                            : "Menunggu Review"}
+                              ? "Banding Ditolak"
+                              : "Menunggu Review"}
                         </h3>
                         <p className="text-xs text-gray-600">
                           {getTimeAgo(latestAppeal.updated_at)}
@@ -275,9 +268,7 @@ export default function BannedPage() {
                       </div>
                     </div>
                     <button
-                      onClick={() =>
-                        setShowDetailedAppeal(!showDetailedAppeal)
-                      }
+                      onClick={() => setShowDetailedAppeal(!showDetailedAppeal)}
                       className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1"
                     >
                       {showDetailedAppeal ? (
@@ -331,10 +322,10 @@ export default function BannedPage() {
                     )}
 
                     <div className="flex items-center justify-between text-xs text-gray-500 pt-2">
-                      <span>Diajukan: {formatDate(latestAppeal.created_at)}</span>
                       <span>
-                        Update: {formatDate(latestAppeal.updated_at)}
+                        Diajukan: {formatDate(latestAppeal.created_at)}
                       </span>
+                      <span>Update: {formatDate(latestAppeal.updated_at)}</span>
                     </div>
                   </div>
                 )}
@@ -517,8 +508,8 @@ export default function BannedPage() {
                               appeal.status === "approved"
                                 ? "bg-green-100 text-green-700"
                                 : appeal.status === "rejected"
-                                ? "bg-red-100 text-red-700"
-                                : "bg-yellow-100 text-yellow-700"
+                                  ? "bg-red-100 text-red-700"
+                                  : "bg-yellow-100 text-yellow-700"
                             }`}
                           >
                             {getStatusText(appeal.status)}

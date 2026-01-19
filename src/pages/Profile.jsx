@@ -112,8 +112,7 @@ export default function Profile() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://127.0.0.1:8000/api/user/profile/delete", {
-        method: "DELETE",
+      const res = await axiosClient.delete("/user/profile/delete", {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -207,7 +206,7 @@ export default function Profile() {
       0,
       0,
       pixelCrop.width,
-      pixelCrop.height
+      pixelCrop.height,
     );
 
     return new Promise((resolve) => {
@@ -216,7 +215,7 @@ export default function Profile() {
           resolve(blob);
         },
         "image/jpeg",
-        0.95
+        0.95,
       );
     });
   };
@@ -699,7 +698,7 @@ export default function Profile() {
                                     ...form,
                                     phone_number: e.target.value.replace(
                                       /[^0-9+]/g,
-                                      ""
+                                      "",
                                     ),
                                   })
                                 }
@@ -988,7 +987,7 @@ export default function Profile() {
                                     ...form,
                                     phone_number: e.target.value.replace(
                                       /[^0-9+]/g,
-                                      ""
+                                      "",
                                     ),
                                   })
                                 }
@@ -1892,7 +1891,7 @@ function SimpleCropper({
       const container = containerRef.current.getBoundingClientRect();
       const scale = Math.min(
         container.width / img.width,
-        container.height / img.height
+        container.height / img.height,
       );
       setImageSize({
         width: img.width * scale,
@@ -1912,21 +1911,21 @@ function SimpleCropper({
           0,
           Math.round(
             (imageSize.width / 2 - cropSize / 2 - crop.x) *
-              (imageSize.naturalWidth / imageSize.width)
-          )
+              (imageSize.naturalWidth / imageSize.width),
+          ),
         ),
         y: Math.max(
           0,
           Math.round(
             (imageSize.height / 2 - cropSize / 2 - crop.y) *
-              (imageSize.naturalHeight / imageSize.height)
-          )
+              (imageSize.naturalHeight / imageSize.height),
+          ),
         ),
         width: Math.round(
-          cropSize * (imageSize.naturalWidth / imageSize.width)
+          cropSize * (imageSize.naturalWidth / imageSize.width),
         ),
         height: Math.round(
-          cropSize * (imageSize.naturalHeight / imageSize.height)
+          cropSize * (imageSize.naturalHeight / imageSize.height),
         ),
       };
       onCropComplete(null, pixelCrop);

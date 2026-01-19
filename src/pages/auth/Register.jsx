@@ -153,9 +153,7 @@ export default function Register() {
             <div className="mb-6 animate-slideDown">
               <div className="flex items-center gap-2">
                 <img src={icon2} alt="Synapse Logo" className="w-8 h-8" />
-                <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
-                  Synapse
-                </span>
+                <span className="text-xl font-bold text-black">Synapse</span>
               </div>
             </div>
 

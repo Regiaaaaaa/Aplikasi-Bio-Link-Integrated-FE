@@ -83,12 +83,9 @@ function BundlesPage() {
   if (loading) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
-            <div className="relative">
-              <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-100 border-t-blue-600 mx-auto"></div>
-              <div className="absolute inset-0 rounded-full bg-blue-50 blur-xl opacity-50"></div>
-            </div>
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-100 border-t-blue-600 mx-auto"></div>
             <p className="mt-6 text-gray-700 font-semibold text-lg">Loading your bundles...</p>
           </div>
         </div>
@@ -99,7 +96,7 @@ function BundlesPage() {
   if (error) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        <div className="flex items-center justify-center min-h-screen">
           <div className="text-center bg-white rounded-2xl shadow-xl border border-red-100 p-10 max-w-md mx-4">
             <div className="w-16 h-16 bg-gradient-to-br from-red-50 to-red-100 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-sm">
               <svg
@@ -139,8 +136,6 @@ function BundlesPage() {
 
         .bundles-page {
           font-family: "Inter", sans-serif;
-          background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 50%, #f0f4ff 100%);
-          min-height: 100vh;
         }
 
         .bundle-card {
@@ -188,7 +183,9 @@ function BundlesPage() {
         }
 
         .search-input:focus {
-          box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+          box-shadow: none;
+          outline: 2px solid #3b82f6;
+          outline-offset: -2px;
         }
 
         .view-toggle-btn {
@@ -223,7 +220,7 @@ function BundlesPage() {
             <div className="flex flex-col gap-4 md:gap-6 mb-6 md:mb-8">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl sm:rounded-2xl flex items-center justify-center">
                     <Link2 className="text-white" size={20} />
                   </div>
                   <div>
@@ -238,7 +235,7 @@ function BundlesPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 sm:px-5 py-2.5 rounded-xl shadow-lg shadow-blue-500/30">
+                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 sm:px-5 py-2.5 rounded-xl">
                   <div className="flex items-center justify-center gap-2">
                     <span className="text-xs sm:text-sm font-medium opacity-90">Total</span>
                     <span className="text-xl sm:text-2xl font-bold">{bundles.length}</span>
@@ -249,7 +246,7 @@ function BundlesPage() {
                 </div>
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="flex items-center justify-center gap-2 sm:gap-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 font-semibold text-sm sm:text-base"
+                  className="flex items-center justify-center gap-2 sm:gap-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-semibold text-sm sm:text-base"
                 >
                   <Plus size={20} strokeWidth={2.5} />
                   <span>Create Bundle</span>
@@ -365,7 +362,7 @@ function BundlesPage() {
                         </p>
                         <div className="flex gap-2 flex-wrap">
                           {bundle.instagram_url && (
-                            <div className="social-icon p-2 sm:p-2.5 bg-gradient-to-br from-blue-500 to-pink-500 rounded-lg sm:rounded-xl text-white shadow-md">
+                            <div className="social-icon p-2 sm:p-2.5 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg sm:rounded-xl text-white shadow-md">
                               <FaInstagram size={16} className="sm:w-[18px] sm:h-[18px]" />
                             </div>
                           )}
@@ -487,7 +484,7 @@ function BundlesPage() {
                       bundle.x_url) && (
                       <div className="hidden lg:flex items-center gap-2.5 px-4 py-3 bg-gray-50 rounded-xl border border-gray-200">
                         {bundle.instagram_url && (
-                          <div className="social-icon p-2.5 bg-gradient-to-br from-blue-500 to-pink-500 rounded-lg text-white shadow-md">
+                          <div className="social-icon p-2.5 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg text-white shadow-md">
                             <FaInstagram size={18} />
                           </div>
                         )}
@@ -562,7 +559,7 @@ function BundlesPage() {
                         bundle.x_url) && (
                         <div className="flex items-center gap-2 flex-wrap">
                           {bundle.instagram_url && (
-                            <div className="social-icon p-2 bg-gradient-to-br from-blue-500 to-pink-500 rounded-lg text-white">
+                            <div className="social-icon p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg text-white">
                               <FaInstagram size={16} />
                             </div>
                           )}

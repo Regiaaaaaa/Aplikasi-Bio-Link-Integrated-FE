@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
-import { Plus, ExternalLink, Trash2, Edit2, Link2, Search, LayoutGrid, List } from "lucide-react";
+import {
+  Plus,
+  ExternalLink,
+  Trash2,
+  Edit2,
+  Link2,
+  Search,
+  LayoutGrid,
+  List,
+} from "lucide-react";
 import CreateBundleModal from "../../components/CreateBundleModal";
 import ConfirmDangerModal from "../../components/ConfirmDangerModal";
 import Layout from "../../components/layouts/Layout";
@@ -54,8 +63,9 @@ function BundlesPage() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch(`/api/user/bundles/${id}`, {
-        method: "DELETE",
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
+      fetch(`${API_BASE}/user/bundles`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -75,9 +85,10 @@ function BundlesPage() {
     window.location.href = `/bundles/${bundleId}/edit`;
   };
 
-  const filteredBundles = bundles.filter((bundle) =>
-    bundle.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    bundle.slug.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredBundles = bundles.filter(
+    (bundle) =>
+      bundle.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bundle.slug.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   if (loading) {
@@ -86,7 +97,9 @@ function BundlesPage() {
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-100 border-t-blue-600 mx-auto"></div>
-            <p className="mt-6 text-gray-700 font-semibold text-lg">Loading your bundles...</p>
+            <p className="mt-6 text-gray-700 font-semibold text-lg">
+              Loading your bundles...
+            </p>
           </div>
         </div>
       </Layout>
@@ -237,8 +250,12 @@ function BundlesPage() {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 sm:px-5 py-2.5 rounded-xl">
                   <div className="flex items-center justify-center gap-2">
-                    <span className="text-xs sm:text-sm font-medium opacity-90">Total</span>
-                    <span className="text-xl sm:text-2xl font-bold">{bundles.length}</span>
+                    <span className="text-xs sm:text-sm font-medium opacity-90">
+                      Total
+                    </span>
+                    <span className="text-xl sm:text-2xl font-bold">
+                      {bundles.length}
+                    </span>
                     <span className="text-xs sm:text-sm font-medium opacity-90">
                       {bundles.length !== 1 ? "Bundles" : "Bundle"}
                     </span>
@@ -258,7 +275,10 @@ function BundlesPage() {
             {bundles.length > 0 && (
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
                 <div className="flex-1 relative">
-                  <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                  <Search
+                    className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={18}
+                  />
                   <input
                     type="text"
                     placeholder="Search bundles..."
@@ -271,7 +291,9 @@ function BundlesPage() {
                   <button
                     onClick={() => setViewMode("grid")}
                     className={`view-toggle-btn flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium text-xs sm:text-sm ${
-                      viewMode === "grid" ? "active" : "text-gray-600 hover:bg-gray-50"
+                      viewMode === "grid"
+                        ? "active"
+                        : "text-gray-600 hover:bg-gray-50"
                     }`}
                   >
                     <LayoutGrid size={16} className="sm:w-[18px] sm:h-[18px]" />
@@ -280,7 +302,9 @@ function BundlesPage() {
                   <button
                     onClick={() => setViewMode("list")}
                     className={`view-toggle-btn flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium text-xs sm:text-sm ${
-                      viewMode === "list" ? "active" : "text-gray-600 hover:bg-gray-50"
+                      viewMode === "list"
+                        ? "active"
+                        : "text-gray-600 hover:bg-gray-50"
                     }`}
                   >
                     <List size={16} className="sm:w-[18px] sm:h-[18px]" />
@@ -343,7 +367,9 @@ function BundlesPage() {
 
                     <div className="inline-flex items-center gap-2 text-xs text-blue-700 bg-white px-2.5 sm:px-3 py-1.5 rounded-lg font-semibold border border-blue-100 shadow-sm">
                       <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-                      <span className="truncate">{bundle.theme?.name || "Default Theme"}</span>
+                      <span className="truncate">
+                        {bundle.theme?.name || "Default Theme"}
+                      </span>
                     </div>
                   </div>
 
@@ -363,32 +389,50 @@ function BundlesPage() {
                         <div className="flex gap-2 flex-wrap">
                           {bundle.instagram_url && (
                             <div className="social-icon p-2 sm:p-2.5 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg sm:rounded-xl text-white shadow-md">
-                              <FaInstagram size={16} className="sm:w-[18px] sm:h-[18px]" />
+                              <FaInstagram
+                                size={16}
+                                className="sm:w-[18px] sm:h-[18px]"
+                              />
                             </div>
                           )}
                           {bundle.github_url && (
                             <div className="social-icon p-2 sm:p-2.5 bg-gray-900 rounded-lg sm:rounded-xl text-white shadow-md">
-                              <FaGithub size={16} className="sm:w-[18px] sm:h-[18px]" />
+                              <FaGithub
+                                size={16}
+                                className="sm:w-[18px] sm:h-[18px]"
+                              />
                             </div>
                           )}
                           {bundle.tiktok_url && (
                             <div className="social-icon p-2 sm:p-2.5 bg-black rounded-lg sm:rounded-xl text-white shadow-md">
-                              <FaTiktok size={16} className="sm:w-[18px] sm:h-[18px]" />
+                              <FaTiktok
+                                size={16}
+                                className="sm:w-[18px] sm:h-[18px]"
+                              />
                             </div>
                           )}
                           {bundle.youtube_url && (
                             <div className="social-icon p-2 sm:p-2.5 bg-red-600 rounded-lg sm:rounded-xl text-white shadow-md">
-                              <FaYoutube size={16} className="sm:w-[18px] sm:h-[18px]" />
+                              <FaYoutube
+                                size={16}
+                                className="sm:w-[18px] sm:h-[18px]"
+                              />
                             </div>
                           )}
                           {bundle.facebook_url && (
                             <div className="social-icon p-2 sm:p-2.5 bg-blue-600 rounded-lg sm:rounded-xl text-white shadow-md">
-                              <FaFacebook size={16} className="sm:w-[18px] sm:h-[18px]" />
+                              <FaFacebook
+                                size={16}
+                                className="sm:w-[18px] sm:h-[18px]"
+                              />
                             </div>
                           )}
                           {bundle.x_url && (
                             <div className="social-icon p-2 sm:p-2.5 bg-gray-900 rounded-lg sm:rounded-xl text-white shadow-md">
-                              <FaXTwitter size={16} className="sm:w-[18px] sm:h-[18px]" />
+                              <FaXTwitter
+                                size={16}
+                                className="sm:w-[18px] sm:h-[18px]"
+                              />
                             </div>
                           )}
                         </div>
@@ -401,8 +445,13 @@ function BundlesPage() {
                         Public Link
                       </p>
                       <div className="flex items-center gap-2 sm:gap-2.5 text-xs sm:text-sm text-gray-700 bg-gray-50 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-gray-200 font-mono font-medium overflow-hidden">
-                        <Link2 size={14} className="text-blue-600 flex-shrink-0 sm:w-4 sm:h-4" />
-                        <span className="text-blue-600 truncate">/{bundle.slug}</span>
+                        <Link2
+                          size={14}
+                          className="text-blue-600 flex-shrink-0 sm:w-4 sm:h-4"
+                        />
+                        <span className="text-blue-600 truncate">
+                          /{bundle.slug}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -468,7 +517,9 @@ function BundlesPage() {
                             </span>
                             <span className="inline-flex items-center gap-2 text-gray-600 bg-gray-100 px-3 py-1.5 rounded-lg text-sm font-semibold border border-gray-200">
                               <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-                              <span className="truncate">{bundle.theme?.name || "Default"}</span>
+                              <span className="truncate">
+                                {bundle.theme?.name || "Default"}
+                              </span>
                             </span>
                           </div>
                         </div>

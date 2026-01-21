@@ -111,7 +111,7 @@ export default function Login() {
     // Langsung gabungin URL dari env dengan endpoint redirect
     window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google/redirect`;
   };
-  
+
   const goToLandingPage = () => {
     navigate("/");
   };

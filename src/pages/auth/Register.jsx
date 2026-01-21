@@ -46,7 +46,7 @@ export default function Register() {
   };
 
   const handleGoogleSignup = () => {
-    window.location.href = "http://localhost:8000/api/auth/google/redirect";
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google/redirect`;
   };
 
   const goToLandingPage = () => {

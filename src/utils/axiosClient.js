@@ -1,12 +1,10 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  // Vite bakal otomatis milih env yang sesuai saat build
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  withCredentials: true, // Penting untuk session/cookie
+  withCredentials: true,
 });
 
-// Request interceptor (udah OK)
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -15,13 +13,11 @@ axiosClient.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor
 axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response?.status;
 
-    // Token Invalid
     if (status === 401) {
       localStorage.removeItem("token");
       window.location.href = "/login";

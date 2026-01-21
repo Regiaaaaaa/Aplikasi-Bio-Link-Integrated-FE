@@ -8,6 +8,10 @@ import {
   ShoppingBag,
   Twitter,
   Camera,
+  Globe,
+  Mail,
+  Github,
+  Linkedin,
   Headphones,
   Zap,
   Palette,
@@ -15,7 +19,6 @@ import {
   Lock,
   Smartphone,
   Rocket,
-  User,
   Link,
   ExternalLink,
   CheckCircle,
@@ -26,6 +29,18 @@ import {
   ChevronRight,
   Youtube,
   MessageCircle,
+  Eye,
+  User,
+  Check,
+  Users,
+} from "lucide-react";
+import {
+  PaintBucket,
+  Star,
+  Sparkles,
+  Palette as PaletteIcon,
+  Brush,
+  Layers,
 } from "lucide-react";
 
 const LandingPage = () => {
@@ -44,6 +59,27 @@ const LandingPage = () => {
     { id: "youtube", icon: <Youtube />, name: "YouTube" },
     { id: "tiktok", icon: <MessageCircle />, name: "TikTok" },
   ];
+
+  const [selectedDaisyTheme, setSelectedDaisyTheme] = useState("cupcake");
+  const [daisyThemes] = useState([
+    "light",
+    "dark",
+    "cupcake",
+    "retro",
+    "synthwave",
+    "forest",
+    "autumn",
+    "business",
+    "acid",
+    "lemonade",
+    "night",
+    "coffee",
+    "winter",
+    "dim",
+    "nord",
+    "sunset",
+    "bumblebee",
+  ]);
 
   const [formData, setFormData] = useState({
     username: "yourname",
@@ -671,6 +707,283 @@ const LandingPage = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* DaisyUI Themes Section */}
+      <section
+        id="daisy-themes"
+        className="relative py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16 space-y-3 sm:space-y-4">
+            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-200/50 dark:border-blue-700/50">
+              <Layers className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+              <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                17 Built-in Themes
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold">
+              <span className={themeColors.text}>DaisyUI Themes. </span>
+              <span
+                className={`bg-gradient-to-r ${gradients.primary} bg-clip-text text-transparent`}
+              >
+                One Click.
+              </span>
+            </h2>
+            <p
+              className={`text-base sm:text-lg ${themeColors.textSecondary} max-w-2xl mx-auto px-4`}
+            >
+              Switch between 17 professionally designed themes instantly with
+              daisyUI v4
+            </p>
+          </div>
+
+          {/* Theme Switcher Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 mb-8 sm:mb-12">
+            {daisyThemes.map((themeName) => (
+              <button
+                key={themeName}
+                onClick={() => setSelectedDaisyTheme(themeName)}
+                className={`group relative p-3 sm:p-4 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg ${
+                  selectedDaisyTheme === themeName
+                    ? "ring-2 ring-blue-500 dark:ring-blue-400 ring-offset-2 dark:ring-offset-slate-900"
+                    : `${themeColors.card} border ${themeColors.border} hover:border-blue-300 dark:hover:border-blue-700`
+                }`}
+              >
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div
+                      className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center`}
+                      data-theme={themeName}
+                    >
+                      <div className="w-full h-full rounded-lg flex items-center justify-center bg-base-100">
+                        <div className="w-6 h-6 rounded-md bg-primary flex items-center justify-center">
+                          <Brush className="w-3 h-3 text-primary-content" />
+                        </div>
+                      </div>
+                    </div>
+                    {selectedDaisyTheme === themeName && (
+                      <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 dark:text-blue-400" />
+                    )}
+                  </div>
+
+                  <div className="text-center">
+                    <span
+                      className={`text-xs sm:text-sm font-medium capitalize ${themeColors.text}`}
+                    >
+                      {themeName}
+                    </span>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Live Preview - Enhanced */}
+          <div
+            className={`relative rounded-2xl sm:rounded-3xl overflow-hidden ${strongGlassEffect} mb-8 sm:mb-12`}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.15),rgba(255,255,255,0))]"></div>
+
+            <div className="relative p-6 sm:p-8">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 mb-4">
+                  <Eye className={`w-4 h-4 ${themeColors.text}`} />
+                  <span className={`text-sm font-medium ${themeColors.text}`}>
+                    Live Preview
+                  </span>
+                </div>
+                <h3
+                  className={`text-2xl sm:text-3xl font-bold ${themeColors.text} mb-2`}
+                >
+                  <span className="capitalize">{selectedDaisyTheme}</span> Theme
+                </h3>
+                <p className={`${themeColors.textMuted}`}>
+                  Interactive theme preview
+                </p>
+              </div>
+
+              {/* Enhanced Preview */}
+              <div
+                data-theme={selectedDaisyTheme}
+                className="rounded-2xl bg-base-100 border-2 border-base-300 overflow-hidden shadow-2xl transform transition-all duration-300 hover:scale-[1.02]"
+              >
+                {/* Header with Gradient */}
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-secondary/20 to-accent/20"></div>
+                  <div className="relative flex items-center justify-between p-5 border-b border-base-300 bg-base-200/50 backdrop-blur-sm">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary shadow-lg flex items-center justify-center">
+                        <User className="w-5 h-5 text-primary-content" />
+                      </div>
+                      <div>
+                        <span className="font-bold text-base-content text-lg">
+                          @yourprofile
+                        </span>
+                        <div className="flex items-center space-x-1 text-xs text-base-content/60">
+                          <Eye className="w-3 h-3" />
+                          <span>1.2K views</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="badge badge-primary badge-lg gap-1 shadow-lg">
+                      <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+                      LIVE
+                    </div>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 sm:p-8">
+                  {/* Profile Section */}
+                  <div className="text-center mb-8">
+                    <div className="relative inline-block mb-4">
+                      <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary via-secondary to-accent p-1 shadow-xl">
+                        <div className="w-full h-full rounded-full bg-base-100 flex items-center justify-center">
+                          <User className="w-12 h-12 text-primary" />
+                        </div>
+                      </div>
+                      <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-success shadow-lg flex items-center justify-center border-2 border-base-100">
+                        <Check className="w-4 h-4 text-success-content" />
+                      </div>
+                    </div>
+                    <h4 className="text-2xl font-bold text-base-content mb-1">
+                      Your Name
+                    </h4>
+                    <p className="text-base-content/70 mb-3">
+                      ✨ Content Creator & Designer
+                    </p>
+                    <div className="flex items-center justify-center space-x-4 text-sm">
+                      <div className="flex items-center space-x-1">
+                        <Users className="w-4 h-4 text-primary" />
+                        <span className="font-semibold text-base-content">
+                          12.5K
+                        </span>
+                      </div>
+                      <div className="w-1 h-1 rounded-full bg-base-content/30"></div>
+                      <div className="flex items-center space-x-1">
+                        <Link className="w-4 h-4 text-secondary" />
+                        <span className="font-semibold text-base-content">
+                          8 Links
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Links */}
+                  <div className="space-y-3 mb-6 max-w-lg mx-auto">
+                    {[
+                      {
+                        icon: Globe,
+                        title: "Website",
+                        desc: "Visit my portfolio",
+                      },
+                      {
+                        icon: Mail,
+                        title: "Newsletter",
+                        desc: "Subscribe now",
+                      },
+                      {
+                        icon: Youtube,
+                        title: "YouTube",
+                        desc: "Watch my content",
+                      },
+                    ].map((item, i) => (
+                      <div
+                        key={i}
+                        className="group relative p-4 rounded-xl bg-base-200 hover:bg-base-300 transition-all duration-300 cursor-pointer border border-base-300 hover:border-primary/50 hover:shadow-lg hover:scale-[1.02]"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                              <item.icon className="w-6 h-6 text-primary" />
+                            </div>
+                            <div>
+                              <div className="font-bold text-base-content group-hover:text-primary transition-colors">
+                                {item.title}
+                              </div>
+                              <div className="text-sm text-base-content/60">
+                                {item.desc}
+                              </div>
+                            </div>
+                          </div>
+                          <ExternalLink className="w-5 h-5 text-base-content/40 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Social Links */}
+                  <div className="flex justify-center space-x-3 mb-6">
+                    {[Instagram, Twitter, Github, Linkedin].map((Icon, i) => (
+                      <div
+                        key={i}
+                        className="w-12 h-12 rounded-full bg-base-200 hover:bg-primary hover:scale-110 transition-all duration-300 cursor-pointer flex items-center justify-center border border-base-300 hover:border-primary shadow-sm hover:shadow-lg group"
+                      >
+                        <Icon className="w-5 h-5 text-base-content group-hover:text-primary-content transition-colors" />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Theme Colors */}
+                  <div className="flex justify-center items-center space-x-2 pt-4 border-t border-base-300">
+                    <Palette className="w-4 h-4 text-base-content/50" />
+                    <div className="flex space-x-2">
+                      <div className="w-4 h-4 rounded-full bg-primary shadow-sm border-2 border-base-100"></div>
+                      <div className="w-4 h-4 rounded-full bg-secondary shadow-sm border-2 border-base-100"></div>
+                      <div className="w-4 h-4 rounded-full bg-accent shadow-sm border-2 border-base-100"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Theme Info Badge */}
+              <div className="mt-6 text-center">
+                <div className="inline-flex items-center space-x-3 px-6 py-3 rounded-full bg-base-100/80 backdrop-blur-sm border-2 border-base-300 shadow-lg">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 rounded-full bg-primary animate-pulse shadow-lg shadow-primary/50"></div>
+                    <span className="text-sm font-medium text-base-content">
+                      Active Theme:
+                    </span>
+                  </div>
+                  <span className="text-sm font-bold text-primary uppercase tracking-wide">
+                    {selectedDaisyTheme}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* CTA Section */}
+          <div className="text-center">
+            <div className="inline-flex flex-col sm:flex-row items-center gap-4 sm:gap-6 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 border border-blue-200/50 dark:border-blue-700/50">
+              <div className="text-left">
+                <h4
+                  className={`text-xl sm:text-2xl font-bold ${themeColors.text} mb-2`}
+                >
+                  Ready to try all themes?
+                </h4>
+                <p
+                  className={`${themeColors.textSecondary} text-sm sm:text-base`}
+                >
+                  Sign up now and get access to all 17 daisyUI themes
+                </p>
+              </div>
+              <button
+                onClick={() => navigate("/login")}
+                className="group relative px-8 py-3 sm:px-10 sm:py-4 rounded-xl font-semibold overflow-hidden transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                <div
+                  className={`absolute inset-0 bg-gradient-to-r ${gradients.primary}`}
+                ></div>
+                <span className="relative text-white flex items-center justify-center space-x-2">
+                  <span>Get Started Free</span>
+                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </section>

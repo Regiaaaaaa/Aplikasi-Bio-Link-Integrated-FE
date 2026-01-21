@@ -522,7 +522,7 @@ const AdminBundlesPage = () => {
                       </button>
 
                       <a
-                        href={`http://localhost:3000/${bundle.slug}`}
+                        href={`${process.env.REACT_APP_BASE_URL}/${bundle.slug}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex-1 sm:flex-none p-2.5 sm:p-3 bg-green-50 text-green-600 rounded-xl hover:bg-green-100 transition-all border border-green-200 group/btn hover:shadow-md flex items-center justify-center"

@@ -114,7 +114,9 @@ function BundleEditorPage() {
       setError(null);
       const token = localStorage.getItem("token");
 
-      const bundleResponse = await fetch(`/api/user/bundles`, {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
+      const bundleResponse = await fetch(`${API_BASE}/user/bundles`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -154,12 +156,15 @@ function BundleEditorPage() {
       }
 
       // Fetch links
-      const linksResponse = await fetch(`/api/user/bundles/${bundleId}/links`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
+      const linksResponse = await fetch(
+        `${API_BASE}/user/bundles/${bundleId}/links`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
         },
-      });
+      );
 
       if (linksResponse.ok) {
         const linksData = await linksResponse.json();
@@ -258,12 +263,15 @@ function BundleEditorPage() {
 
       setProfileImagePreview(profileImageUrl);
 
-      const linksResponse = await fetch(`/api/user/bundles/${bundleId}/links`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
+      const linksResponse = await fetch(
+        `${API_BASE}/user/bundles/${bundleId}/links`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
         },
-      });
+      );
 
       if (linksResponse.ok) {
         const linksData = await linksResponse.json();

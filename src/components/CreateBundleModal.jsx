@@ -61,18 +61,21 @@ function CreateBundleModal({ onClose }) {
       setSubmitting(true);
       const token = localStorage.getItem("token");
 
-      const response = await fetch("/api/user/bundles", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/user/bundles`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            name: bundleName,
+            theme_id: selectedTheme,
+          }),
         },
-        body: JSON.stringify({
-          name: bundleName,
-          theme_id: selectedTheme,
-        }),
-      });
+      );
 
       if (!response.ok) {
         const errorData = await response.json();

@@ -3,7 +3,6 @@ import {
   Link2,
   MousePointerClick,
   Package,
-  Eye,
   TrendingUp,
   ExternalLink,
   Activity,
@@ -21,7 +20,6 @@ function DashboardPage() {
     totalBundles: 0,
     totalLinks: 0,
     totalClicks: 0,
-    activeBundles: 0,
   });
   const [loading, setLoading] = useState(true);
   const [recentBundles, setRecentBundles] = useState([]);
@@ -35,34 +33,66 @@ function DashboardPage() {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-
       const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-      const response = await fetch(`${API_BASE}/user/bundles`, {
+      // Fetch bundles data
+      const bundlesResponse = await fetch(`${API_BASE}/user/bundles`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
       });
 
-      if (!response.ok) throw new Error("Failed to fetch data");
+      if (!bundlesResponse.ok) throw new Error("Failed to fetch bundles");
+      const bundlesResult = await bundlesResponse.json();
+      const bundles = bundlesResult.data;
 
-      const result = await response.json();
-      const bundles = result.data;
+      // Fetch stats from dedicated endpoint (more efficient!)
+      const statsResponse = await fetch(`${API_BASE}/user/stats`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
 
+      let bundleClicks = {};
+      let totalBundleClicks = 0;
+
+      if (statsResponse.ok) {
+        const statsResult = await statsResponse.json();
+        const statsData = statsResult.data;
+        
+        // Get clicks per bundle from stats endpoint
+        bundleClicks = statsData.clicks_per_bundle || {};
+        totalBundleClicks = statsData.total_bundle_clicks || 0;
+      }
+
+      // Merge clicks data with bundles
+      const bundlesWithClicks = bundles.map((bundle) => ({
+        ...bundle,
+        clicks: bundleClicks[bundle.id] || 0,
+      }));
+
+      // Calculate stats
       setStats({
         totalBundles: bundles.length,
         totalLinks: bundles.reduce((acc, b) => acc + (b.links?.length || 0), 0),
-        totalClicks: bundles.reduce((acc, b) => acc + (b.clicks || 0), 0),
-        activeBundles: bundles.filter((b) => b.is_active).length,
+        totalClicks: totalBundleClicks,
       });
 
-      setRecentBundles(bundles.slice(0, 5));
+      // Recent bundles (sorted by updated_at or created_at)
+      const sortedByRecent = [...bundlesWithClicks].sort((a, b) => {
+        const dateA = new Date(a.updated_at || a.created_at);
+        const dateB = new Date(b.updated_at || b.created_at);
+        return dateB - dateA;
+      });
+      setRecentBundles(sortedByRecent.slice(0, 5));
 
-      const sorted = [...bundles].sort(
-        (a, b) => (b.clicks || 0) - (a.clicks || 0),
+      // Top bundles by clicks
+      const sortedByClicks = [...bundlesWithClicks].sort(
+        (a, b) => b.clicks - a.clicks
       );
-      setTopBundles(sorted.slice(0, 5));
+      setTopBundles(sortedByClicks.slice(0, 5));
     } catch (err) {
       console.error("Error fetching dashboard data:", err);
     } finally {
@@ -187,7 +217,7 @@ function DashboardPage() {
 
           {/* Stats Grid */}
           <div
-            className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 md:mb-8 animate-slide-up"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-6 md:mb-8 animate-slide-up"
             style={{ animationDelay: "100ms" }}
           >
             {/* Total Bundles */}
@@ -241,24 +271,6 @@ function DashboardPage() {
               </h3>
               <p className="text-xs sm:text-sm text-gray-600 font-medium">
                 Total Clicks
-              </p>
-            </div>
-
-            {/* Active Bundles */}
-            <div className="stat-card rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6">
-              <div className="flex items-start justify-between mb-3 sm:mb-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg sm:rounded-xl flex items-center justify-center">
-                  <Eye className="text-white" size={18} />
-                </div>
-                <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 sm:px-3 py-1 rounded-full">
-                  Active
-                </span>
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
-                {stats.activeBundles}
-              </h3>
-              <p className="text-xs sm:text-sm text-gray-600 font-medium">
-                Active Bundles
               </p>
             </div>
           </div>
@@ -517,37 +529,6 @@ function DashboardPage() {
                               ? Math.min(
                                   (stats.totalClicks / stats.totalLinks) * 100,
                                   100,
-                                )
-                              : 0
-                          }%`,
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs sm:text-sm font-medium opacity-90">
-                        Active Bundles
-                      </span>
-                      <span className="text-xs sm:text-sm font-bold">
-                        {stats.totalBundles > 0
-                          ? Math.round(
-                              (stats.activeBundles / stats.totalBundles) * 100,
-                            )
-                          : 0}
-                        %
-                      </span>
-                    </div>
-                    <div className="w-full bg-white/20 rounded-full h-2">
-                      <div
-                        className="bg-white rounded-full h-2 transition-all duration-1000"
-                        style={{
-                          width: `${
-                            stats.totalBundles > 0
-                              ? Math.round(
-                                  (stats.activeBundles / stats.totalBundles) *
-                                    100,
                                 )
                               : 0
                           }%`,

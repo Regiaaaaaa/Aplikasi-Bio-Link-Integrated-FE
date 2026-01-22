@@ -52,7 +52,9 @@ export default function BannedPage() {
   const fetchAppealHistory = async () => {
     try {
       setLoadingTracking(true);
-      const response = await axiosClient.get("/user/appeals", {
+
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+      const response = await fetch(`${API_BASE}/user/appeals`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
@@ -113,7 +115,10 @@ export default function BannedPage() {
         appeal_evidence: formData.appeal_evidence || null,
       };
 
-      const response = await axiosClient.post("/user/appeals", payload, {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
+      const response = await fetch(`${API_BASE}/user/appeals`, {
+        method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",

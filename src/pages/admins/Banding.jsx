@@ -85,7 +85,8 @@ export default function AdminAppealsPage() {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8000/api/admin/appeals", {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+      const response = await fetch(`${API_BASE}/admin/appeals`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

@@ -47,6 +47,8 @@ export default function AdminAppealsPage() {
     rejected: 0,
   });
 
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
   // Refs for click outside
   const filterRef = useRef(null);
   const detailModalRef = useRef(null);
@@ -85,7 +87,6 @@ export default function AdminAppealsPage() {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const API_BASE = import.meta.env.VITE_API_BASE_URL;
       const response = await fetch(`${API_BASE}/admin/appeals`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -184,8 +185,6 @@ export default function AdminAppealsPage() {
       setProcessingId(selectedAppeal.id);
       const token = localStorage.getItem("token");
       const endpoint = modalAction === "approve" ? "approve" : "reject";
-
-      const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
       const response = await fetch(
         `${API_BASE}/admin/appeals/${selectedAppeal.id}/${endpoint}`,
@@ -442,7 +441,7 @@ export default function AdminAppealsPage() {
                   <img
                     src={
                       selectedAppeal.user?.avatar
-                        ? `http://localhost:8000/storage/${selectedAppeal.user.avatar}`
+                        ? `${API_BASE}/storage/${selectedAppeal.user.avatar}`
                         : `https://ui-avatars.com/api/?name=${encodeURIComponent(
                             selectedAppeal.user?.name || "User",
                           )}&background=6366f1&color=fff&bold=true`
@@ -1049,7 +1048,7 @@ export default function AdminAppealsPage() {
                             <img
                               src={
                                 appeal.user?.avatar
-                                  ? `http://localhost:8000/storage/${appeal.user.avatar}`
+                                  ? `${API_BASE}/storage/${appeal.user.avatar}`
                                   : `https://ui-avatars.com/api/?name=${encodeURIComponent(
                                       appeal.user?.name || "User",
                                     )}&background=6366f1&color=fff&bold=true`

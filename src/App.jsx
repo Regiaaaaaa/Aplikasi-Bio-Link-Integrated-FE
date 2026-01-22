@@ -39,9 +39,6 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/google/callback" element={<GoogleCallback />} />
 
-          {/* Public Bundle View - Important: ini harus di atas protected routes */}
-          <Route path="/:slug" element={<PublicBundlePage />} />
-
           {/* Banned Page */}
           <Route
             path="/banned"
@@ -154,6 +151,7 @@ export default function App() {
               </AdminRoute>
             }
           />
+          <Route path="/:slug" element={<PublicBundlePage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

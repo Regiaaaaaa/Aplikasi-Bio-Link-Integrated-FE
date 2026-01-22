@@ -23,8 +23,6 @@ function PublicBundlePage() {
       const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
       console.log("Fetching bundle with slug:", slug);
-
-      // Fetch bundle data (sudah include links)
       const bundleResponse = await fetch(`${API_BASE}/b/${slug}`);
 
       if (!bundleResponse.ok) {
@@ -49,9 +47,12 @@ function PublicBundlePage() {
     }
   };
 
-  const handleLinkClick = (url) => {
-    window.open(url, "_blank", "noopener,noreferrer");
+  const handleLinkClick = (linkId) => {
+    const API_BASE = import.meta.env.VITE_API_BASE_URL;
+    const redirectUrl = `${API_BASE}/r/${linkId}`;
+    window.open(redirectUrl, "_blank", "noopener,noreferrer");
   };
+
 
   if (loading) {
     return (
@@ -304,25 +305,25 @@ function PublicBundlePage() {
               links.map((link, index) => (
                 <button
                   key={link.id}
-                  onClick={() => handleLinkClick(link.url)}
+                  onClick={() => handleLinkClick(link.id)}
                   className="
-          link-card
-          w-full
-          btn btn-primary btn-lg
-          h-auto min-h-[60px]
-          text-base font-semibold normal-case
-          justify-between
-          border-2 border-base-100
-          rounded-2xl
-        "
+                    link-card
+                    w-full
+                    btn btn-primary btn-lg
+                    h-auto min-h-[60px]
+                    text-base font-semibold normal-case
+                    justify-between
+                    border-2 border-base-100
+                    rounded-2xl
+                  "
                   style={{
                     animationDelay: `${index * 0.1}s`,
                   }}
                 >
                   <span className="flex-1 text-left">{link.name}</span>
-
                   <ExternalLink size={20} className="flex-shrink-0 ml-2" />
                 </button>
+
               ))
             )}
           </div>

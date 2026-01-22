@@ -305,12 +305,22 @@ function PublicBundlePage() {
                 <button
                   key={link.id}
                   onClick={() => handleLinkClick(link.url)}
-                  className="link-card w-full btn btn-primary btn-lg h-auto min-h-[60px] text-base font-semibold shadow-md normal-case justify-between"
+                  className="
+          link-card
+          w-full
+          btn btn-primary btn-lg
+          h-auto min-h-[60px]
+          text-base font-semibold normal-case
+          justify-between
+          border-2 border-base-100
+          rounded-2xl
+        "
                   style={{
                     animationDelay: `${index * 0.1}s`,
                   }}
                 >
                   <span className="flex-1 text-left">{link.name}</span>
+
                   <ExternalLink size={20} className="flex-shrink-0 ml-2" />
                 </button>
               ))

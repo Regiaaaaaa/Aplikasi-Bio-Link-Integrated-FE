@@ -58,8 +58,6 @@ const AdminBundlesPage = () => {
         },
       });
 
-      const data = await response.json();
-
       setBundles(data.data?.data || []);
       setPagination({
         current_page: data.data?.current_page,

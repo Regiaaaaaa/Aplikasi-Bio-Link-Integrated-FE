@@ -95,9 +95,11 @@ export default function AdminAppealsPage() {
       });
 
       if (response.ok) {
-        setAppeals(data.data || []);
-
+        // FIX: You were missing this line below
         const data = await response.json();
+
+        // Now 'data' is defined and can be used
+        setAppeals(data.data || []);
 
         // Calculate stats
         const total = data.data?.length || 0;
@@ -116,7 +118,6 @@ export default function AdminAppealsPage() {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchAppeals();
   }, []);

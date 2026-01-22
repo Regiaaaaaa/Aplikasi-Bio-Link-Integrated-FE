@@ -94,7 +94,6 @@ export default function AdminAppealsPage() {
       });
 
       if (response.ok) {
-        const data = await response.json();
         setAppeals(data.data || []);
 
         // Calculate stats
@@ -165,7 +164,7 @@ export default function AdminAppealsPage() {
     setAdminReply(
       action === "approve"
         ? "Banding diterima. Akun Anda telah diaktifkan kembali."
-        : "Banding ditolak. Akun Anda tetap dinonaktifkan."
+        : "Banding ditolak. Akun Anda tetap dinonaktifkan.",
     );
     setShowActionModal(true);
   };
@@ -186,8 +185,10 @@ export default function AdminAppealsPage() {
       const token = localStorage.getItem("token");
       const endpoint = modalAction === "approve" ? "approve" : "reject";
 
+      const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
       const response = await fetch(
-        `http://localhost:8000/api/admin/appeals/${selectedAppeal.id}/${endpoint}`,
+        `${API_BASE}/admin/appeals/${selectedAppeal.id}/${endpoint}`,
         {
           method: "POST",
           headers: {
@@ -195,7 +196,7 @@ export default function AdminAppealsPage() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ admin_reply: adminReply }),
-        }
+        },
       );
 
       if (response.ok) {
@@ -443,7 +444,7 @@ export default function AdminAppealsPage() {
                       selectedAppeal.user?.avatar
                         ? `http://localhost:8000/storage/${selectedAppeal.user.avatar}`
                         : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            selectedAppeal.user?.name || "User"
+                            selectedAppeal.user?.name || "User",
                           )}&background=6366f1&color=fff&bold=true`
                     }
                     alt={selectedAppeal.user?.name}
@@ -460,8 +461,8 @@ export default function AdminAppealsPage() {
                             selectedAppeal.status === "approved"
                               ? "bg-green-100 text-green-700 border-green-200"
                               : selectedAppeal.status === "rejected"
-                              ? "bg-red-100 text-red-700 border-red-200"
-                              : "bg-yellow-100 text-yellow-700 border-yellow-200"
+                                ? "bg-red-100 text-red-700 border-red-200"
+                                : "bg-yellow-100 text-yellow-700 border-yellow-200"
                           }`}
                         >
                           {selectedAppeal.status === "pending" && (
@@ -476,8 +477,8 @@ export default function AdminAppealsPage() {
                           {selectedAppeal.status === "pending"
                             ? "Menunggu Review"
                             : selectedAppeal.status === "approved"
-                            ? "Banding Diterima"
-                            : "Banding Ditolak"}
+                              ? "Banding Diterima"
+                              : "Banding Ditolak"}
                         </span>
 
                         {selectedAppeal.user?.role === "admin" ? (
@@ -602,8 +603,8 @@ export default function AdminAppealsPage() {
                           selectedAppeal.status === "approved"
                             ? "bg-green-50 border-green-200"
                             : selectedAppeal.status === "rejected"
-                            ? "bg-red-50 border-red-200"
-                            : "bg-gray-50 border-gray-200"
+                              ? "bg-red-50 border-red-200"
+                              : "bg-gray-50 border-gray-200"
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -612,8 +613,8 @@ export default function AdminAppealsPage() {
                               selectedAppeal.status === "approved"
                                 ? "bg-green-100"
                                 : selectedAppeal.status === "rejected"
-                                ? "bg-red-100"
-                                : "bg-gray-100"
+                                  ? "bg-red-100"
+                                  : "bg-gray-100"
                             }`}
                           >
                             {selectedAppeal.status === "approved" ? (
@@ -661,15 +662,15 @@ export default function AdminAppealsPage() {
                             selectedAppeal.status === "approved"
                               ? "text-green-600"
                               : selectedAppeal.status === "rejected"
-                              ? "text-red-600"
-                              : "text-yellow-600"
+                                ? "text-red-600"
+                                : "text-yellow-600"
                           }`}
                         >
                           {selectedAppeal.status === "pending"
                             ? "Menunggu Review"
                             : selectedAppeal.status === "approved"
-                            ? "Disetujui"
-                            : "Ditolak"}
+                              ? "Disetujui"
+                              : "Ditolak"}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
@@ -1050,7 +1051,7 @@ export default function AdminAppealsPage() {
                                 appeal.user?.avatar
                                   ? `http://localhost:8000/storage/${appeal.user.avatar}`
                                   : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                      appeal.user?.name || "User"
+                                      appeal.user?.name || "User",
                                     )}&background=6366f1&color=fff&bold=true`
                               }
                               alt={appeal.user?.name}

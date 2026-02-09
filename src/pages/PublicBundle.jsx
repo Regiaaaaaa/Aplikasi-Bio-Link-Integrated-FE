@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Loader2, ExternalLink } from "lucide-react";
 
-const IMAGE_BASE_URL = import.meta.env.VITE_API_BASE_URL.replace("/api", "");
+const apiBase = import.meta.env.VITE_API_BASE_URL;
 
 function PublicBundlePage() {
   const { slug } = useParams();
@@ -47,6 +47,16 @@ function PublicBundlePage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getProfileImage = (path) => {
+    if (!path) return null;
+
+    // 1. Ambil domain utama (hapus /api di akhir jika ada)
+    const domain = apiBase.endsWith("/api") ? apiBase.slice(0, -4) : apiBase;
+
+    // 2. Gabungkan dengan /storage/ dan path dari database
+    return `${domain}/storage/${path}`;
   };
 
   const handleLinkClick = (linkId) => {
@@ -148,44 +158,33 @@ function PublicBundlePage() {
             {/* Avatar */}
             <div className="w-32 h-32 mx-auto mb-6 relative">
               {bundle?.profile_image ? (
-                <>
-                  {/* Log ini untuk debug di console: cek apakah URL-nya sudah benar */}
-                  {console.log(
-                    "Mencoba memuat gambar dari:",
-                    `${IMAGE_BASE_URL}/storage/${bundle.profile_image}`,
-                  )}
-
-                  <img
-                    src={`${IMAGE_BASE_URL}/storage/${bundle.profile_image}`}
-                    alt={bundle.name}
-                    className="w-full h-full rounded-full object-cover border-4 border-base-200 shadow-xl"
-                    onError={(e) => {
-                      console.error(
-                        "Gambar gagal dimuat (403 atau 404). Menggunakan fallback.",
-                      );
-                      e.target.onerror = null;
-                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(bundle.name)}&background=random`;
-                    }}
-                  />
-                </>
+                <img
+                  src={getProfileImage(bundle.profile_image)}
+                  alt={bundle.name}
+                  className="w-full h-full rounded-full object-cover border-4 border-base-200 shadow-xl"
+                  onError={(e) => {
+                    // Jika 404 atau 403, pakai avatar inisial
+                    e.target.onerror = null;
+                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(bundle.name)}&background=random`;
+                  }}
+                />
               ) : (
+                /* Fallback jika field profile_image kosong */
                 <div className="w-full h-full rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-4xl font-bold shadow-xl">
                   {bundle?.name?.charAt(0)?.toUpperCase() || "U"}
                 </div>
               )}
-            </div>
+            </div>{" "}
             {/* Name */}
             <h1 className="text-3xl font-bold text-base-content mb-3">
               {bundle?.name}
             </h1>
-
             {/* Description */}
             {bundle?.description && (
               <p className="text-base-content/70 max-w-md mx-auto mb-6 text-lg">
                 {bundle.description}
               </p>
             )}
-
             {/* Social Media Icons */}
             {(bundle?.instagram_url ||
               bundle?.github_url ||

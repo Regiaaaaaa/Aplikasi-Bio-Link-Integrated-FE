@@ -1342,6 +1342,9 @@ export default function AdminDashboard() {
                       Bergabung
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Terakhir Dilihat
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Status
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -1403,10 +1406,31 @@ export default function AdminDashboard() {
                           <p className="text-sm text-gray-900">
                             {formatDateShort(u.created_at)}
                           </p>
-                          <p className="text-xs text-gray-500">
-                            {getRelativeTime(u.last_active)}
-                          </p>
                         </div>
+                      </td>
+
+                      <td className="px-6 py-4">
+                        {u.last_active ? (
+                          <div className="space-y-1">
+                            <p className="text-sm text-gray-900">
+                              {formatDateShort(u.last_active)} •{" "}
+                              {new Date(u.last_active).toLocaleTimeString(
+                                "id-ID",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                },
+                              )}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {getRelativeTime(u.last_active)}
+                            </p>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-gray-400 italic">
+                            Belum pernah
+                          </span>
+                        )}
                       </td>
 
                       <td className="px-6 py-4">

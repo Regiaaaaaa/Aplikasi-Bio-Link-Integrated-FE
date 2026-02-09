@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Loader2, ExternalLink } from "lucide-react";
 
+const IMAGE_BASE_URL = import.meta.env.VITE_API_BASE_URL.replace("/api", "");
+
 function PublicBundlePage() {
   const { slug } = useParams();
   const [bundle, setBundle] = useState(null);
@@ -52,7 +54,6 @@ function PublicBundlePage() {
     const redirectUrl = `${API_BASE}/r/${linkId}`;
     window.open(redirectUrl, "_blank", "noopener,noreferrer");
   };
-
 
   if (loading) {
     return (
@@ -146,19 +147,33 @@ function PublicBundlePage() {
           <div className="text-center mb-8">
             {/* Avatar */}
             <div className="w-32 h-32 mx-auto mb-6 relative">
-              {bundle?.profile_image_url ? (
-                <img
-                  src={bundle.profile_image_url}
-                  alt={bundle.name}
-                  className="w-full h-full rounded-full object-cover border-4 border-base-200 shadow-xl"
-                />
+              {bundle?.profile_image ? (
+                <>
+                  {/* Log ini untuk debug di console: cek apakah URL-nya sudah benar */}
+                  {console.log(
+                    "Mencoba memuat gambar dari:",
+                    `${IMAGE_BASE_URL}/storage/${bundle.profile_image}`,
+                  )}
+
+                  <img
+                    src={`${IMAGE_BASE_URL}/storage/${bundle.profile_image}`}
+                    alt={bundle.name}
+                    className="w-full h-full rounded-full object-cover border-4 border-base-200 shadow-xl"
+                    onError={(e) => {
+                      console.error(
+                        "Gambar gagal dimuat (403 atau 404). Menggunakan fallback.",
+                      );
+                      e.target.onerror = null;
+                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(bundle.name)}&background=random`;
+                    }}
+                  />
+                </>
               ) : (
                 <div className="w-full h-full rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-4xl font-bold shadow-xl">
                   {bundle?.name?.charAt(0)?.toUpperCase() || "U"}
                 </div>
               )}
             </div>
-
             {/* Name */}
             <h1 className="text-3xl font-bold text-base-content mb-3">
               {bundle?.name}
@@ -323,7 +338,6 @@ function PublicBundlePage() {
                   <span className="flex-1 text-left">{link.name}</span>
                   <ExternalLink size={20} className="flex-shrink-0 ml-2" />
                 </button>
-
               ))
             )}
           </div>

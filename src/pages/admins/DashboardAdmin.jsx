@@ -790,7 +790,7 @@ export default function AdminDashboard() {
                 <img
                   src={
                     selectedUser.avatar
-                      ? `http://localhost:8000/storage/${selectedUser.avatar}`
+                      ? `${import.meta.env.VITE_API_URL}/storage/${selectedUser.avatar}`
                       : `https://ui-avatars.com/api/?name=${encodeURIComponent(
                           selectedUser.name || "User",
                         )}&background=6366f1&color=fff&bold=true`
@@ -1363,14 +1363,14 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-3">
                           <img
                             src={
-                              u.avatar
-                                ? `http://localhost:8000/storage/${u.avatar}`
+                              selectedUser.avatar
+                                ? `${import.meta.env.VITE_API_URL}/storage/${selectedUser.avatar}`
                                 : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                    u.name || "User",
+                                    selectedUser.name || "User",
                                   )}&background=6366f1&color=fff&bold=true`
                             }
-                            alt={u.name}
-                            className="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm hover:scale-105 transition-transform duration-200"
+                            alt={selectedUser.name}
+                            className="w-24 h-24 rounded-2xl object-cover border-4 border-white shadow-lg"
                           />
                           <div>
                             <p className="font-semibold text-gray-900">

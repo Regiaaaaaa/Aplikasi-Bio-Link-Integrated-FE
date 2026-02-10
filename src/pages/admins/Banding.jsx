@@ -48,9 +48,9 @@ export default function AdminAppealsPage() {
   });
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
-  const STORAGE_BASE = "http://localhost:8000"; 
+  const STORAGE_BASE = import.meta.env.VITE_API_BASE_URL;
 
-  // Helper function 
+  // Helper function
   const getAvatarUrl = (avatar, name = "User") => {
     if (!avatar) {
       return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff&bold=true`;
@@ -105,7 +105,6 @@ export default function AdminAppealsPage() {
 
       if (response.ok) {
         const data = await response.json();
-        
 
         setAppeals(data.data || []);
 
@@ -137,7 +136,7 @@ export default function AdminAppealsPage() {
       const matchesSearch =
         appeal.user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         appeal.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        appeal.message?.toLowerCase().includes(searchTerm.toLowerCase()); 
+        appeal.message?.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesStatus =
         statusFilter === "all" || appeal.status === statusFilter;
@@ -451,7 +450,10 @@ export default function AdminAppealsPage() {
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-6 mb-8 border border-indigo-100">
                 <div className="flex items-start gap-6">
                   <img
-                    src={getAvatarUrl(selectedAppeal.user?.avatar, selectedAppeal.user?.name)}
+                    src={getAvatarUrl(
+                      selectedAppeal.user?.avatar,
+                      selectedAppeal.user?.name,
+                    )}
                     alt={selectedAppeal.user?.name}
                     className="w-20 h-20 rounded-2xl object-cover border-4 border-white shadow-lg"
                     onError={(e) => {
@@ -1057,7 +1059,10 @@ export default function AdminAppealsPage() {
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <img
-                              src={getAvatarUrl(appeal.user?.avatar, appeal.user?.name)}
+                              src={getAvatarUrl(
+                                appeal.user?.avatar,
+                                appeal.user?.name,
+                              )}
                               alt={appeal.user?.name}
                               className="w-10 h-10 rounded-xl object-cover border-2 border-white shadow-sm hover:scale-105 transition-transform duration-200 cursor-pointer"
                               onClick={() => handleViewDetail(appeal)}

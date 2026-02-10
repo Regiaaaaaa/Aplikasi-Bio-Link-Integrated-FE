@@ -50,6 +50,7 @@ export default function AdminDashboard() {
   const [roleFilter, setRoleFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
   const [confirmAction, setConfirmAction] = useState({
     type: "",
     userId: null,
@@ -789,15 +790,12 @@ export default function AdminDashboard() {
               <div className="flex items-start gap-6 mb-8 p-4 bg-gradient-to-r from-indigo-50 to-white rounded-xl animate-fadeInDelay">
                 <img
                   src={
-                    // Tambahkan tanda tanya (?) setelah selectedUser
-                    selectedUser?.avatar
-                      ? `${import.meta.env.VITE_API_URL}/storage/${selectedUser.avatar}`
+                    selectedUser.avatar
+                      ? `${API_BASE}/storage/${selectedUser.avatar}`
                       : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                          selectedUser?.name || "User", // Gunakan optional chaining di sini juga
+                          selectedUser.name || "User",
                         )}&background=6366f1&color=fff&bold=true`
                   }
-                  alt={selectedUser?.name || "User"}
-                  className="w-24 h-24 rounded-2xl object-cover border-4 border-white shadow-lg"
                 />
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
@@ -1364,15 +1362,12 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-3">
                           <img
                             src={
-                              // Tambahkan tanda tanya (?) setelah selectedUser
-                              selectedUser?.avatar
-                                ? `${import.meta.env.VITE_API_URL}/storage/${selectedUser.avatar}`
+                              selectedUser.avatar
+                                ? `${API_BASE}/storage/${selectedUser.avatar}`
                                 : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                    selectedUser?.name || "User", // Gunakan optional chaining di sini juga
+                                    selectedUser.name || "User",
                                   )}&background=6366f1&color=fff&bold=true`
                             }
-                            alt={selectedUser?.name || "User"}
-                            className="w-24 h-24 rounded-2xl object-cover border-4 border-white shadow-lg"
                           />
                           <div>
                             <p className="font-semibold text-gray-900">

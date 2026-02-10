@@ -165,11 +165,7 @@ export default function AdminAppealsPage() {
   const handleOpenActionModal = (appeal, action) => {
     setSelectedAppeal(appeal);
     setModalAction(action);
-    setAdminReply(
-      action === "approve"
-        ? "Banding diterima. Akun Anda telah diaktifkan kembali."
-        : "Banding ditolak. Akun Anda tetap dinonaktifkan.",
-    );
+    setAdminReply(""); // Kosongkan dulu
     setShowActionModal(true);
   };
 
@@ -322,13 +318,13 @@ export default function AdminAppealsPage() {
                     <XCircle className="w-8 h-8 text-red-600" />
                   )}
                 </div>
-                <div>
+                <div className="flex-1">
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
                     {modalAction === "approve"
                       ? "Setujui Banding"
                       : "Tolak Banding"}
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 text-sm">
                     {modalAction === "approve"
                       ? `Setujui banding dari ${selectedAppeal.user?.name}?`
                       : `Tolak banding dari ${selectedAppeal.user?.name}?`}
@@ -338,65 +334,117 @@ export default function AdminAppealsPage() {
 
               {/* Admin Reply Input */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Balasan Admin
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Balasan untuk Pengguna
                   <span className="text-red-500 ml-1">*</span>
                 </label>
-                <textarea
-                  value={adminReply}
-                  onChange={(e) => setAdminReply(e.target.value)}
-                  placeholder="Tulis balasan untuk pengguna..."
-                  rows="4"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none transition-all duration-300"
-                  required
-                />
-                <p className="text-xs text-gray-500 mt-2">
-                  Balasan ini akan dikirim ke pengguna dan disimpan dalam
-                  riwayat.
+                <div className="relative">
+                  <textarea
+                    value={adminReply}
+                    onChange={(e) => setAdminReply(e.target.value)}
+                    placeholder={
+                      modalAction === "approve"
+                        ? "Contoh: Banding Anda diterima. Akun telah diaktifkan kembali dan Anda dapat login kembali ke sistem."
+                        : "Contoh: Banding ditolak karena pelanggaran yang dilakukan cukup serius. Akun tetap dinonaktifkan."
+                    }
+                    rows="5"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none transition-all duration-300 text-gray-900 placeholder:text-gray-400 bg-white"
+                    style={{ minHeight: "120px" }}
+                  />
+                  <div className="absolute bottom-3 right-3 text-xs text-gray-400">
+                    {adminReply.length}/500
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500 mt-2 flex items-start gap-1.5">
+                  <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                  <span>
+                    Balasan ini akan dikirim ke email pengguna dan tersimpan
+                    dalam riwayat banding.
+                  </span>
                 </p>
               </div>
 
               {/* Warning Message */}
-              <div className="bg-gray-50 p-4 rounded-xl mb-6 border border-gray-200">
-                <div className="flex items-start gap-2 text-sm text-gray-600">
-                  <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>
-                    {modalAction === "approve"
-                      ? "Pengguna akan langsung diaktifkan kembali dan dapat login ke sistem."
-                      : "Pengguna akan tetap dinonaktifkan dan tidak dapat login."}
-                  </span>
+              <div
+                className={`p-4 rounded-xl mb-6 border-2 ${
+                  modalAction === "approve"
+                    ? "bg-green-50 border-green-200"
+                    : "bg-red-50 border-red-200"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`p-2 rounded-lg ${
+                      modalAction === "approve" ? "bg-green-100" : "bg-red-100"
+                    }`}
+                  >
+                    {modalAction === "approve" ? (
+                      <Check className="w-4 h-4 text-green-600" />
+                    ) : (
+                      <XIcon className="w-4 h-4 text-red-600" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p
+                      className={`text-sm font-semibold mb-1 ${
+                        modalAction === "approve"
+                          ? "text-green-800"
+                          : "text-red-800"
+                      }`}
+                    >
+                      {modalAction === "approve"
+                        ? "Konsekuensi Persetujuan"
+                        : "Konsekuensi Penolakan"}
+                    </p>
+                    <p
+                      className={`text-sm ${
+                        modalAction === "approve"
+                          ? "text-green-700"
+                          : "text-red-700"
+                      }`}
+                    >
+                      {modalAction === "approve"
+                        ? "Pengguna akan langsung diaktifkan kembali dan dapat login ke sistem. Semua akses akan dipulihkan."
+                        : "Pengguna akan tetap dinonaktifkan dan tidak dapat mengakses sistem. Banding ditandai sebagai ditolak."}
+                    </p>
+                  </div>
                 </div>
               </div>
 
               {/* Action Buttons */}
               <div className="flex gap-3">
                 <button
+                  onClick={handleCloseActionModal}
+                  className="flex-1 py-3 px-4 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+                >
+                  Batalkan
+                </button>
+                <button
                   onClick={handleProcessAppeal}
                   disabled={
                     processingId === selectedAppeal.id || !adminReply.trim()
                   }
-                  className={`flex-1 py-3 font-medium rounded-xl transition-all duration-300 hover:shadow-lg ${
+                  className={`flex-1 py-3 px-4 font-semibold rounded-xl transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed ${
                     modalAction === "approve"
                       ? "bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700"
                       : "bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700"
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  }`}
                 >
                   {processingId === selectedAppeal.id ? (
                     <span className="flex items-center justify-center gap-2">
                       <RefreshCw className="w-4 h-4 animate-spin" />
                       Memproses...
                     </span>
-                  ) : modalAction === "approve" ? (
-                    "Ya, Setujui"
                   ) : (
-                    "Ya, Tolak"
+                    <span className="flex items-center justify-center gap-2">
+                      {modalAction === "approve" ? (
+                        <CheckCircle className="w-4 h-4" />
+                      ) : (
+                        <XCircle className="w-4 h-4" />
+                      )}
+                      {modalAction === "approve" ? "Ya, Setujui" : "Ya, Tolak"}
+                    </span>
                   )}
-                </button>
-                <button
-                  onClick={handleCloseActionModal}
-                  className="flex-1 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors duration-300"
-                >
-                  Batalkan
                 </button>
               </div>
             </div>

@@ -789,13 +789,14 @@ export default function AdminDashboard() {
               <div className="flex items-start gap-6 mb-8 p-4 bg-gradient-to-r from-indigo-50 to-white rounded-xl animate-fadeInDelay">
                 <img
                   src={
-                    selectedUser.avatar
+                    // Tambahkan tanda tanya (?) setelah selectedUser
+                    selectedUser?.avatar
                       ? `${import.meta.env.VITE_API_URL}/storage/${selectedUser.avatar}`
                       : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                          selectedUser.name || "User",
+                          selectedUser?.name || "User", // Gunakan optional chaining di sini juga
                         )}&background=6366f1&color=fff&bold=true`
                   }
-                  alt={selectedUser.name}
+                  alt={selectedUser?.name || "User"}
                   className="w-24 h-24 rounded-2xl object-cover border-4 border-white shadow-lg"
                 />
                 <div className="flex-1">
@@ -1363,13 +1364,14 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-3">
                           <img
                             src={
-                              selectedUser.avatar
+                              // Tambahkan tanda tanya (?) setelah selectedUser
+                              selectedUser?.avatar
                                 ? `${import.meta.env.VITE_API_URL}/storage/${selectedUser.avatar}`
                                 : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                                    selectedUser.name || "User",
+                                    selectedUser?.name || "User", // Gunakan optional chaining di sini juga
                                   )}&background=6366f1&color=fff&bold=true`
                             }
-                            alt={selectedUser.name}
+                            alt={selectedUser?.name || "User"}
                             className="w-24 h-24 rounded-2xl object-cover border-4 border-white shadow-lg"
                           />
                           <div>

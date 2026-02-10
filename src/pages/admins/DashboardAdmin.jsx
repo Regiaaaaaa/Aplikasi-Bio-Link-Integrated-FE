@@ -688,21 +688,25 @@ export default function AdminDashboard() {
               {/* Tambahkan input alasan ban */}
               {confirmAction.type === "ban" && (
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">
                     Alasan Penonaktifan
                     <span className="text-red-500 ml-1">*</span>
                   </label>
-                  <textarea
-                    value={banMessage}
-                    onChange={(e) => setBanMessage(e.target.value)}
-                    placeholder="Masukkan alasan penonaktifan akun pengguna..."
-                    rows="3"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
-                    required
-                  />
-                  <p className="text-xs text-gray-500 mt-2">
-                    Alasan ini akan ditampilkan kepada pengguna saat mencoba
-                    login.
+
+                  <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 focus-within:ring-2 focus-within:ring-red-500 transition">
+                    <textarea
+                      value={banMessage}
+                      onChange={(e) => setBanMessage(e.target.value)}
+                      placeholder="Contoh: Melanggar kebijakan penggunaan aplikasi..."
+                      rows="3"
+                      className="w-full bg-transparent outline-none resize-none text-sm text-gray-800 placeholder-gray-400"
+                      required
+                    />
+                  </div>
+
+                  <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    Alasan ini akan ditampilkan kepada pengguna saat login.
                   </p>
                 </div>
               )}

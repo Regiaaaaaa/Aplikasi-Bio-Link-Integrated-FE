@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
 import Layout from "../../components/layouts/Layout";
+import { resolveAvatar } from "../../utils/avatar";
 
 export default function AdminAppealsPage() {
   const { user } = useContext(AuthContext);
@@ -450,16 +451,11 @@ export default function AdminAppealsPage() {
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-6 mb-8 border border-indigo-100">
                 <div className="flex items-start gap-6">
                   <img
-                    src={getAvatarUrl(
-                      selectedAppeal.user?.avatar,
-                      selectedAppeal.user?.name,
-                    )}
-                    alt={selectedAppeal.user?.name}
-                    className="w-20 h-20 rounded-2xl object-cover border-4 border-white shadow-lg"
+                    src={resolveAvatar(appeal.user?.avatar, appeal.user?.name)}
+                    alt={appeal.user?.name}
+                    className="w-10 h-10 rounded-xl object-cover"
                     onError={(e) => {
-                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                        selectedAppeal.user?.name || "User",
-                      )}&background=6366f1&color=fff&bold=true`;
+                      e.target.src = resolveAvatar(null, appeal.user?.name);
                     }}
                   />
                   <div className="flex-1">

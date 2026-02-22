@@ -45,7 +45,6 @@ export default function BannedPage() {
   const [formData, setFormData] = useState({
     message: "",
     appeal_reason: "",
-    appeal_evidence: "",
   });
 
   // Fetch appeal history
@@ -121,7 +120,6 @@ export default function BannedPage() {
         body: JSON.stringify({
           message: formData.appeal_reason,
           appeal_reason: formData.appeal_reason,
-          appeal_evidence: formData.appeal_evidence || null,
         }),
       });
 
@@ -399,20 +397,7 @@ export default function BannedPage() {
                   />
                 </div>
 
-                {/* Bukti Pendukung */}
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-2 block">
-                    Bukti Pendukung (Opsional)
-                  </label>
-                  <textarea
-                    name="appeal_evidence"
-                    value={formData.appeal_evidence}
-                    onChange={handleInputChange}
-                    rows={2}
-                    className="w-full px-3 py-2.5 text-sm bg-white border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 resize-none transition-all"
-                    placeholder="Link ke screenshot atau dokumen pendukung..."
-                  />
-                </div>
+                
 
                 {/* Submit Button */}
                 <div className="flex items-center justify-between pt-2">

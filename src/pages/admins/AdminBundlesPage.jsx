@@ -116,7 +116,7 @@ const AdminBundlesPage = () => {
       setDeleting(true);
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `${API_BASE}/api/admin/bundles/${bundleId}`,
+        `${API_BASE}/admin/bundles/${bundleId}`,
         {
           method: "DELETE",
           headers: {
@@ -645,7 +645,7 @@ const AdminBundlesPage = () => {
                               <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             </button>
                             <a
-                              href={`${API_BASE}/${bundle.slug}`}
+                              href={`${process.env.REACT_APP_BASE_URL}/${bundle.slug}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="p-1.5 sm:p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-all"

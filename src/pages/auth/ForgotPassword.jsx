@@ -25,11 +25,7 @@ export default function ForgotPasswordFlow() {
   const [showMessage, setShowMessage] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [showPasteNotification, setShowPasteNotification] = useState(false);
-
-  // Backend API base URL - sesuaikan dengan URL backend Laravel
   const API_BASE_URL = "http://localhost:8000/api";
-
-  // Create refs for OTP inputs
   const otpRefs = [
     useRef(null),
     useRef(null),
@@ -40,8 +36,6 @@ export default function ForgotPasswordFlow() {
   ];
 
   const containerRef = useRef(null);
-
-  // Handle paste for OTP - Auto-fill all 6 digits
   const handlePaste = useCallback(
     (e) => {
       e.preventDefault();
@@ -70,7 +64,6 @@ export default function ForgotPasswordFlow() {
     [otp]
   );
 
-  // Countdown for OTP resend
   useEffect(() => {
     let timer;
     if (countdown > 0) {
@@ -103,8 +96,6 @@ export default function ForgotPasswordFlow() {
     setPassword(value);
     setPasswordStrength(calculatePasswordStrength(value));
   };
-
-  // Handle OTP input - Auto-focus next
   const handleOtpChange = (index, value) => {
     if (!/^\d?$/.test(value)) return;
 
@@ -145,8 +136,6 @@ export default function ForgotPasswordFlow() {
   };
 
   const getOtpString = () => otp.join("");
-
-  // Step 1: Send OTP - BACKEND INTEGRATION
   const handleSendOtp = async (e) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
@@ -197,7 +186,6 @@ export default function ForgotPasswordFlow() {
     }
   };
 
-  // Resend OTP - BACKEND INTEGRATION
   const handleResendOtp = async () => {
     if (countdown > 0) return;
 
@@ -233,7 +221,6 @@ export default function ForgotPasswordFlow() {
     }
   };
 
-  // Step 2: Verify OTP - BACKEND INTEGRATION
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     const otpString = getOtpString();
@@ -287,7 +274,6 @@ export default function ForgotPasswordFlow() {
     }
   };
 
-  // Step 3: Reset Password - BACKEND INTEGRATION
   const handleResetPassword = async (e) => {
     e.preventDefault();
 
@@ -485,7 +471,6 @@ export default function ForgotPasswordFlow() {
     return criteria;
   };
 
-  // Copy OTP to clipboard (for testing)
   const copyTestOtp = () => {
     navigator.clipboard.writeText("123456");
     setMessage({

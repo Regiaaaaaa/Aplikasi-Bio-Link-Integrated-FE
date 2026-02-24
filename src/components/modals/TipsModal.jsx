@@ -161,7 +161,7 @@ const TipsModal = ({ isOpen, onClose }) => {
                                         ))}
                                     </div>
 
-                                    {/* Divider (except for last item) */}
+                                    {/* Divider */}
                                     {index !== tipsCategories.length - 1 && (
                                         <div className="mt-6 sm:mt-8 border-t border-gray-200"></div>
                                     )}

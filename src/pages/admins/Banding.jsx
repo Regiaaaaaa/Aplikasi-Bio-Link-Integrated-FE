@@ -165,7 +165,7 @@ export default function AdminAppealsPage() {
   const handleOpenActionModal = (appeal, action) => {
     setSelectedAppeal(appeal);
     setModalAction(action);
-    setAdminReply(""); // Kosongkan dulu
+    setAdminReply(""); 
     setShowActionModal(true);
   };
 
@@ -641,7 +641,7 @@ export default function AdminAppealsPage() {
                   </div>
                 )}
 
-                {/* Admin Reply Section (if exists) */}
+                {/* Admin Reply Section */}
                 {selectedAppeal.admin_reply && (
                   <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
@@ -778,7 +778,7 @@ export default function AdminAppealsPage() {
                   </div>
                 </div>
 
-                {/* Action Buttons (if pending) */}
+                {/* Action Buttons */}
                 {selectedAppeal.status === "pending" && (
                   <div className="pt-6 border-t border-gray-200">
                     <div className="flex flex-col sm:flex-row gap-3">

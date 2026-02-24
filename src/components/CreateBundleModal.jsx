@@ -111,7 +111,7 @@ function CreateBundleModal({ onClose }) {
     setIsClosing(true);
     setTimeout(() => {
       onClose();
-    }, 200); // durasi animasi
+    }, 200); 
   };
 
   return (

@@ -13,8 +13,6 @@ import {
 const DocumentationModal = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('getting-started');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Lock scroll saat modal terbuka
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';

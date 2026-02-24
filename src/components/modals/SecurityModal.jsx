@@ -47,7 +47,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
 
                         {/* Policy Sections */}
                         <div className="space-y-5 sm:space-y-6">
-                            {/* Section 1 */}
+                            {/* Section */}
                             <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
                                     1. Data Collection
@@ -59,7 +59,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                                 </p>
                             </div>
 
-                            {/* Section 2 */}
+                            {/* Section */}
                             <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
                                     2. Data Usage
@@ -87,7 +87,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                                 </ul>
                             </div>
 
-                            {/* Section 3 */}
+                            {/* Section */}
                             <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
                                     3. Data Security
@@ -99,7 +99,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                                 </p>
                             </div>
 
-                            {/* Section 4 */}
+                            {/* Section */}
                             <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
                                     4. Sharing Data with Third Parties
@@ -111,7 +111,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                                 </p>
                             </div>
 
-                            {/* Section 5 */}
+                            {/* Section */}
                             <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
                                     5. User Rights
@@ -139,7 +139,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                                 </ul>
                             </div>
 
-                            {/* Section 6 */}
+                            {/* Section */}
                             <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
                                     6. Cookies and Tracking
@@ -152,7 +152,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                                 </p>
                             </div>
 
-                            {/* Section 7 */}
+                            {/* Section */}
                             <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
                                     7. Policy Changes
@@ -164,7 +164,7 @@ const SecurityModal = ({ isOpen, onClose }) => {
                                 </p>
                             </div>
 
-                            {/* Section 8 */}
+                            {/* Section */}
                             <div className="border-l-4 border-blue-500 pl-4">
                                 <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
                                     8. Contact Us

@@ -290,7 +290,7 @@ const BundlePreviewPage = () => {
         }
       `}</style>
 
-      {/* ── Toast Notification ── */}
+      {/* Toast Notification */}
       {showToast && (
         <div className="toast-notification">
           <div
@@ -326,12 +326,12 @@ const BundlePreviewPage = () => {
 
       <div className="min-h-screen bg-gray-50">
 
-        {/* ── Top Bar ── */}
+        {/* Top Bar */}
         <div className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
           <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
             <div className="flex items-center justify-between gap-2">
 
-              {/* Left: back + identity */}
+              {/* Left: back identity */}
               <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
                 <button
                   onClick={() => navigate("/admin/bundles")}
@@ -388,11 +388,11 @@ const BundlePreviewPage = () => {
           </div>
         </div>
 
-        {/* ── Main Content ── */}
+        {/* Main Content */}
         <div className="max-w-7xl mx-auto p-3 sm:p-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
 
-            {/* ── Left: Info Cards ── */}
+            {/* Left: Info Cards */}
             <div className="lg:col-span-4 xl:col-span-3 space-y-4">
 
               {/* Owner */}
@@ -654,7 +654,7 @@ const BundlePreviewPage = () => {
         </div>
       </div>
 
-      {/* ── Delete Confirm Modal ── */}
+      {/* Delete Confirm Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Backdrop */}

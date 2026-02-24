@@ -4,7 +4,7 @@ import { DocumentTextIcon, XMarkIcon, SparklesIcon } from '@heroicons/react/24/o
 const ChangelogModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 
-    // Changelog data - real updates dari development
+    // Changelog data 
     const updates = [
         {
             version: "1.2.0",
@@ -112,7 +112,7 @@ const ChangelogModal = ({ isOpen, onClose }) => {
                                                             ? 'bg-purple-100 text-purple-700' 
                                                             : 'bg-blue-100 text-blue-700'
                                                     }`}>
-                                                        v{update.version}
+                                                        {update.version}
                                                     </span>
                                                     <span className="text-xs sm:text-sm text-gray-500">
                                                         {update.date}

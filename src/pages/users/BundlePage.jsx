@@ -68,7 +68,7 @@ function BundlesPage() {
       if (!token) throw new Error("User not authenticated");
 
       const response = await fetch(`${API_BASE}/user/bundles/${id}`, {
-        method: "DELETE", // penting
+        method: "DELETE", 
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -80,7 +80,7 @@ function BundlesPage() {
         throw new Error(`Failed to delete bundle: ${text}`);
       }
 
-      fetchBundles(); // refresh daftar bundle
+      fetchBundles(); 
     } catch (err) {
       console.error(err);
     }

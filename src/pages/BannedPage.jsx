@@ -83,7 +83,6 @@ export default function BannedPage() {
     }
   }, [user]);
 
-  // Redirect jika user sudah aktif atau belum login
   useEffect(() => {
     if (!user) navigate("/login");
     if (user?.is_active) navigate("/dashboard");
@@ -230,9 +229,9 @@ export default function BannedPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {/* Main Content - 2 columns */}
+          {/* Main Content */}
           <div className="lg:col-span-2 space-y-5">
-            {/* Latest Appeal Status - Compact Card */}
+            {/* Latest Appeal Status */}
             {latestAppeal && (
               <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
                 <div
@@ -331,7 +330,7 @@ export default function BannedPage() {
               </div>
             )}
 
-            {/* Form Banding - Compact */}
+            {/* Form Banding */}
             <div className="bg-white rounded-xl shadow-md p-5 border border-gray-200">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900">
@@ -360,7 +359,7 @@ export default function BannedPage() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-3.5">
-                {/* User Info - Compact */}
+                {/* User Info */}
                 <div className="flex items-center gap-3 p-2.5 bg-blue-50 rounded-lg border border-blue-100">
                   <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
                     <User className="w-5 h-5 text-white" />
@@ -427,9 +426,9 @@ export default function BannedPage() {
             </div>
           </div>
 
-          {/* Sidebar - 1 column */}
+          {/* Sidebar */}
           <div className="space-y-5">
-            {/* Panduan - Compact */}
+            {/* Panduan */}
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
               <div className="flex items-center gap-2 mb-3">
                 <AlertCircle className="w-4 h-4 text-blue-600" />

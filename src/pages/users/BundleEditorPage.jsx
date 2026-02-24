@@ -39,11 +39,9 @@ function BundleEditorPage() {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState("success");
-
-  // State untuk toggle preview di mobile
   const [mobileShowPreview, setMobileShowPreview] = useState(false);
 
-  // Show toast notification
+  // Toast Notification
   const showNotification = (message, type = "success") => {
     setToastMessage(message);
     setToastType(type);
@@ -53,7 +51,6 @@ function BundleEditorPage() {
     }, 3000);
   };
 
-  // Copy link to clipboard
   const copyLinkToClipboard = () => {
     const publicUrl = `${window.location.origin}/${bundle?.slug}`;
     navigator.clipboard
@@ -1115,7 +1112,7 @@ function BundleEditorPage() {
         {/* Main Content */}
         <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-[1600px]">
           <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 sm:gap-6">
-            {/* Left Sidebar - Theme Selection */}
+            {/* Theme Selection */}
             <div className="xl:col-span-3 space-y-4 sm:space-y-6">
               {/* Theme Selection */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 mobile-section xl:sticky xl:top-24">
@@ -1571,7 +1568,7 @@ function BundleEditorPage() {
               </div>
             </div>
 
-            {/* Right Sidebar - Compact iPhone Preview (Desktop) */}
+            {/* Right Sidebar  */}
             {showPreview && (
               <div className="xl:col-span-3 hidden xl:block">
                 <div className="xl:sticky xl:top-24">

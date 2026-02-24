@@ -145,7 +145,7 @@ const QuickStartModal = ({ isOpen, onClose }) => {
               </p>
             </div>
 
-            {/* Completion (Last Step) */}
+            {/* Completion */}
             {currentStep === totalSteps && (
               <div className="mt-6 sm:mt-8 p-4 sm:p-5 bg-gradient-to-br from-blue-600 to-blue-500 border border-blue-500 rounded-lg shadow-lg shadow-blue-500/20">
                 <div className="flex items-start gap-3">

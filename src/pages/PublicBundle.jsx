@@ -35,8 +35,6 @@ function PublicBundlePage() {
       console.log("Bundle data:", bundleData);
 
       setBundle(bundleData.data);
-
-      // Set links dari bundle data
       if (bundleData.data && bundleData.data.links) {
         console.log("Setting links:", bundleData.data.links);
         setLinks(bundleData.data.links);
@@ -51,11 +49,7 @@ function PublicBundlePage() {
 
   const getProfileImage = (path) => {
     if (!path) return null;
-
-    // 1. Ambil domain utama (hapus /api di akhir jika ada)
     const domain = apiBase.endsWith("/api") ? apiBase.slice(0, -4) : apiBase;
-
-    // 2. Gabungkan dengan /storage/ dan path dari database
     return `${domain}/storage/${path}`;
   };
 
@@ -163,7 +157,6 @@ function PublicBundlePage() {
                   alt={bundle.name}
                   className="w-full h-full rounded-full object-cover border-4 border-base-200 shadow-xl"
                   onError={(e) => {
-                    // Jika 404 atau 403, pakai avatar inisial
                     e.target.onerror = null;
                     e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(bundle.name)}&background=random`;
                   }}

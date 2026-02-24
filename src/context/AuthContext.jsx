@@ -28,8 +28,6 @@ export function AuthProvider({ children }) {
 
     try {
       const { data } = await axiosClient.get("/user");
-      
-      // Pastikan avatar_url ada
       if (data.avatar) {
         data.avatar_url = data.avatar_url || `${import.meta.env.VITE_API_BASE_URL}/storage/${data.avatar}`;
       }

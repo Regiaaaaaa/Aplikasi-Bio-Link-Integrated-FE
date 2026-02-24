@@ -79,15 +79,11 @@ export default function Login() {
       localStorage.setItem("justLoggedIn", "true");
       axiosClient.defaults.headers.common["Authorization"] =
         `Bearer ${data.token}`;
-
-      // Simpan email
       if (rememberMe) {
         localStorage.setItem("rememberedEmail", email);
       } else {
         localStorage.removeItem("rememberedEmail");
       }
-
-      // Set user (useEffect handle redirect)
       setUser(data.user);
 
       // Cek active status
@@ -108,7 +104,6 @@ export default function Login() {
   };
 
   const handleGoogleLogin = () => {
-    // Langsung gabungin URL dari env dengan endpoint redirect
     window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google/redirect`;
   };
 
@@ -116,7 +111,6 @@ export default function Login() {
     navigate("/");
   };
 
-  // Load remembered email on component mount
   useEffect(() => {
     const rememberedEmail = localStorage.getItem("rememberedEmail");
     if (rememberedEmail) {
@@ -272,7 +266,7 @@ export default function Login() {
         }
       `}</style>
 
-      {/* Success Modal - Responsive */}
+      {/* Success Modal */}
       {showSuccessModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn p-4">
           <div className="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-sm mx-auto shadow-2xl animate-scaleIn">
@@ -312,7 +306,7 @@ export default function Login() {
         </div>
       )}
 
-      {/* Banned Account Modal - Responsive */}
+      {/* Banned Account Modal */}
       {showErrorModal && errorMessage.type === "banned" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn p-4">
           <div className="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-md mx-auto shadow-2xl animate-scaleIn">
@@ -441,7 +435,7 @@ export default function Login() {
         </div>
       )}
 
-      {/* Regular Error Modal - Responsive */}
+      {/* Regular Error Modal */}
       {showErrorModal && errorMessage.type === "error" && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn p-4">
           <div className="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-sm mx-auto shadow-2xl animate-scaleIn">
@@ -504,7 +498,7 @@ export default function Login() {
           ></div>
         </div>
 
-        {/* LEFT: LOGIN FORM */}
+        {/* Login Form */}
         <div className="w-full md:w-1/2 flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-16 xl:px-24 py-6 sm:py-8 md:py-12 relative z-10 animate-fadeIn overflow-y-auto">
           <div className="max-w-md w-full mx-auto my-auto">
             {/* Brand Logo */}
@@ -728,7 +722,7 @@ export default function Login() {
           </div>
         </div>
 
-        {/* RIGHT: IMAGE SECTION - Hidden on mobile */}
+        {/* Image Section Hidden on mobile */}
         <div className="hidden md:flex md:w-1/2 relative bg-gradient-to-br from-indigo-50 to-blue-50 items-center justify-center animate-slideRight">
           {/* Home Button */}
           <div className="absolute top-8 right-8 z-20 animate-slideDown">

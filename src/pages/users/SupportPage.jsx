@@ -13,15 +13,11 @@ import {
   PlayCircleIcon,
   UserGroupIcon,
 } from "@heroicons/react/24/outline";
-
-// Import Modal Components
 import SecurityModal from "../../components/modals/SecurityModal";
 import QuickStartModal from "../../components/modals/QuickStartModal";
 import DocumentationModal from "../../components/modals/DocumentationModal";
 import ChangelogModal from "../../components/modals/ChangelogModal";
 import TipsModal from "../../components/modals/TipsModal";
-
-// --- FAQ Data ---
 const faqsData = [
   {
     id: 1,
@@ -62,7 +58,6 @@ const faqsData = [
   },
 ];
 
-// Quick Help Cards Data
 const quickHelpCards = [
   {
     id: 1,
@@ -108,7 +103,7 @@ const SupportPage = () => {
     setOpenId(openId === id ? null : id);
   };
 
-  // Filter FAQs based on search
+ 
   const filteredFaqs = faqsData.filter(
     (faq) =>
       faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -187,7 +182,6 @@ const SupportPage = () => {
                 );
               }
 
-              // Documentation opens modal
               if (card.id === 2) {
                 return (
                   <button
@@ -297,7 +291,7 @@ const SupportPage = () => {
             )}
           </div>
 
-          {/* Contact Support CTA */}
+          {/* Contact Support */}
           <div className="bg-gradient-to-br from-blue-600 to-blue-500 rounded-lg p-6 sm:p-8 mb-12 shadow-lg shadow-blue-500/20">
             <div className="max-w-2xl mx-auto text-center">
               <ChatBubbleLeftRightIcon className="w-8 h-8 sm:w-10 sm:h-10 text-white mx-auto mb-3" />

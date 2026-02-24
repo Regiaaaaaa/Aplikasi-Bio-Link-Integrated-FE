@@ -57,7 +57,6 @@ export default function AdminDashboard() {
     userName: "",
   });
 
-  // Refs untuk handle click outside
   const filterRef = useRef(null);
   const detailModalRef = useRef(null);
   const confirmModalRef = useRef(null);
@@ -71,7 +70,6 @@ export default function AdminDashboard() {
 
         if (cellValue === null || cellValue === undefined) return;
 
-        // Kalau object (date, rich text, etc)
         if (typeof cellValue === "object") {
           cellValue = cellValue.text || cellValue.toString();
         }
@@ -79,21 +77,16 @@ export default function AdminDashboard() {
         maxLength = Math.max(maxLength, cellValue.toString().length);
       });
 
-      // Kasih padding biar lega
       column.width = maxLength + 4;
     });
   };
   const [banMessage, setBanMessage] = useState("");
-
-  // Handle click outside untuk semua modal
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Close filter menu jika klik di luar
       if (filterRef.current && !filterRef.current.contains(event.target)) {
         setShowFilterMenu(false);
       }
 
-      // Close detail modal jika klik di luar
       if (
         showDetailModal &&
         detailModalRef.current &&
@@ -102,7 +95,6 @@ export default function AdminDashboard() {
         handleCloseDetailModal();
       }
 
-      // Close confirm modal jika klik di luar
       if (
         showConfirmModal &&
         confirmModalRef.current &&
@@ -126,7 +118,7 @@ export default function AdminDashboard() {
   const handleCloseConfirmModal = () => {
     setShowConfirmModal(false);
     setConfirmAction({ type: "", userId: null, userName: "" });
-    setBanMessage(""); // Reset ban message
+    setBanMessage(""); 
   };
 
   // Stats data
@@ -227,7 +219,7 @@ export default function AdminDashboard() {
     setConfirmAction({ type, userId, userName });
     setShowConfirmModal(true);
     if (type !== "ban") {
-      setBanMessage(""); // Clear ban message if not ban action
+      setBanMessage(""); 
     }
   };
 
@@ -255,7 +247,7 @@ export default function AdminDashboard() {
       if (response.ok) {
         await fetchUsers();
         handleCloseConfirmModal();
-        setBanMessage(""); // Reset message
+        setBanMessage(""); 
       } else {
         const errorData = await response.json();
         alert(errorData.message || "Gagal menonaktifkan user");
@@ -300,7 +292,7 @@ export default function AdminDashboard() {
     }
   };
 
-  // Execute action setelah konfirmasi
+  // Execute action 
   const executeAction = () => {
     if (confirmAction.type === "ban") {
       handleBanUser(confirmAction.userId);
@@ -356,14 +348,13 @@ export default function AdminDashboard() {
     }
 
     try {
-      // 1️⃣ Buat workbook & sheet
       const workbook = new ExcelJS.Workbook();
       const sheet = workbook.addWorksheet("Data Pengguna");
 
       // Metadata
       sheet.properties.defaultRowHeight = 24;
 
-      // 2️⃣ Definisikan kolom
+      
       sheet.columns = [
         { header: "No", key: "no", width: 8 },
         { header: "Nama Lengkap", key: "name", width: 30 },
@@ -374,12 +365,12 @@ export default function AdminDashboard() {
         { header: "Tanggal Bergabung", key: "created_at", width: 20 },
       ];
 
-      // 3️⃣ Styling HEADER dengan border lengkap
+     
       const headerRow = sheet.getRow(1);
       headerRow.height = 32;
 
       headerRow.eachCell((cell) => {
-        // Font style
+        
         cell.font = {
           bold: true,
           size: 11,
@@ -387,21 +378,20 @@ export default function AdminDashboard() {
           name: "Segoe UI",
         };
 
-        // Alignment
+        
         cell.alignment = {
           vertical: "middle",
           horizontal: "center",
           wrapText: true,
         };
 
-        // Background color - biru gelap
+        
         cell.fill = {
           type: "pattern",
           pattern: "solid",
-          fgColor: { argb: "FF2563EB" }, // Blue-600
+          fgColor: { argb: "FF2563EB" }, 
         };
 
-        // ALL BORDER - border lengkap semua sisi
         cell.border = {
           top: { style: "thin", color: { argb: "FF1D4ED8" } },
           left: { style: "thin", color: { argb: "FF1D4ED8" } },
@@ -410,7 +400,6 @@ export default function AdminDashboard() {
         };
       });
 
-      // 4️⃣ Masukkan data user
       filteredUsers.forEach((user, index) => {
         const row = sheet.addRow({
           no: index + 1,
@@ -422,14 +411,11 @@ export default function AdminDashboard() {
           created_at: formatDateShort(user.created_at) || "-",
         });
 
-        // Set tinggi row
         row.height = 24;
       });
 
-      // 5️⃣ Styling untuk SEMUA CELL dengan ALL BORDER
       sheet.eachRow((row, rowNumber) => {
         row.eachCell((cell) => {
-          // ALL BORDER untuk setiap cell
           cell.border = {
             top: { style: "thin", color: { argb: "FFD1D5DB" } },
             left: { style: "thin", color: { argb: "FFD1D5DB" } },
@@ -437,47 +423,40 @@ export default function AdminDashboard() {
             right: { style: "thin", color: { argb: "FFD1D5DB" } },
           };
 
-          // Background color berdasarkan status (hanya untuk kolom status)
           if (cell.col === 6 && rowNumber > 1) {
-            // Kolom Status adalah kolom ke-6
             const isActive = cell.value === "AKTIF";
-
-            // Warna HIJAU untuk AKTIF
             if (isActive) {
               cell.fill = {
                 type: "pattern",
                 pattern: "solid",
-                fgColor: { argb: "FFDCFCE7" }, // Green-100
+                fgColor: { argb: "FFDCFCE7" }, 
               };
               cell.font = {
                 bold: true,
                 size: 10,
-                color: { argb: "FF166534" }, // Green-800
+                color: { argb: "FF166534" }, 
                 name: "Segoe UI",
               };
             }
-            // Warna MERAH untuk NONAKTIF
             else {
               cell.fill = {
                 type: "pattern",
                 pattern: "solid",
-                fgColor: { argb: "FFFEE2E2" }, // Red-100
+                fgColor: { argb: "FFFEE2E2" }, 
               };
               cell.font = {
                 bold: true,
                 size: 10,
-                color: { argb: "FF991B1B" }, // Red-800
+                color: { argb: "FF991B1B" }, 
                 name: "Segoe UI",
               };
             }
 
-            // Center alignment untuk status
             cell.alignment = {
               vertical: "middle",
               horizontal: "center",
             };
 
-            // Border khusus untuk status (lebih tebal)
             cell.border = {
               top: {
                 style: "thin",
@@ -497,32 +476,24 @@ export default function AdminDashboard() {
               },
             };
           }
-          // Styling untuk selain kolom status
           else if (rowNumber > 1) {
-            // Font untuk data
             cell.font = {
               size: 10,
               color: { argb: "FF374151" },
               name: "Segoe UI",
             };
-
-            // Alignment berdasarkan tipe kolom
             if (cell.col === 1) {
-              // Kolom No
               cell.alignment = {
                 vertical: "middle",
                 horizontal: "center",
               };
             } else {
-              // Kolom lainnya
               cell.alignment = {
                 vertical: "middle",
                 horizontal: "left",
                 wrapText: true,
               };
             }
-
-            // Zebra striping untuk baris
             if (rowNumber % 2 === 0) {
               cell.fill = {
                 type: "pattern",
@@ -539,8 +510,6 @@ export default function AdminDashboard() {
           }
         });
       });
-
-      // 6️⃣ Styling khusus untuk kolom No dan Tanggal
       sheet.getColumn("no").eachCell((cell, rowNumber) => {
         if (rowNumber > 1) {
           cell.alignment = {
@@ -568,32 +537,20 @@ export default function AdminDashboard() {
           };
         }
       });
-
-      // 7️⃣ Border luar yang lebih tebal untuk seluruh tabel
       const lastRow = sheet.rowCount;
       const lastCol = sheet.columnCount;
-
-      // Border luar - semua sisi medium
       for (let col = 1; col <= lastCol; col++) {
-        // Top border (header)
         const topCell = sheet.getCell(1, col);
         topCell.border.top = { style: "medium", color: { argb: "FF1D4ED8" } };
-
-        // Bottom border (last row)
         const bottomCell = sheet.getCell(lastRow, col);
         bottomCell.border.bottom = {
           style: "medium",
           color: { argb: "FF1D4ED8" },
         };
       }
-
-      // Side borders
       for (let row = 1; row <= lastRow; row++) {
-        // Left border
         const leftCell = sheet.getCell(row, 1);
         leftCell.border.left = { style: "medium", color: { argb: "FF1D4ED8" } };
-
-        // Right border
         const rightCell = sheet.getCell(row, lastCol);
         rightCell.border.right = {
           style: "medium",
@@ -601,32 +558,23 @@ export default function AdminDashboard() {
         };
       }
 
-      // 8️⃣ Auto fit columns
       sheet.columns.forEach((column) => {
         let maxLength = 0;
         column.eachCell({ includeEmpty: true }, (cell) => {
           const cellValue = cell.value ? cell.value.toString() : "";
           const cellLength = cellValue.length;
-
-          // Adjust for font size
           const adjustedLength = cellLength * 1.2;
 
           if (adjustedLength > maxLength) {
             maxLength = adjustedLength;
           }
         });
-
-        // Set width with limits
         column.width = Math.min(Math.max(maxLength + 3, 10), 50);
       });
-
-      // 9️⃣ Tambahkan filter di header (opsional)
       sheet.autoFilter = {
         from: { row: 1, column: 1 },
         to: { row: 1, column: lastCol },
       };
-
-      // 🔟 Generate file & download
       const buffer = await workbook.xlsx.writeBuffer();
       const today = new Date();
       const formattedDate = `${today.getDate().toString().padStart(2, "0")}-${(
@@ -684,8 +632,6 @@ export default function AdminDashboard() {
                   </p>
                 </div>
               </div>
-
-              {/* Tambahkan input alasan ban */}
               {confirmAction.type === "ban" && (
                 <div className="mb-6">
                   <label className="block text-sm font-semibold text-gray-800 mb-2">

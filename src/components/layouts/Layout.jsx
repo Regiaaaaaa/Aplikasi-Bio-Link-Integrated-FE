@@ -47,7 +47,7 @@ export default function Layout({ children }) {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Mobile Menu Button - Hanya muncul di mobile dan ketika sidebar tertutup */}
+      {/* Mobile Menu Button */}
       {isMobile && !mobileMenuOpen && (
         <button
           onClick={toggleMobileMenu}

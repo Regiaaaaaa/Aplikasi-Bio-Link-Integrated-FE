@@ -158,7 +158,7 @@ export default function Register() {
         }
       `}</style>
 
-      {/* Success Modal - Responsive */}
+      {/* Success Modal */}
       {showSuccessModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn p-4">
           <div className="bg-white rounded-2xl p-6 sm:p-8 w-full max-w-sm mx-auto shadow-2xl animate-scaleIn">
@@ -206,7 +206,7 @@ export default function Register() {
       )}
 
       <div className="h-screen w-screen overflow-hidden flex flex-col lg:flex-row-reverse bg-white mobile-stack">
-        {/* Mobile Back Button - Only on mobile */}
+        {/* Mobile Back Button */}
         <div className="lg:hidden w-full px-4 py-3 border-b border-gray-100 bg-white">
           <button
             onClick={goToLandingPage}
@@ -217,7 +217,7 @@ export default function Register() {
           </button>
         </div>
 
-        {/* LEFT: FORM */}
+        {/* Left Form */}
         <div className="w-full lg:w-1/2 flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-20 py-6 lg:py-0 relative z-10 animate-fadeIn overflow-y-auto mobile-full-width mobile-padding">
           <div className="max-w-md w-full">
             {/* Brand Logo */}
@@ -467,7 +467,7 @@ export default function Register() {
               </Link>
             </p>
 
-            {/* Back to Home - Desktop only */}
+            {/* Back to Home */}
             <div className="mt-5 pt-5 border-t border-gray-200 hidden lg:block">
               <button
                 onClick={goToLandingPage}
@@ -492,7 +492,7 @@ export default function Register() {
           </div>
         </div>
 
-        {/* RIGHT: IMAGE - Hidden on mobile, shown on desktop */}
+        {/* Right Image */}
         <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-indigo-50 to-blue-50 items-center justify-center animate-slideLeft">
           {/* Home Button */}
           <div className="absolute top-8 left-8 z-20 animate-slideDown">

@@ -46,8 +46,6 @@ function DashboardPage() {
       if (!bundlesResponse.ok) throw new Error("Failed to fetch bundles");
       const bundlesResult = await bundlesResponse.json();
       const bundles = bundlesResult.data;
-
-      // Fetch stats from dedicated endpoint (more efficient!)
       const statsResponse = await fetch(`${API_BASE}/user/stats`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -62,25 +60,23 @@ function DashboardPage() {
         const statsResult = await statsResponse.json();
         const statsData = statsResult.data;
         
-        // Get clicks per bundle from stats endpoint
+    
         bundleClicks = statsData.clicks_per_bundle || {};
         totalBundleClicks = statsData.total_bundle_clicks || 0;
       }
 
-      // Merge clicks data with bundles
+
       const bundlesWithClicks = bundles.map((bundle) => ({
         ...bundle,
         clicks: bundleClicks[bundle.id] || 0,
       }));
 
-      // Calculate stats
       setStats({
         totalBundles: bundles.length,
         totalLinks: bundles.reduce((acc, b) => acc + (b.links?.length || 0), 0),
         totalClicks: totalBundleClicks,
       });
 
-      // Recent bundles (sorted by updated_at or created_at)
       const sortedByRecent = [...bundlesWithClicks].sort((a, b) => {
         const dateA = new Date(a.updated_at || a.created_at);
         const dateB = new Date(b.updated_at || b.created_at);
@@ -88,7 +84,6 @@ function DashboardPage() {
       });
       setRecentBundles(sortedByRecent.slice(0, 5));
 
-      // Top bundles by clicks
       const sortedByClicks = [...bundlesWithClicks].sort(
         (a, b) => b.clicks - a.clicks
       );
@@ -276,7 +271,7 @@ function DashboardPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-            {/* Left Column - 2/3 width */}
+            {/* Left Column */}
             <div className="lg:col-span-2 space-y-4 sm:space-y-6">
               {/* Need Help Section */}
               <div
@@ -435,7 +430,7 @@ function DashboardPage() {
               </div>
             </div>
 
-            {/* Right Column - 1/3 width */}
+            {/* Right Column */}
             <div className="space-y-4 sm:space-y-6">
               {/* Recent Activity */}
               <div

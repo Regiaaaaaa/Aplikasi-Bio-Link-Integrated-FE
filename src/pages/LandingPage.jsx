@@ -49,8 +49,6 @@ const LandingPage = () => {
   const [theme, setTheme] = useState("light");
   const [hoveredFeature, setHoveredFeature] = useState(null);
   const navigate = useNavigate();
-
-  // Daftar icon yang tersedia
   const availableSocialIcons = [
     { id: "twitter", icon: <Twitter />, name: "Twitter" },
     { id: "instagram", icon: <Camera />, name: "Instagram" },
@@ -154,8 +152,6 @@ const LandingPage = () => {
   }, []);
 
   const isDark = theme === "dark";
-
-  // Professional color system
   const colors = {
     light: {
       bg: "bg-white",

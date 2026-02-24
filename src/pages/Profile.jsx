@@ -392,7 +392,7 @@ export default function Profile() {
               </div>
             </div>
 
-            {/* Right Column - Edit Profile */}
+            {/* Right Column */}
             <div className="lg:col-span-2 space-y-4 sm:space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="p-4 sm:p-6 md:p-8">
@@ -747,7 +747,6 @@ export default function Profile() {
   );
 }
 
-// Simple Cropper Component (Enhanced) - Made responsive
 function SimpleCropper({
   image,
   crop,
@@ -827,7 +826,7 @@ function SimpleCropper({
     const deltaY = e.clientY - lastPosRef.current.y;
     lastPosRef.current = { x: e.clientX, y: e.clientY };
 
-    const cropSize = 300; // Reduced for mobile
+    const cropSize = 300; 
     const maxMoveX = (imageSize.width * zoom - cropSize) / 2;
     const maxMoveY = (imageSize.height * zoom - cropSize) / 2;
 

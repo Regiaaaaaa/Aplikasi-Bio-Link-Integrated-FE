@@ -2,7 +2,6 @@ import React from "react";
 import Layout from "../../components/layouts/Layout";
 
 const PremiumPackPage = () => {
-  // Data untuk premium features
   const premiumFeatures = [
     {
       id: 1,

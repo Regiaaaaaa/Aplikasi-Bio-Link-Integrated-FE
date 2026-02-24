@@ -78,9 +78,9 @@ export default function App() {
           <Route
             path="/settings"
             element={
-              <UserRoute>
+              <ProtectedRoute> 
                 <SettingsPage />
-              </UserRoute>
+              </ProtectedRoute>
             }
           />
           <Route

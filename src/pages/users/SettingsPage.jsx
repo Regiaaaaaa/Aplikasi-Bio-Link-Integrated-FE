@@ -80,18 +80,23 @@ export default function Settings() {
     setShowConfirmModal(false);
   };
 
-  if (loading) {
-    return (
-      <Layout>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 border-3 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-            <p className="text-gray-600 font-medium">Loading settings...</p>
+  if (loading)
+      return (
+        <Layout>
+          <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50/30 p-4">
+            <div className="flex flex-col items-center justify-center text-center">
+              {/* Spinner */}
+              <div className="relative flex items-center justify-center w-16 h-16">
+                <div className="absolute inset-0 border-4 border-indigo-100 rounded-full"></div>
+                <div className="absolute inset-0 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+  
+              {/* Text */}
+              <p className="mt-4 text-gray-600 font-medium">Loading settings...</p>
+            </div>
           </div>
-        </div>
-      </Layout>
-    );
-  }
+        </Layout>
+      );
 
   return (
     <Layout>

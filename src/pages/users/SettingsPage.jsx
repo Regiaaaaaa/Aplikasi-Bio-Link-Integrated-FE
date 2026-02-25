@@ -47,7 +47,7 @@ export default function Settings() {
     }
   };
 
-  const handleConfirmDelete = async () => {
+    const handleConfirmDelete = async () => {
     try {
       const token = localStorage.getItem("token");
 
@@ -59,12 +59,14 @@ export default function Settings() {
       });
 
       setShowDeleteModal(false);
-      alert("Account deleted successfully");
-      localStorage.removeItem("token");
-      window.location.href = "/login";
+      showToast("success", "Account deleted successfully");
+      setTimeout(() => {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+      }, 1500);
     } catch (err) {
       setShowDeleteModal(false);
-      alert("Failed to delete account");
+      showToast("error", "Failed to delete account");
     }
   };
 

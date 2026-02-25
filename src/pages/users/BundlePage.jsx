@@ -8,6 +8,7 @@ import {
   Search,
   LayoutGrid,
   List,
+  X,
 } from "lucide-react";
 import CreateBundleModal from "../../components/CreateBundleModal";
 import ConfirmDangerModal from "../../components/ConfirmDangerModal";
@@ -29,7 +30,17 @@ function BundlesPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedBundleId, setSelectedBundleId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState("grid");
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("success");
+  const showNotification = (message, type = "success") => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
 
   useEffect(() => {
     fetchBundles();
@@ -68,7 +79,7 @@ function BundlesPage() {
       if (!token) throw new Error("User not authenticated");
 
       const response = await fetch(`${API_BASE}/user/bundles/${id}`, {
-        method: "DELETE", 
+        method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -76,13 +87,14 @@ function BundlesPage() {
       });
 
       if (!response.ok) {
-        const text = await response.text(); // biar debug gampang
+        const text = await response.text();
         throw new Error(`Failed to delete bundle: ${text}`);
       }
-
-      fetchBundles(); 
+      showNotification("Bundle deleted successfully!", "success");
+      fetchBundles();
     } catch (err) {
       console.error(err);
+      showNotification(err.message || "Failed to delete bundle", "error");
     }
   };
 
@@ -230,7 +242,91 @@ function BundlesPage() {
         .animate-slide-up {
           animation: slideUp 0.4s ease-out forwards;
         }
+        .toast-notification {
+          position: fixed;
+          top: 24px;
+          right: 24px;
+          z-index: 9999;
+          animation: slideInRight 0.3s ease-out;
+          max-width: 400px;
+        }
+
+        @keyframes slideInRight {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .toast-notification {
+            top: 16px;
+            right: 16px;
+            left: 16px;
+            max-width: none;
+          }
+        }
       `}</style>
+
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="toast-notification">
+          <div
+            className={`flex items-center gap-3 p-4 rounded-lg shadow-lg border-l-4 bg-white ${
+              toastType === "success" ? "border-green-500" : "border-red-500"
+            }`}
+          >
+            <div className="flex-shrink-0">
+              {toastType === "success" ? (
+                <svg
+                  className="w-6 h-6 text-green-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="w-6 h-6 text-red-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              )}
+            </div>
+            <p
+              className={`flex-1 text-sm font-medium ${
+                toastType === "success" ? "text-green-800" : "text-red-800"
+              }`}
+            >
+              {toastMessage}
+            </p>
+            <button
+              onClick={() => setShowToast(false)}
+              className="flex-shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="bundles-page">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
@@ -395,50 +491,32 @@ function BundlesPage() {
                         <div className="flex gap-2 flex-wrap">
                           {bundle.instagram_url && (
                             <div className="social-icon p-2 sm:p-2.5 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg sm:rounded-xl text-white shadow-md">
-                              <FaInstagram
-                                size={16}
-                                className="sm:w-[18px] sm:h-[18px]"
-                              />
+                              <FaInstagram size={16} className="sm:w-[18px] sm:h-[18px]" />
                             </div>
                           )}
                           {bundle.github_url && (
                             <div className="social-icon p-2 sm:p-2.5 bg-gray-900 rounded-lg sm:rounded-xl text-white shadow-md">
-                              <FaGithub
-                                size={16}
-                                className="sm:w-[18px] sm:h-[18px]"
-                              />
+                              <FaGithub size={16} className="sm:w-[18px] sm:h-[18px]" />
                             </div>
                           )}
                           {bundle.tiktok_url && (
                             <div className="social-icon p-2 sm:p-2.5 bg-black rounded-lg sm:rounded-xl text-white shadow-md">
-                              <FaTiktok
-                                size={16}
-                                className="sm:w-[18px] sm:h-[18px]"
-                              />
+                              <FaTiktok size={16} className="sm:w-[18px] sm:h-[18px]" />
                             </div>
                           )}
                           {bundle.youtube_url && (
                             <div className="social-icon p-2 sm:p-2.5 bg-red-600 rounded-lg sm:rounded-xl text-white shadow-md">
-                              <FaYoutube
-                                size={16}
-                                className="sm:w-[18px] sm:h-[18px]"
-                              />
+                              <FaYoutube size={16} className="sm:w-[18px] sm:h-[18px]" />
                             </div>
                           )}
                           {bundle.facebook_url && (
                             <div className="social-icon p-2 sm:p-2.5 bg-blue-600 rounded-lg sm:rounded-xl text-white shadow-md">
-                              <FaFacebook
-                                size={16}
-                                className="sm:w-[18px] sm:h-[18px]"
-                              />
+                              <FaFacebook size={16} className="sm:w-[18px] sm:h-[18px]" />
                             </div>
                           )}
                           {bundle.x_url && (
                             <div className="social-icon p-2 sm:p-2.5 bg-gray-900 rounded-lg sm:rounded-xl text-white shadow-md">
-                              <FaXTwitter
-                                size={16}
-                                className="sm:w-[18px] sm:h-[18px]"
-                              />
+                              <FaXTwitter size={16} className="sm:w-[18px] sm:h-[18px]" />
                             </div>
                           )}
                         </div>
@@ -451,13 +529,8 @@ function BundlesPage() {
                         Public Link
                       </p>
                       <div className="flex items-center gap-2 sm:gap-2.5 text-xs sm:text-sm text-gray-700 bg-gray-50 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-gray-200 font-mono font-medium overflow-hidden">
-                        <Link2
-                          size={14}
-                          className="text-blue-600 flex-shrink-0 sm:w-4 sm:h-4"
-                        />
-                        <span className="text-blue-600 truncate">
-                          /{bundle.slug}
-                        </span>
+                        <Link2 size={14} className="text-blue-600 flex-shrink-0 sm:w-4 sm:h-4" />
+                        <span className="text-blue-600 truncate">/{bundle.slug}</span>
                       </div>
                     </div>
                   </div>
@@ -474,9 +547,7 @@ function BundlesPage() {
                       <span className="hidden xs:inline">View</span>
                     </a>
                     <button
-                      onClick={() =>
-                        (window.location.href = `/bundles/${bundle.id}/edit`)
-                      }
+                      onClick={() => (window.location.href = `/bundles/${bundle.id}/edit`)}
                       className="action-btn flex-1 flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg sm:rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-semibold text-xs sm:text-sm shadow-md shadow-blue-500/30"
                     >
                       <Edit2 size={14} className="sm:w-4 sm:h-4" />
@@ -523,9 +594,7 @@ function BundlesPage() {
                             </span>
                             <span className="inline-flex items-center gap-2 text-gray-600 bg-gray-100 px-3 py-1.5 rounded-lg text-sm font-semibold border border-gray-200">
                               <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-                              <span className="truncate">
-                                {bundle.theme?.name || "Default"}
-                              </span>
+                              <span className="truncate">{bundle.theme?.name || "Default"}</span>
                             </span>
                           </div>
                         </div>
@@ -533,43 +602,14 @@ function BundlesPage() {
                     </div>
 
                     {/* Social Icons - Desktop */}
-                    {(bundle.instagram_url ||
-                      bundle.github_url ||
-                      bundle.tiktok_url ||
-                      bundle.youtube_url ||
-                      bundle.facebook_url ||
-                      bundle.x_url) && (
+                    {(bundle.instagram_url || bundle.github_url || bundle.tiktok_url || bundle.youtube_url || bundle.facebook_url || bundle.x_url) && (
                       <div className="hidden lg:flex items-center gap-2.5 px-4 py-3 bg-gray-50 rounded-xl border border-gray-200">
-                        {bundle.instagram_url && (
-                          <div className="social-icon p-2.5 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg text-white shadow-md">
-                            <FaInstagram size={18} />
-                          </div>
-                        )}
-                        {bundle.github_url && (
-                          <div className="social-icon p-2.5 bg-gray-900 rounded-lg text-white shadow-md">
-                            <FaGithub size={18} />
-                          </div>
-                        )}
-                        {bundle.tiktok_url && (
-                          <div className="social-icon p-2.5 bg-black rounded-lg text-white shadow-md">
-                            <FaTiktok size={18} />
-                          </div>
-                        )}
-                        {bundle.youtube_url && (
-                          <div className="social-icon p-2.5 bg-red-600 rounded-lg text-white shadow-md">
-                            <FaYoutube size={18} />
-                          </div>
-                        )}
-                        {bundle.facebook_url && (
-                          <div className="social-icon p-2.5 bg-blue-600 rounded-lg text-white shadow-md">
-                            <FaFacebook size={18} />
-                          </div>
-                        )}
-                        {bundle.x_url && (
-                          <div className="social-icon p-2.5 bg-gray-900 rounded-lg text-white shadow-md">
-                            <FaXTwitter size={18} />
-                          </div>
-                        )}
+                        {bundle.instagram_url && <div className="social-icon p-2.5 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg text-white shadow-md"><FaInstagram size={18} /></div>}
+                        {bundle.github_url && <div className="social-icon p-2.5 bg-gray-900 rounded-lg text-white shadow-md"><FaGithub size={18} /></div>}
+                        {bundle.tiktok_url && <div className="social-icon p-2.5 bg-black rounded-lg text-white shadow-md"><FaTiktok size={18} /></div>}
+                        {bundle.youtube_url && <div className="social-icon p-2.5 bg-red-600 rounded-lg text-white shadow-md"><FaYoutube size={18} /></div>}
+                        {bundle.facebook_url && <div className="social-icon p-2.5 bg-blue-600 rounded-lg text-white shadow-md"><FaFacebook size={18} /></div>}
+                        {bundle.x_url && <div className="social-icon p-2.5 bg-gray-900 rounded-lg text-white shadow-md"><FaXTwitter size={18} /></div>}
                       </div>
                     )}
 
@@ -585,9 +625,7 @@ function BundlesPage() {
                         View
                       </a>
                       <button
-                        onClick={() =>
-                          (window.location.href = `/bundles/${bundle.id}/edit`)
-                        }
+                        onClick={() => (window.location.href = `/bundles/${bundle.id}/edit`)}
                         className="action-btn flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-semibold text-sm shadow-lg shadow-blue-500/30"
                       >
                         <Edit2 size={18} />
@@ -607,48 +645,16 @@ function BundlesPage() {
 
                     {/* Mobile Actions & Social */}
                     <div className="flex lg:hidden flex-col gap-3 pt-3 border-t border-gray-200">
-                      {/* Social Icons - Mobile */}
-                      {(bundle.instagram_url ||
-                        bundle.github_url ||
-                        bundle.tiktok_url ||
-                        bundle.youtube_url ||
-                        bundle.facebook_url ||
-                        bundle.x_url) && (
+                      {(bundle.instagram_url || bundle.github_url || bundle.tiktok_url || bundle.youtube_url || bundle.facebook_url || bundle.x_url) && (
                         <div className="flex items-center gap-2 flex-wrap">
-                          {bundle.instagram_url && (
-                            <div className="social-icon p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg text-white">
-                              <FaInstagram size={16} />
-                            </div>
-                          )}
-                          {bundle.github_url && (
-                            <div className="social-icon p-2 bg-gray-900 rounded-lg text-white">
-                              <FaGithub size={16} />
-                            </div>
-                          )}
-                          {bundle.tiktok_url && (
-                            <div className="social-icon p-2 bg-black rounded-lg text-white">
-                              <FaTiktok size={16} />
-                            </div>
-                          )}
-                          {bundle.youtube_url && (
-                            <div className="social-icon p-2 bg-red-600 rounded-lg text-white">
-                              <FaYoutube size={16} />
-                            </div>
-                          )}
-                          {bundle.facebook_url && (
-                            <div className="social-icon p-2 bg-blue-600 rounded-lg text-white">
-                              <FaFacebook size={16} />
-                            </div>
-                          )}
-                          {bundle.x_url && (
-                            <div className="social-icon p-2 bg-gray-900 rounded-lg text-white">
-                              <FaXTwitter size={16} />
-                            </div>
-                          )}
+                          {bundle.instagram_url && <div className="social-icon p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg text-white"><FaInstagram size={16} /></div>}
+                          {bundle.github_url && <div className="social-icon p-2 bg-gray-900 rounded-lg text-white"><FaGithub size={16} /></div>}
+                          {bundle.tiktok_url && <div className="social-icon p-2 bg-black rounded-lg text-white"><FaTiktok size={16} /></div>}
+                          {bundle.youtube_url && <div className="social-icon p-2 bg-red-600 rounded-lg text-white"><FaYoutube size={16} /></div>}
+                          {bundle.facebook_url && <div className="social-icon p-2 bg-blue-600 rounded-lg text-white"><FaFacebook size={16} /></div>}
+                          {bundle.x_url && <div className="social-icon p-2 bg-gray-900 rounded-lg text-white"><FaXTwitter size={16} /></div>}
                         </div>
                       )}
-
-                      {/* Actions - Mobile */}
                       <div className="flex gap-2">
                         <a
                           href={`/${bundle.slug}`}
@@ -660,9 +666,7 @@ function BundlesPage() {
                           View
                         </a>
                         <button
-                          onClick={() =>
-                            (window.location.href = `/bundles/${bundle.id}/edit`)
-                          }
+                          onClick={() => (window.location.href = `/bundles/${bundle.id}/edit`)}
                           className="action-btn flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-semibold text-sm shadow-md shadow-blue-500/30"
                         >
                           <Edit2 size={16} />

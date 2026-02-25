@@ -39,7 +39,7 @@ function CustomSelect({ label, value, onChange, options }) {
         <button
           type="button"
           onClick={() => setOpen((prev) => !prev)}
-          className="select select-bordered w-full text-left flex items-center justify-between pr-3 appearance-none"
+          className="w-full text-left flex items-center justify-between px-4 h-12 bg-white border border-gray-300 rounded-lg text-sm text-base-content hover:border-gray-400 focus:outline-none focus:border-primary transition-colors"
         >
           <span className="truncate">{selectedLabel}</span>
           <ChevronDown

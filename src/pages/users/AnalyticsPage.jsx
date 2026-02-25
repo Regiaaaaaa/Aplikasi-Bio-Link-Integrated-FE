@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import {
   BarChart3,
   TrendingUp,
@@ -16,20 +17,47 @@ import Layout from "../../components/layouts/Layout";
 
 function CustomSelect({ label, value, onChange, options }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef(null);
+  const [dropdownStyle, setDropdownStyle] = useState({});
+  const buttonRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   const selectedLabel = options.find((o) => o.value === value)?.label || "";
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+      if (
+        dropdownRef.current && !dropdownRef.current.contains(e.target) &&
+        buttonRef.current && !buttonRef.current.contains(e.target)
+      ) {
+        setOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    const handleCloseOnResize = () => setOpen(false);
+    window.addEventListener("resize", handleCloseOnResize);
+    return () => window.removeEventListener("resize", handleCloseOnResize);
+  }, [open]);
+
+  const handleOpen = () => {
+    if (!open && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setDropdownStyle({
+        position: "fixed",
+        top: rect.bottom + 4,
+        left: rect.left,
+        width: rect.width,
+        zIndex: 999999,
+      });
+    }
+    setOpen((prev) => !prev);
+  };
+
   return (
-    <div className="flex-1 sm:max-w-xs" ref={ref}>
+    <div className="flex-1 sm:max-w-xs">
       {label && (
         <label className="block text-xs font-semibold text-gray-700 mb-2">
           {label}
@@ -37,8 +65,9 @@ function CustomSelect({ label, value, onChange, options }) {
       )}
       <div className="relative">
         <button
+          ref={buttonRef}
           type="button"
-          onClick={() => setOpen((prev) => !prev)}
+          onClick={handleOpen}
           className="w-full text-left flex items-center justify-between px-4 h-12 bg-white border border-gray-300 rounded-lg text-sm text-base-content hover:border-gray-400 focus:outline-none focus:border-primary transition-colors"
         >
           <span className="truncate">{selectedLabel}</span>
@@ -48,8 +77,12 @@ function CustomSelect({ label, value, onChange, options }) {
           />
         </button>
 
-        {open && (
-          <ul className="absolute z-[9999] mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+        {open && createPortal(
+          <ul
+            ref={dropdownRef}
+            style={dropdownStyle}
+            className="bg-white border border-gray-200 rounded-xl shadow-xl overflow-y-auto max-h-48"
+          >
             {options.map((opt) => (
               <li key={opt.value}>
                 <button
@@ -68,7 +101,8 @@ function CustomSelect({ label, value, onChange, options }) {
                 </button>
               </li>
             ))}
-          </ul>
+          </ul>,
+          document.body
         )}
       </div>
     </div>
@@ -217,7 +251,7 @@ function AnalyticsPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
 
           {/* Header + Filters */}
-          <div className="mb-6 md:mb-8 animate-slide-up" style={{ zIndex: 100, position: "relative" }}>
+          <div className="mb-6 md:mb-8 animate-slide-up">
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center">
@@ -229,7 +263,7 @@ function AnalyticsPage() {
                 </div>
               </div>
 
-              {/* Custom DaisyUI Dropdowns */}
+              {/* Custom Dropdowns */}
               <div className="flex flex-col sm:flex-row gap-3">
                 <CustomSelect
                   label="Filter by Bundle"
